@@ -9,7 +9,6 @@
 	</div>
 
 	<style>
-		@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
 		.main {
 			display: flex;
 			flex-direction: column;
@@ -20,7 +19,7 @@
 
 		h1 {
 			font-size: 3rem;
-			font-weight: 900;
+			font-weight: 800;
 			background: -webkit-linear-gradient(
 				0deg,
 				rgba(72, 0, 36, 1) 0%,
