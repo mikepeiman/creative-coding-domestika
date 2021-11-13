@@ -1,0 +1,37 @@
+<script>
+	import '../app.scss';
+	import Nav from '../components/Nav.svelte';
+</script>
+
+<Nav>
+	<div class="main">
+		<slot />
+	</div>
+
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
+		.main {
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			font-family: 'Montserrat', sans-serif;
+		}
+
+		h1 {
+			font-size: 3rem;
+			font-weight: 900;
+			background: -webkit-linear-gradient(
+				0deg,
+				rgba(72, 0, 36, 1) 0%,
+				rgba(9, 121, 121, 1) 25%,
+				rgba(121, 121, 155, 1) 50%,
+				rgba(121, 9, 121, 1) 75%,
+				rgba(2, 0, 76, 1) 100%
+			);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+		}
+	</style></Nav
+>
+<slot />

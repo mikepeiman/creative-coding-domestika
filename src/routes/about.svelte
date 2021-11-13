@@ -3,12 +3,12 @@
 </script>
 
 <svelte:head>
-<title>MetaBrain: Your Life OS</title>
+<title>About MetaBrain</title>
 
 </svelte:head>
 <div class="main">
     
-    <h1>Welcome to MetaBrain</h1>
+    <h1>About MetaBrain</h1>
     <p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
 </div>
 

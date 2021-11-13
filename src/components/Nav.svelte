@@ -1,25 +1,21 @@
-<script>
-
-</script>
-
-<svelte:head>
-<title>MetaBrain: Your Life OS</title>
-
-</svelte:head>
 <div class="main">
-    
-    <h1>Welcome to MetaBrain</h1>
-    <p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about">About</a>
+    </nav>
 </div>
 
-<style>
+<style lang="scss">
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
-    .main {
+    nav {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
         justify-content: center;
         align-items: center;
         font-family: 'Montserrat', sans-serif;
+        a {
+            margin: 1em 2em;
+        }
     }
 
     h1 {
