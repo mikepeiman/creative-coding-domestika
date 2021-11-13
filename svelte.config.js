@@ -1,4 +1,5 @@
 import preprocess from 'svelte-preprocess';
+import path from 'path'
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	kit: {
@@ -11,6 +12,13 @@ const config = {
 					scss: {
 						additionalData: '@import "src/variables.scss";'
 					}
+				}
+			},
+			resolve: {
+				alias: {
+					'@components': path.resolve('./src/lib/components'),
+					'@utils': path.resolve('./src/lib/utils'),
+					'@lib': path.resolve('./src/lib/lib')
 				}
 			}
 		}
