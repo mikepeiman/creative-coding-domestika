@@ -8,7 +8,10 @@
 		<slot />
 	</div>
 
-	<style>
+	<style lang="scss">
+		@tailwind base;
+		@tailwind components;
+		@tailwind utilities;
 		.main {
 			display: flex;
 			flex-direction: column;
