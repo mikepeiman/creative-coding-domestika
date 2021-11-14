@@ -1,12 +1,21 @@
 <script>
 	import { pokemon } from '../stores/pokestore';
     import PokemonCard from '$components/PokemonCard.svelte';
+
+    let searchTerm = ""
+    let filteredPokemon = []
+
+    $: {
+        console.log(searchTerm)
+    }
 </script>
 
 <svelte:head>
 	<title>MetaBrain: Your Life OS</title>
 </svelte:head>
 <div class="main">
+    <h1>Pokedex Listing</h1>
+    <input type="text" placeholder="Search Pokemon" class="w-5/6 rounded-md text-lg p-4 border-2 border-grey-200" bind:value={searchTerm}>
 	<!-- <div class="masonry"> -->
         <div class="grid gap-2 md:grid-cols-8 grid-cols-4">
 		{#each $pokemon as poke}
