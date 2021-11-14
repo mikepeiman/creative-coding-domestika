@@ -1,5 +1,6 @@
 <script>
 	import { pokemon } from '../stores/pokestore';
+    import PokemonCard from '$components/PokemonCard.svelte';
 </script>
 
 <svelte:head>
@@ -8,10 +9,11 @@
 <div class="main">
 	<div class="masonry">
 		{#each $pokemon as poke}
-			<div class="pokemon">
+        <PokemonCard poke={poke} />
+			<!-- <div class="pokemon">
                 <h2>{poke.name}</h2>
                 <img src={poke.image} alt="" />
-            </div>
+            </div> -->
 		{/each}
 	</div>
 </div>
