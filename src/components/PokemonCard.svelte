@@ -2,10 +2,12 @@
 	export let poke;
 </script>
 
-<div class="pokemon">
-	<h2>{poke.name}</h2>
-	<img src={poke.image} alt="" />
-</div>
+<a href={`/pokeman/${poke.id}`}>
+	<div class="pokemon hover:drop-shadow-lg">
+		<h2 class="uppercase text-1xl">{poke.id}. {poke.name}</h2>
+		<img src={poke.image} alt="" class="w-30 h-30" />
+	</div>
+</a>
 
 <style lang="scss">
 	.pokemon {

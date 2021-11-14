@@ -7,13 +7,11 @@
 	<title>MetaBrain: Your Life OS</title>
 </svelte:head>
 <div class="main">
-	<div class="masonry">
+	<!-- <div class="masonry"> -->
+        <div class="grid gap-2 md:grid-cols-8 grid-cols-4">
 		{#each $pokemon as poke}
         <PokemonCard poke={poke} />
-			<!-- <div class="pokemon">
-                <h2>{poke.name}</h2>
-                <img src={poke.image} alt="" />
-            </div> -->
+
 		{/each}
 	</div>
 </div>
@@ -24,11 +22,7 @@
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;
-        .pokemon {
-            margin: .5rem;
-            padding: .5rem;
-            background: rgba(0,0,0,0.1);
-        }
+
     }
 
 	h1 {
