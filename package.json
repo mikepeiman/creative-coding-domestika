@@ -10,7 +10,12 @@
 	},
 	"devDependencies": {
 		"@sveltejs/kit": "next",
+		"@tailwindcss/typography": "^0.4.1",
 		"autoprefixer": "^10.4.0",
+		"daisyui": "^1.16.2",
+		"env-cmd": "^10.1.0",
+		"graphql": "^16.0.1",
+		"graphql-request": "^3.6.1",
 		"prettier": "^2.4.1",
 		"prettier-plugin-svelte": "^2.4.0",
 		"sass": "^1.43.4",
