@@ -1,38 +1,44 @@
 <script>
 	import { pokemon } from '../stores/pokestore';
-    import PokemonCard from '$components/PokemonCard.svelte';
+	import PokemonCard from '$components/PokemonCard.svelte';
 
-    let searchTerm = ""
-    let filteredPokemon = []
+	let searchTerm = '';
+	let filteredPokemon = [];
 
-    $: {
-        console.log(searchTerm)
-    }
+	$: {
+		if (searchTerm) {
+			filteredPokemon = $pokemon.filter((pokeman) => pokeman.name.toLowerCase().includes(searchTerm.toLowerCase()))
+		} else {
+			filteredPokemon = [...$pokemon];
+		}
+	}
 </script>
 
 <svelte:head>
 	<title>MetaBrain: Your Life OS</title>
 </svelte:head>
 <div class="main">
-    <h1>Pokedex Listing</h1>
-    <input type="text" placeholder="Search Pokemon" class="w-5/6 rounded-md text-lg p-4 border-2 border-grey-200" bind:value={searchTerm}>
+	<h1>Pokedex Listing</h1>
+	<input
+		type="text"
+		placeholder="Search Pokemon"
+		class="w-5/6 rounded-md text-lg p-4 border-2 border-grey-200"
+		bind:value={searchTerm}
+	/>
 	<!-- <div class="masonry"> -->
-        <div class="grid gap-2 md:grid-cols-8 grid-cols-4">
-		{#each $pokemon as poke}
-        <PokemonCard poke={poke} />
-
+	<div class="grid gap-2 md:grid-cols-8 grid-cols-4">
+		{#each filteredPokemon as poke}
+			<PokemonCard {poke} />
 		{/each}
 	</div>
 </div>
 
 <style lang="scss">
-
-    .masonry {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-
-    }
+	.masonry {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+	}
 
 	h1 {
 		font-size: 3rem;
