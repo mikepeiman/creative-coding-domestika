@@ -1,5 +1,25 @@
+<script context="module">
+	export async function load({ page }) {
+		console.log(`running fetchPokemon API call`);
+		const url = 'https://pokeapi.co/api/v2/pokemon?limit=898/';
+		const res = await fetch(url);
+		const data = await res.json();
+		const loadedPokemon = data.results.map((data, index) => {
+			return {
+				name: data.name,
+				id: index + 1,
+				image: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${
+					index + 1
+				}.png`
+			};
+		});
+		return {props: {pokemon: loadedPokemon}}
+	}
+</script>
+
 <script>
-	import { pokemon } from '../stores/pokestore';
+	// import { pokemon } from '../stores/pokestore';
+	export let pokemon;
 	import PokemonCard from '$components/PokemonCard.svelte';
 
 	let searchTerm = '';
@@ -7,9 +27,11 @@
 
 	$: {
 		if (searchTerm) {
-			filteredPokemon = $pokemon.filter((pokeman) => pokeman.name.toLowerCase().includes(searchTerm.toLowerCase()))
+			filteredPokemon = pokemon.filter((pokeman) =>
+				pokeman.name.toLowerCase().includes(searchTerm.toLowerCase())
+			);
 		} else {
-			filteredPokemon = [...$pokemon];
+			filteredPokemon = [...pokemon];
 		}
 	}
 </script>
