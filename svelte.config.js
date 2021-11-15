@@ -1,6 +1,6 @@
 import preprocess from 'svelte-preprocess';
 import path from 'path'
-import {normalizePath} from 'vite'
+import { normalizePath } from 'vite'
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	root: normalizePath(path.resolve('./')),
@@ -26,7 +26,10 @@ const config = {
 			},
 			optimizeDeps: {
 				exclude: ['@urql/svelte'],
-			  }
+			},
+			ssr: {
+				noExternal: ['urql/svelte']
+			},
 		}
 	},
 

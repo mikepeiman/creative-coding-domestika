@@ -1,29 +1,29 @@
 import { client } from '$lib/dgraph-client'
-console.log(`🚀 ~ file: index.json.js ~ line 2 ~ client`, client)
-import { gql } from 'graphql-request'
-client()
+// import { gql } from 'graphql-request'
+import { gql, operationStore, query } from '@urql/svelte';
 export const get = async () => {
-    try {
-        const query = gql`query Posts {
-            posts {
-              title
-              slug
-              date
-              excerpt
-              tags
-              coverImage {
-                url
-              }
-            }
-          }`
-        const { posts } = await client.request(query)
-        return {
-            status: 200,
-            body: { posts }
+  try {
+    const todosQuery = gql`
+      query MyQuery {
+        aggregateTask {
+          count
+          titleMin
+          titleMax
         }
-    } catch (error) {
-        return {
-            body: { error: 'There was a server error' }
+        queryUser {
+          name
         }
+      }
+    `;
+    client()
+    const { todos } = await operationStore(todosQuery)
+    return {
+      status: 200,
+      body: { todos }
     }
+  } catch (error) {
+    return {
+      body: { error: 'There was a server error' }
+    }
+  }
 }
