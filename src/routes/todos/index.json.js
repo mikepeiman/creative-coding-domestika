@@ -1,5 +1,7 @@
-import { client } from '$lib/graphql-client'
+import { client } from '$lib/dgraph-client'
+console.log(`🚀 ~ file: index.json.js ~ line 2 ~ client`, client)
 import { gql } from 'graphql-request'
+client()
 export const get = async () => {
     try {
         const query = gql`query Posts {

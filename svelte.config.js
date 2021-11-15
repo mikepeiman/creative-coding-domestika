@@ -23,7 +23,10 @@ const config = {
 					'$lib': path.resolve('./src/lib'),
 					'$api': path.resolve('./src/routes/api'),
 				}
-			}
+			},
+			optimizeDeps: {
+				exclude: ['@urql/svelte'],
+			  }
 		}
 	},
 

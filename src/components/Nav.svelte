@@ -5,6 +5,7 @@
         <a href="/pokemon">Pokemon</a>
         <a href="/posts.json">Posts API</a>
         <a href="/posts">Blog</a>
+        <a href="/todos">Todos</a>
     </nav>
 </div>
 
