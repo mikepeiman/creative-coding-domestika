@@ -3,6 +3,7 @@
         <a href="/">Home</a>
         <a href="/about">About</a>
         <a href="/pokemon">Pokemon</a>
+        <a href="/posts.json">Posts API</a>
     </nav>
 </div>
 
