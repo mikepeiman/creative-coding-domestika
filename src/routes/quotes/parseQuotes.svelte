@@ -51,9 +51,24 @@
 // author is attributed with ` - `
 // author credential/identity is indicated after `,`
 // source material/reference is enclosed within `[ ]`
+// an axiomatic saying is prefaced with `Axiom: ` before the name of it `Axiom: Brandolinie's Law`
+// author DOB-Death noted as `(####-####)`
+// quotation year noted at `(####)`
+// if there is additional context or comment, it is signified by `@(xxx xxx)`
+// tags are specified as `#(xxx xxx, ccccc, zzzz)` comma separated, OR each as `#xxx #yyy`
+// I will need also a flag or rating to determine which quotes are authenticated, or the degree of confidence, plus sources for this
 
     function parseQuote(item) {
-            console.log(item)
+        // discardEmptyDiv()
+        // parseQuoteText()
+        // parseAuthorName()
+        // parseAuthorCredential()
+        // parseAuthorLifespan()
+        // parseQuoteYear()
+        // parseQuoteSource()
+        // parseQuoteTags()
+        // parseQuoteContext()
+        console.log(item)
     }
 </script>
 
