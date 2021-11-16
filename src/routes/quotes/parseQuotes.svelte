@@ -2,14 +2,14 @@
 	import { storedQuotesFile, storedFileContent } from '../../stores/stores.js';
 	import { onMount } from 'svelte';
 
-	let fsFileContent = localStorage.getItem('fileContent');
+    let fsFileContent
 	$: if (fsFileContent) {
         parseFile(fsFileContent)
 	}
 
-	// onMount(() => {
-
-	// });
+	onMount(() => {
+        fsFileContent = localStorage.getItem('fileContent');
+	});
 
 	let input_file = [],
 		contents = '',
@@ -54,7 +54,7 @@
 {#if items.length}
 	{#each items as item}
 		{item.innerHTML}
-		<br />
+		<br>
 	{/each}
 {/if}
 
