@@ -40,36 +40,41 @@
 		let divs = htmlDoc.getElementsByTagName('div');
 		items = divs;
 		// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 30 ~ parseFile ~ divs`, divs);
-        for (let i = 0; i < 20; i++){
-            let quote = parseQuote(divs[i])
-            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 45 ~ parseFile ~ quote`, quote)
-        }
+		for (let i = 0; i < 8; i++) {
+			let quote = parseQuote(divs[i]);
+		}
 	}
 
-// Quote structure from text:
-// quotes are in `" "` quotation marks
-// author is attributed with ` - `
-// author credential/identity is indicated after `,`
-// source material/reference is enclosed within `[ ]`
-// an axiomatic saying is prefaced with `Axiom: ` before the name of it `Axiom: Brandolinie's Law`
-// author DOB-Death noted as `(####-####)`
-// quotation year noted at `(####)`
-// if there is additional context or comment, it is signified by `@(xxx xxx)`
-// tags are specified as `#(xxx xxx, ccccc, zzzz)` comma separated, OR each as `#xxx #yyy`
-// I will need also a flag or rating to determine which quotes are authenticated, or the degree of confidence, plus sources for this
+	// Quote structure from text:
+	// quotes are in `" "` quotation marks
+	// author is attributed with ` - `
+	// author credential/identity is indicated after `,`
+	// source material/reference is enclosed within `[ ]`
+	// an axiomatic saying is prefaced with `Axiom: ` before the name of it `Axiom: Brandolinie's Law`
+	// author DOB-Death noted as `(####-####)`
+	// quotation year noted at `(####)`
+	// if there is additional context or comment, it is signified by `@(xxx xxx)`
+	// tags are specified as `#(xxx xxx, ccccc, zzzz)` comma separated, OR each as `#xxx #yyy`
+	// I will need also a flag or rating to determine which quotes are authenticated, or the degree of confidence, plus sources for this
 
-    function parseQuote(item) {
-        // discardEmptyDiv()
-        // parseQuoteText()
-        // parseAuthorName()
-        // parseAuthorCredential()
-        // parseAuthorLifespan()
-        // parseQuoteYear()
-        // parseQuoteSource()
-        // parseQuoteTags()
-        // parseQuoteContext()
-        console.log(item)
-    }
+	function parseQuote(item) {
+        let hasBreak = item.getElementsByTagName('br');
+		if (!hasBreak.length) {
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 66 ~ parseQuote ~ hasBreak`, hasBreak.length);
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 61 ~ parseQuote ~ item`, item)
+		}
+
+
+		// discardEmptyDiv()
+		// parseQuoteText()
+		// parseAuthorName()
+		// parseAuthorCredential()
+		// parseAuthorLifespan()
+		// parseQuoteYear()
+		// parseQuoteSource()
+		// parseQuoteTags()
+		// parseQuoteContext()
+	}
 </script>
 
 <input
