@@ -1,4 +1,4 @@
-<script context="module">
+<!-- <script context="module">
 	export const load = async ({ fetch }) => {
 		const res = await fetch('/api/posts.json');
 		if (res.ok) {
@@ -6,7 +6,7 @@
 			return { props: { posts } };
 		}
 	};
-</script>
+</script> -->
 
 <svelte:head>
     <title>Mike's Blog</title>

@@ -1,22 +1,25 @@
 import { client } from '$lib/dgraph-client'
-// import { gql } from 'graphql-request'
-import { gql, operationStore, query } from '@urql/svelte';
+import { gql, request } from 'graphql-request'
 export const get = async () => {
   try {
-    const todosQuery = gql`
-      query MyQuery {
-        aggregateTask {
-          count
-          titleMin
-          titleMax
-        }
-        queryUser {
+    const query = gql`query MyQuery {
+      queryQuote {
+        author {
           name
         }
+        themes {
+          tag
+        }
+        body
       }
-    `;
-    client()
-    const { todos } = await operationStore(todosQuery)
+    }
+    
+	`
+    await client.request(query).then((data) => {
+    console.log(`🚀 ~ file: index.json.js ~ line 21 ~ const{todos}=awaitclient.request ~ data`, data)
+      todos = data.queryQuote
+    })
+    console.log(`🚀 ~ file: index.json.js ~ line 18 ~ get ~ todos`, todos)
     return {
       status: 200,
       body: { todos }

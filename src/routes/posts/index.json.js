@@ -1,5 +1,5 @@
 import { client } from '$lib/graphql-client'
-import { gql } from 'graphql-request'
+import { gql, request } from 'graphql-request'
 export const get = async () => {
   try {
     const query = gql`query Posts {
@@ -15,6 +15,7 @@ export const get = async () => {
             }
           }`
     const { posts } = await client.request(query)
+    console.log(`🚀 ~ file: index.json.js ~ line 18 ~ get ~ posts`, posts)
     return {
       status: 200,
       body: { posts }
