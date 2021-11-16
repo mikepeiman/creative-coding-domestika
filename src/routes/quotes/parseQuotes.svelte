@@ -2,13 +2,13 @@
 	import { storedQuotesFile, storedFileContent } from '../../stores/stores.js';
 	import { onMount } from 'svelte';
 
-    let fsFileContent
+	let fsFileContent;
 	$: if (fsFileContent) {
-        parseFile(fsFileContent)
+		parseFile(fsFileContent);
 	}
 
 	onMount(() => {
-        fsFileContent = localStorage.getItem('fileContent');
+		fsFileContent = localStorage.getItem('fileContent');
 	});
 
 	let input_file = [],
@@ -39,8 +39,22 @@
 		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 28 ~ parseFile ~ htmlDoc`, htmlDoc);
 		let divs = htmlDoc.getElementsByTagName('div');
 		items = divs;
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 30 ~ parseFile ~ divs`, divs);
+		// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 30 ~ parseFile ~ divs`, divs);
+        for (let i = 0; i < 20; i++){
+            let quote = parseQuote(divs[i])
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 45 ~ parseFile ~ quote`, quote)
+        }
 	}
+
+// Quote structure from text:
+// quotes are in `" "` quotation marks
+// author is attributed with ` - `
+// author credential/identity is indicated after `,`
+// source material/reference is enclosed within `[ ]`
+
+    function parseQuote(item) {
+            console.log(item)
+    }
 </script>
 
 <input
@@ -53,8 +67,8 @@
 
 {#if items.length}
 	{#each items as item}
-		{item.innerHTML}
-		<br>
+		{@html item.innerHTML}
+		<br />
 	{/each}
 {/if}
 
