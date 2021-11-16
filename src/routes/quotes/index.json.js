@@ -7,7 +7,7 @@ export const get = async () => {
         author {
           name
         }
-        tags {
+        themes {
           tag
         }
         body

@@ -6,6 +6,7 @@
         <a href="/posts.json">Posts API</a>
         <a href="/posts">Blog</a>
         <a href="/todos">Todos</a>
+        <a href="/quotes">Quotes</a>
     </nav>
 </div>
 
