@@ -1,19 +1,30 @@
 <script>
+	import { storedQuotesFile, storedFileContent } from '../../stores/stores.js';
+	import { onMount } from 'svelte';
+
+	let fsFileContent = localStorage.getItem('fileContent');
+	$: if (fsFileContent) {
+        parseFile(fsFileContent)
+	}
+
+	// onMount(() => {
+
+	// });
+
 	let input_file = [],
 		contents = '',
 		items = [];
 
 	function readFile(input_file) {
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 12 ~ readFile ~ input_file`, input_file);
 		if (input_file) {
 			console.log(`🚀 ~ file: parseQuotes.svelte ~ line 14 ~ readFile ~ input_file`, input_file[0]);
 			let file = input_file[0];
 			var reader = new FileReader();
 			reader.onload = function (event) {
 				contents = event.target.result;
-				console.log(`🚀 ~ file: parseQuotes.svelte ~ line 16 ~ readFile ~ contents`, contents);
 				console.log('Successfully read file');
-                parseFile()
+				storedFileContent.set(contents);
+				parseFile(contents);
 			};
 			reader.onerror = function (err) {
 				console.error('Failed to read file', err);
@@ -22,13 +33,13 @@
 		}
 	}
 
-	function parseFile() {
+	function parseFile(doc) {
 		const parser = new DOMParser();
-		const htmlDoc = parser.parseFromString(contents, 'text/html');
-        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 27 ~ parseFile ~ contents`, contents)
+		const htmlDoc = parser.parseFromString(doc, 'text/html');
 		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 28 ~ parseFile ~ htmlDoc`, htmlDoc);
-        let divs = htmlDoc.getElementsByTagName('div')
-        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 30 ~ parseFile ~ divs`, divs)
+		let divs = htmlDoc.getElementsByTagName('div');
+		items = divs;
+		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 30 ~ parseFile ~ divs`, divs);
 	}
 </script>
 
@@ -39,6 +50,13 @@
 	bind:files={input_file}
 	on:change={readFile(input_file)}
 />
+
+{#if items.length}
+	{#each items as item}
+		{item.innerHTML}
+		<br />
+	{/each}
+{/if}
 
 <style>
 	/* ::-webkit-file-upload-button {

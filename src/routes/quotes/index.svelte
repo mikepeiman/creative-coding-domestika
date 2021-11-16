@@ -16,5 +16,5 @@
 
 <ParseQuotes />
 <div class="todos">
-	<Todos {todos}/>
+	<!-- <Todos {todos}/> -->
 </div>
