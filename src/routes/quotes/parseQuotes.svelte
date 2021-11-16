@@ -36,14 +36,21 @@
 	function parseFile(doc) {
 		const parser = new DOMParser();
 		const htmlDoc = parser.parseFromString(doc, 'text/html');
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 28 ~ parseFile ~ htmlDoc`, htmlDoc);
 		let divs = htmlDoc.getElementsByTagName('div');
-		items = divs;
-		// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 30 ~ parseFile ~ divs`, divs);
-		for (let i = 0; i < 8; i++) {
-			let quote = parseQuote(divs[i]);
+        for(let i = 0; i < divs.length; i++) {
+            discardBreaks(divs[i])
+        }
+		for (let i = 0; i < items.length; i++) {
+			parseQuote(items[i]);
 		}
 	}
+
+    function discardBreaks(item) {
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 57 ~ discardBreaks ~ item`, item)
+        if(item.innerHTML.length > 5){
+            items = [...items, item]
+        }
+    }
 
 	// Quote structure from text:
 	// quotes are in `" "` quotation marks
@@ -58,12 +65,22 @@
 	// I will need also a flag or rating to determine which quotes are authenticated, or the degree of confidence, plus sources for this
 
 	function parseQuote(item) {
-        let hasBreak = item.getElementsByTagName('br');
-		if (!hasBreak.length) {
-            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 66 ~ parseQuote ~ hasBreak`, hasBreak.length);
-            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 61 ~ parseQuote ~ item`, item)
-		}
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 63 ~ parseQuote ~ item`, item)
+        // let hasBreak = item.getElementsByTagName('br');
+		// if (!hasBreak.length) {
+        //     console.log(`🚀 ~ file: parseQuotes.svelte ~ line 66 ~ parseQuote ~ hasBreak`, hasBreak.length);
+		// }
+        // let innerHTML = item.innerHTML
+        //     if(innerHTML.length > 5){
+        //         console.log(`🚀 ~ file: parseQuotes.svelte ~ line 61 ~ parseQuote ~ item`, item)
 
+        //     }
+
+        // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 67 ~ parseQuote ~ innerHTML`, innerHTML)
+        // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 67 ~ parseQuote ~ innerHTML.length `, innerHTML.length)
+        // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 67 ~ parseQuote ~ item.length`, item.length)
+
+        // replacementStr = replacementStr.replace(/\\n/g, '\n')
 
 		// discardEmptyDiv()
 		// parseQuoteText()
@@ -87,8 +104,8 @@
 
 {#if items.length}
 	{#each items as item}
-		{@html item.innerHTML}
-		<br />
+		<div class="card p-3 m-12 shadow-md">{@html item.innerHTML}</div>
+
 	{/each}
 {/if}
 
