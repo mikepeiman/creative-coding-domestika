@@ -11,10 +11,12 @@
 
 <script>
 	import Todos from "$components/Todos.svelte";
+	import ParseQuotes from "./parseQuotes.svelte";
 	export let todos
     console.log(`🚀 ~ file: TODOS index.svelte ~ line 15 ~ todos`, todos)
 </script>
 
+<ParseQuotes />
 <div class="todos">
 	<Todos {todos}/>
 </div>

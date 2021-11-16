@@ -7,13 +7,12 @@ export const get = async () => {
         author {
           name
         }
-        themes {
+        tags {
           tag
         }
         body
       }
     }
-    
 	`
     await client.request(query).then((data) => {
     console.log(`🚀 ~ file: index.json.js ~ line 21 ~ const{todos}=awaitclient.request ~ data`, data)
