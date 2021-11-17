@@ -7,13 +7,24 @@
 		parseFile(fsFileContent);
 	}
 
+    let searchTerm = '';
+	let filteredQuotes = [];
+	$: {
+		if (searchTerm) {
+			filteredQuotes = quotes.filter((quote) =>
+				quote.toLowerCase().includes(searchTerm.toLowerCase())
+			);
+		} else {
+			filteredQuotes = [...quotes];
+		}
+	}
 	onMount(() => {
 		fsFileContent = localStorage.getItem('fileContent');
 	});
 
 	let input_file = [],
 		contents = '',
-		items = [];
+		quotes = [];
 
 	function readFile(input_file) {
 		if (input_file) {
@@ -37,20 +48,20 @@
 		const parser = new DOMParser();
 		const htmlDoc = parser.parseFromString(doc, 'text/html');
 		let divs = htmlDoc.getElementsByTagName('div');
-        let item, remainder
-        let quoteObj = {item, remainder}
+		let item, remainder;
+		let quoteObj = { item, remainder };
 		for (let i = 200; i < 353; i++) {
 			if (discardBreaks(divs[i])) {
 				item = discardBreaks(divs[i]);
-				items = [...items, item];
-                quoteObj = parseQuoteText(item)
-                console.log(`🚀 ~ file: parseQuotes.svelte ~ line 46 ~ parseFile ~ quoteObj`, quoteObj)
-                quoteObj = parseAuthorName(quoteObj['remainder'])
-                console.log(`🚀 ~ file: parseQuotes.svelte ~ line 49 ~ parseFile ~ quoteObj`, quoteObj)
-			} 
+				quotes = [...quotes, item];
+				quoteObj = parseQuoteText(item);
+				console.log(`🚀 ~ file: parseQuotes.svelte ~ line 46 ~ parseFile ~ quoteObj`, quoteObj);
+				quoteObj = parseAuthorName(quoteObj['remainder']);
+				console.log(`🚀 ~ file: parseQuotes.svelte ~ line 49 ~ parseFile ~ quoteObj`, quoteObj);
+			}
 		}
 		for (let i = 0; i < 20; i++) {
-			parseQuote(items[i]);
+			parseQuote(quotes[i]);
 		}
 	}
 
@@ -86,53 +97,82 @@
 		// parseQuoteContext(item)
 	}
 
-function parseQuoteText(item) {
-    let itemEnd = item.length
-    let quoteStart = item.indexOf("\"") + 1
-    let quoteEnd = item.indexOf("\"", 2) - 1
-    let quote = Array.from(item).splice(quoteStart, quoteEnd).join(String())
-    let remainder = Array.from(item).splice(quoteEnd + 4, itemEnd).join(String()).trim()
-    return {item, remainder}
-}
+	function parseQuoteText(item) {
+		let itemEnd = item.length;
+		let quoteStart = item.indexOf('"') + 1;
+		let quoteEnd = item.indexOf('"', 2) - 1;
+		let quote = Array.from(item).splice(quoteStart, quoteEnd).join(String());
+		let remainder = Array.from(item)
+			.splice(quoteEnd + 4, itemEnd)
+			.join(String())
+			.trim();
+		return { item, remainder };
+	}
 
-function parseAuthorName(item) {
-    let itemEnd = item.length
-    let authorStart = 0
-    let separatorForTitle = item.indexOf(",")
-    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 102 ~ parseAuthorName ~ separatorForTitle`, separatorForTitle)
-    let separatorForSource = item.indexOf("[")
-    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 104 ~ parseAuthorName ~ separatorForSource`, separatorForSource)
-    let separatorForAxiom = item.indexOf(":")
-    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 106 ~ parseAuthorName ~ separatorForAxiom`, separatorForAxiom)
-    let author = Array.from(item).splice(authorStart, separatorForTitle).join(String())
-    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 103 ~ parseAuthorName ~ author`, author)
-    let remainder = Array.from(item).splice(separatorForTitle + 1, itemEnd).join(String()).trim()
-    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 105 ~ parseAuthorName ~ remainder`, remainder)
-    return {item, remainder}
-}
+	function parseAuthorName(item) {
+		let itemEnd = item.length;
+		let authorStart = 0;
+		let separatorForTitle = item.indexOf(',');
+		console.log(
+			`🚀 ~ file: parseQuotes.svelte ~ line 102 ~ parseAuthorName ~ separatorForTitle`,
+			separatorForTitle
+		);
+		let separatorForSource = item.indexOf('[');
+		console.log(
+			`🚀 ~ file: parseQuotes.svelte ~ line 104 ~ parseAuthorName ~ separatorForSource`,
+			separatorForSource
+		);
+		let separatorForAxiom = item.indexOf(':');
+		console.log(
+			`🚀 ~ file: parseQuotes.svelte ~ line 106 ~ parseAuthorName ~ separatorForAxiom`,
+			separatorForAxiom
+		);
+		let author = Array.from(item).splice(authorStart, separatorForTitle).join(String());
+		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 103 ~ parseAuthorName ~ author`, author);
+		let remainder = Array.from(item)
+			.splice(separatorForTitle + 1, itemEnd)
+			.join(String())
+			.trim();
+		console.log(
+			`🚀 ~ file: parseQuotes.svelte ~ line 105 ~ parseAuthorName ~ remainder`,
+			remainder
+		);
+		return { item, remainder };
+	}
 
-function parseAuthorCredential(item) {
-    let itemEnd = item.length
-    let quoteStart = item.indexOf("\"") + 1
-    let quoteEnd = item.indexOf("\"", 2) - 1
-    let quote = Array.from(item).splice(quoteStart, quoteEnd).join(String())
-    let remainder = Array.from(item).splice(quoteEnd + 4, itemEnd).join(String()).trim()
-    return {item, remainder}
-}
-
+	function parseAuthorCredential(item) {
+		let itemEnd = item.length;
+		let quoteStart = item.indexOf('"') + 1;
+		let quoteEnd = item.indexOf('"', 2) - 1;
+		let quote = Array.from(item).splice(quoteStart, quoteEnd).join(String());
+		let remainder = Array.from(item)
+			.splice(quoteEnd + 4, itemEnd)
+			.join(String())
+			.trim();
+		return { item, remainder };
+	}
 </script>
 
-<input
-	class="input input-primary"
-	id="fileInput"
-	type="file"
-	bind:files={input_file}
-	on:change={readFile(input_file)}
-/>
+<div class="flex flex-col items-center">
+    <input
+        class="input input-primary"
+        id="fileInput"
+        type="file"
+        bind:files={input_file}
+        on:change={readFile(input_file)}
+    />
+    
+    <input
+        type="text"
+        placeholder="Search quotes"
+        class="w-5/6 mt-5 input input-primary rounded-md text-lg p-4 border-2 border-grey-200"
+        bind:value={searchTerm}
+    />
+</div>
 
-{#if items.length}
-	{#each items as item}
-		<div class="card p-3 m-12 shadow-md">{item}</div>
+{#if quotes.length}
+	{#each filteredQuotes as quote}
+		<div class="card p-3 m-12 shadow-md">{quote}</div>
 	{/each}
 {/if}
 
