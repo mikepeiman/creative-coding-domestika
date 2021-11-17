@@ -7,8 +7,11 @@
 		parseFile(fsFileContent);
 	}
 
-    let searchTerm = '';
+	let searchTerm = '';
 	let filteredQuotes = [];
+    let multilineQuote = 0;
+    let quotesObjects = [];
+    let filteredQuotesObjects = [];
 	$: {
 		if (searchTerm) {
 			filteredQuotes = quotes.filter((quote) =>
@@ -48,11 +51,12 @@
 		const parser = new DOMParser();
 		const htmlDoc = parser.parseFromString(doc, 'text/html');
 		let divs = htmlDoc.getElementsByTagName('div');
+        isolateQuotationBlocks(divs)
 		let item, remainder;
 		let quoteObj = { item, remainder };
-        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[0]`, divs[0])
-            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[1]`, divs[1])
-            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[2]`, divs[2])
+		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[0]`, divs[0]);
+		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[1]`, divs[1]);
+		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[2]`, divs[2]);
 		for (let i = 0; i < divs.length; i++) {
 			if (discardBreaks(divs[i])) {
 				item = discardBreaks(divs[i]);
@@ -67,6 +71,18 @@
 			parseQuote(quotes[i]);
 		}
 	}
+	function isolateQuotationBlocks(divs) {
+        for (let i = 0; i < divs.length; i++) {
+            let div = divs[i]
+            if (div.innerText.length > 5) {
+                console.log(`${i}: isolateQuotationBlocks TRUE QUOTE`)
+                console.log(`${div.innerText.slice(0, 50)}`)
+            } else {
+                console.log(`${i}: isolateQuotationBlocks FALSE EMPTY`)
+            }
+        }
+    }
+
 
 	function discardBreaks(item) {
 		if (item.innerText.length > 5) {
@@ -87,7 +103,8 @@
 	// tags are specified as `#(xxx xxx, ccccc, zzzz)` comma separated, OR each as `#xxx #yyy`
 	// I will need also a flag or rating to determine which quotes are authenticated, or the degree of confidence, plus sources for this
 
-    // need to clean quotes file more; multiline quotes are getting wrapped in <div>s as separate items
+	// need to clean quotes file more; multiline quotes are getting wrapped in <div>s as separate items
+	// the <div><br></div> are useful here; they delineate the actual quotes
 	function parseQuote(item) {
 		// parseQuoteText(item)
 		// parseAuthorName(item)
@@ -156,25 +173,28 @@
 </script>
 
 <div class="flex flex-col items-center">
-    <input
-        class="input input-primary"
-        id="fileInput"
-        type="file"
-        bind:files={input_file}
-        on:change={readFile(input_file)}
-    />
-    
-    <input
-        type="text"
-        placeholder="Search quotes"
-        class="w-5/6 mt-5 input input-primary rounded-md text-lg p-4 border-2 border-grey-200"
-        bind:value={searchTerm}
-    />
+	<input
+		class="input input-primary"
+		id="fileInput"
+		type="file"
+		bind:files={input_file}
+		on:change={readFile(input_file)}
+	/>
+
+	<input
+		type="text"
+		placeholder="Search quotes"
+		class="w-5/6 mt-5 input input-primary rounded-md text-lg p-4 border-2 border-grey-200"
+		bind:value={searchTerm}
+	/>
 </div>
 
 {#if quotes.length}
-	{#each filteredQuotes as quote}
-		<div class="card p-3 m-12 shadow-md">{quote}</div>
+	{#each filteredQuotes as quote, i}
+		<div class="card p-3 m-12 shadow-md">
+			<span>{i + 1}: </span>
+			{quote}
+		</div>
 	{/each}
 {/if}
 
