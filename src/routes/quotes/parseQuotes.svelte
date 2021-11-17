@@ -37,10 +37,16 @@
 		const parser = new DOMParser();
 		const htmlDoc = parser.parseFromString(doc, 'text/html');
 		let divs = htmlDoc.getElementsByTagName('div');
-		for (let i = 0; i < 30; i++) {
+        let item, remainder
+        let quoteObj = {item, remainder}
+		for (let i = 200; i < 353; i++) {
 			if (discardBreaks(divs[i])) {
-				let item = discardBreaks(divs[i]);
+				item = discardBreaks(divs[i]);
 				items = [...items, item];
+                quoteObj = parseQuoteText(item)
+                console.log(`🚀 ~ file: parseQuotes.svelte ~ line 46 ~ parseFile ~ quoteObj`, quoteObj)
+                quoteObj = parseAuthorName(quoteObj['remainder'])
+                console.log(`🚀 ~ file: parseQuotes.svelte ~ line 49 ~ parseFile ~ quoteObj`, quoteObj)
 			} 
 		}
 		for (let i = 0; i < 20; i++) {
@@ -49,7 +55,7 @@
 	}
 
 	function discardBreaks(item) {
-		if (item.textContent.length > 5) {
+		if (item.innerText.length > 5) {
 			return item.textContent.replaceAll(/(\\r\\n|\\n|\\r)/gm, '');
 		}
 		return 0;
@@ -70,15 +76,50 @@
 	function parseQuote(item) {
 		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 63 ~ parseQuote ~ item`, item);
 
-		// parseQuoteText()
-		// parseAuthorName()
-		// parseAuthorCredential()
-		// parseAuthorLifespan()
-		// parseQuoteYear()
-		// parseQuoteSource()
-		// parseQuoteTags()
-		// parseQuoteContext()
+		// parseQuoteText(item)
+		// parseAuthorName(item)
+		// parseAuthorCredential(item)
+		// parseAuthorLifespan(item)
+		// parseQuoteYear(item)
+		// parseQuoteSource(item)
+		// parseQuoteTags(item)
+		// parseQuoteContext(item)
 	}
+
+function parseQuoteText(item) {
+    let itemEnd = item.length
+    let quoteStart = item.indexOf("\"") + 1
+    let quoteEnd = item.indexOf("\"", 2) - 1
+    let quote = Array.from(item).splice(quoteStart, quoteEnd).join(String())
+    let remainder = Array.from(item).splice(quoteEnd + 4, itemEnd).join(String()).trim()
+    return {item, remainder}
+}
+
+function parseAuthorName(item) {
+    let itemEnd = item.length
+    let authorStart = 0
+    let separatorForTitle = item.indexOf(",")
+    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 102 ~ parseAuthorName ~ separatorForTitle`, separatorForTitle)
+    let separatorForSource = item.indexOf("[")
+    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 104 ~ parseAuthorName ~ separatorForSource`, separatorForSource)
+    let separatorForAxiom = item.indexOf(":")
+    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 106 ~ parseAuthorName ~ separatorForAxiom`, separatorForAxiom)
+    let author = Array.from(item).splice(authorStart, separatorForTitle).join(String())
+    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 103 ~ parseAuthorName ~ author`, author)
+    let remainder = Array.from(item).splice(separatorForTitle + 1, itemEnd).join(String()).trim()
+    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 105 ~ parseAuthorName ~ remainder`, remainder)
+    return {item, remainder}
+}
+
+function parseAuthorCredential(item) {
+    let itemEnd = item.length
+    let quoteStart = item.indexOf("\"") + 1
+    let quoteEnd = item.indexOf("\"", 2) - 1
+    let quote = Array.from(item).splice(quoteStart, quoteEnd).join(String())
+    let remainder = Array.from(item).splice(quoteEnd + 4, itemEnd).join(String()).trim()
+    return {item, remainder}
+}
+
 </script>
 
 <input
