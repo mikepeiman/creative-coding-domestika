@@ -53,7 +53,7 @@
         console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[0]`, divs[0])
             console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[1]`, divs[1])
             console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[2]`, divs[2])
-		for (let i = 0; i < 25; i++) {
+		for (let i = 0; i < divs.length; i++) {
 			if (discardBreaks(divs[i])) {
 				item = discardBreaks(divs[i]);
 				quotes = [...quotes, item];
@@ -87,6 +87,7 @@
 	// tags are specified as `#(xxx xxx, ccccc, zzzz)` comma separated, OR each as `#xxx #yyy`
 	// I will need also a flag or rating to determine which quotes are authenticated, or the degree of confidence, plus sources for this
 
+    // need to clean quotes file more; multiline quotes are getting wrapped in <div>s as separate items
 	function parseQuote(item) {
 		// parseQuoteText(item)
 		// parseAuthorName(item)
