@@ -7,15 +7,15 @@
 		parseFile(fsFileContent);
 	}
 	let input_file = [];
-	let	contents = '';
+	let contents = '';
 	let quotes = [];
 	let searchTerm = '';
 	let filteredQuotes = [];
-    let multiLineQuote = 0;
-    let quotesArrays = [];
-    let filteredQuotesArrays = [];
-    let quotesObjects = [];
-    let filteredQuotesObjects = [];
+	let multiLineQuote = 0;
+	let quotesArrays = [];
+	let filteredQuotesArrays = [];
+	let quotesObjects = [];
+	let filteredQuotesObjects = [];
 	$: {
 		if (searchTerm) {
 			filteredQuotes = quotes.filter((quote) =>
@@ -28,7 +28,6 @@
 	onMount(() => {
 		fsFileContent = localStorage.getItem('fileContent');
 	});
-
 
 	function readFile(input_file) {
 		if (input_file) {
@@ -52,69 +51,89 @@
 		const parser = new DOMParser();
 		const htmlDoc = parser.parseFromString(doc, 'text/html');
 		let divs = htmlDoc.getElementsByTagName('div');
-        isolateQuotationBlocks(divs)
+		isolateQuotationBlocks(divs);
 		let item, remainder;
 		let quoteObj = { item, remainder };
-		for (let i = 0; i < quotesArrays.length; i++) { // was divs.length 
-			if (stringifyArray(quotesArrays[i])) { // was discardBreaks(divs[i])
-				item = stringifyArray(quotesArrays[i]); // was discardBreaks(divs[i])
-				quotes = [...quotes, item];
-				quoteObj = parseQuoteText(item);
-				// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 46 ~ parseFile ~ quoteObj`, quoteObj);
-				quoteObj = parseAuthorName(quoteObj['remainder']);
-				// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 49 ~ parseFile ~ quoteObj`, quoteObj);
+		for (let i = 0; i < quotesArrays.length; i++) {
+			// was divs.length
+			// if (stringifyArray(quotesArrays[i])) { // was discardBreaks(divs[i])
+			item = stringifyArray(quotesArrays[i]); // was discardBreaks(divs[i])
+			if (item.includes('\\r') || item.includes('\\n')) {
+                item = item.replace(/(\\r\\n|\\n|\\r)/gm, '');
 			}
+			quotes = [...quotes, item];
+			quoteObj = parseQuoteText(item);
+			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 46 ~ parseFile ~ quoteObj`, quoteObj);
+			quoteObj = parseAuthorName(quoteObj['remainder']);
+			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 49 ~ parseFile ~ quoteObj`, quoteObj);
+			// }
 		}
 		for (let i = 0; i < 20; i++) {
 			parseQuote(quotes[i]);
 		}
 	}
 	function isolateQuotationBlocks(divs) {
-        let quoteArray = []
-        for (let i = 0; i < divs.length; i++) {
-            let div = divs[i]
-            // checkDivsWhetherQuoteOrEmpty(divs[i])
-            if (div.innerText.length > 5) {
-                multiLineQuote++
-                console.log(`${i}: isolateQuotationBlocks TRUE QUOTE line: ${multiLineQuote}`)
-                console.log(`${div.innerText.slice(0, 50)}`)
-                quoteArray = [...quoteArray, div.innerText]
-                console.log(`🚀 ~ file: parseQuotes.svelte ~ line 84 ~ isolateQuotationBlocks ~ quoteArray`, quoteArray)
-                
-            } else {
-                quotesArrays = [...quotesArrays, quoteArray]
-                console.log(`${i}: isolateQuotationBlocks FALSE EMPTY`)
-                multiLineQuote = 0
-                quoteArray = []
-            }
-        }
-        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 76 ~ isolateQuotationBlocks ~ isolateQuotationBlocks completed`)
-    }
+		let quoteArray = [];
+		for (let i = 0; i < divs.length; i++) {
+			let div = divs[i];
+			// checkDivsWhetherQuoteOrEmpty(divs[i])
+			if (div.innerText.length > 5) {
+				multiLineQuote++;
+				console.log(`${i}: isolateQuotationBlocks TRUE QUOTE line: ${multiLineQuote}`);
+				console.log(`${div.innerText.slice(0, 50)}`);
+				quoteArray = [...quoteArray, div.innerText];
+				console.log(
+					`🚀 ~ file: parseQuotes.svelte ~ line 84 ~ isolateQuotationBlocks ~ quoteArray`,
+					quoteArray
+				);
+			} else {
+				quotesArrays = [...quotesArrays, quoteArray];
+				console.log(`${i}: isolateQuotationBlocks FALSE EMPTY`);
+				multiLineQuote = 0;
+				quoteArray = [];
+			}
+		}
+		console.log(
+			`🚀 ~ file: parseQuotes.svelte ~ line 76 ~ isolateQuotationBlocks ~ isolateQuotationBlocks completed`
+		);
+	}
 
-    function checkDivsWhetherQuoteOrEmpty() {
-        if (div.innerText.length > 5) {
-                console.log(`${i}: isolateQuotationBlocks TRUE QUOTE`)
-                console.log(`${div.innerText.slice(0, 50)}`)
-                quoteArray = [...quoteArray, div.innerText]
-            } else {
-                console.log(`${i}: isolateQuotationBlocks FALSE EMPTY`)
-            }
-    }
-	function stringifyArray(item) {
-        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 109 ~ discardBreaks ~ item length ${item.length}`, item)
-        let tempString = ""
-		if (item.length > 1) {
-            item.forEach(subItem => {
-            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 111 ~ stringifyArray ~ subItem`, subItem)
-                tempString += `${subItem}\n`
-                console.log(`🚀 ~ file: parseQuotes.svelte ~ line 113 ~ stringifyArray ~ tempString`, tempString)
-            })
-            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 111 ~ discardBreaks ~ TYPEOF item`,typeof item)
-			return tempString.replaceAll(/(\\r\\n|\\n|\\r)/gm, '');
+	function checkDivsWhetherQuoteOrEmpty() {
+		if (div.innerText.length > 5) {
+			console.log(`${i}: isolateQuotationBlocks TRUE QUOTE`);
+			console.log(`${div.innerText.slice(0, 50)}`);
+			quoteArray = [...quoteArray, div.innerText];
 		} else {
-            tempString = ''
-            return item[0].replaceAll(/(\\r\\n|\\n|\\r)/gm, '');
-        }
+			console.log(`${i}: isolateQuotationBlocks FALSE EMPTY`);
+		}
+	}
+	function stringifyArray(item) {
+		console.log(
+			`🚀 ~ file: parseQuotes.svelte ~ line 109 ~ stringifyArray ~ item length ${item.length}`,
+			item
+		);
+		let tempString = '';
+		if (item.length > 1) {
+			item.forEach((subItem) => {
+				subItem.replace(/(\\r\\n|\\n|\\r)/gm, '');
+				console.log(`🚀 ~ file: parseQuotes.svelte ~ line 111 ~ stringifyArray ~ subItem`, subItem);
+				tempString += `${subItem}\n`;
+			});
+			console.log(
+				`🚀 ~ file: parseQuotes.svelte ~ line 113 ~ stringifyArray ~ tempString`,
+				tempString
+			);
+			return tempString;
+		} else {
+			tempString = '';
+			let cleanItem = item[0].replace(/(\\r\\n|\\n|\\r)/gm, '');
+			console.log(`🚀 ~ file: parseQuotes.svelte ~ line 117 ~ stringifyArray ~ item[0]`, item[0]);
+			console.log(
+				`🚀 ~ file: parseQuotes.svelte ~ line 117 ~ stringifyArray ~ cleanItem`,
+				cleanItem
+			);
+			return cleanItem;
+		}
 	}
 
 	function discardBreaks(item) {
