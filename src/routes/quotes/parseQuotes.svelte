@@ -9,7 +9,7 @@
 
 	let searchTerm = '';
 	let filteredQuotes = [];
-    let multilineQuote = 0;
+    let multiLineQuote = 0;
     let quotesObjects = [];
     let filteredQuotesObjects = [];
 	$: {
@@ -54,17 +54,17 @@
         isolateQuotationBlocks(divs)
 		let item, remainder;
 		let quoteObj = { item, remainder };
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[0]`, divs[0]);
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[1]`, divs[1]);
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[2]`, divs[2]);
+		// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[0]`, divs[0]);
+		// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[1]`, divs[1]);
+		// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[2]`, divs[2]);
 		for (let i = 0; i < divs.length; i++) {
 			if (discardBreaks(divs[i])) {
 				item = discardBreaks(divs[i]);
 				quotes = [...quotes, item];
 				quoteObj = parseQuoteText(item);
-				console.log(`🚀 ~ file: parseQuotes.svelte ~ line 46 ~ parseFile ~ quoteObj`, quoteObj);
+				// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 46 ~ parseFile ~ quoteObj`, quoteObj);
 				quoteObj = parseAuthorName(quoteObj['remainder']);
-				console.log(`🚀 ~ file: parseQuotes.svelte ~ line 49 ~ parseFile ~ quoteObj`, quoteObj);
+				// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 49 ~ parseFile ~ quoteObj`, quoteObj);
 			}
 		}
 		for (let i = 0; i < 20; i++) {
@@ -72,15 +72,33 @@
 		}
 	}
 	function isolateQuotationBlocks(divs) {
+        let quoteArray = []
         for (let i = 0; i < divs.length; i++) {
             let div = divs[i]
+            // checkDivsWhetherQuoteOrEmpty(divs[i])
             if (div.innerText.length > 5) {
+                multiLineQuote++
+                console.log(`${i}: isolateQuotationBlocks TRUE QUOTE line: ${multiLineQuote}`)
+                console.log(`${div.innerText.slice(0, 50)}`)
+                quoteArray = [...quoteArray, div.innerText]
+                console.log(`🚀 ~ file: parseQuotes.svelte ~ line 84 ~ isolateQuotationBlocks ~ quoteArray`, quoteArray)
+
+            } else {
+                console.log(`${i}: isolateQuotationBlocks FALSE EMPTY`)
+                multiLineQuote = 0
+                quoteArray = []
+            }
+        }
+    }
+
+    function checkDivsWhetherQuoteOrEmpty() {
+        if (div.innerText.length > 5) {
                 console.log(`${i}: isolateQuotationBlocks TRUE QUOTE`)
                 console.log(`${div.innerText.slice(0, 50)}`)
+                quoteArray = [...quoteArray, div.innerText]
             } else {
                 console.log(`${i}: isolateQuotationBlocks FALSE EMPTY`)
             }
-        }
     }
 
 
@@ -132,30 +150,30 @@
 		let itemEnd = item.length;
 		let authorStart = 0;
 		let separatorForTitle = item.indexOf(',');
-		console.log(
-			`🚀 ~ file: parseQuotes.svelte ~ line 102 ~ parseAuthorName ~ separatorForTitle`,
-			separatorForTitle
-		);
+		// console.log(
+		// 	`🚀 ~ file: parseQuotes.svelte ~ line 102 ~ parseAuthorName ~ separatorForTitle`,
+		// 	separatorForTitle
+		// );
 		let separatorForSource = item.indexOf('[');
-		console.log(
-			`🚀 ~ file: parseQuotes.svelte ~ line 104 ~ parseAuthorName ~ separatorForSource`,
-			separatorForSource
-		);
+		// console.log(
+		// 	`🚀 ~ file: parseQuotes.svelte ~ line 104 ~ parseAuthorName ~ separatorForSource`,
+		// 	separatorForSource
+		// );
 		let separatorForAxiom = item.indexOf(':');
-		console.log(
-			`🚀 ~ file: parseQuotes.svelte ~ line 106 ~ parseAuthorName ~ separatorForAxiom`,
-			separatorForAxiom
-		);
+		// console.log(
+		// 	`🚀 ~ file: parseQuotes.svelte ~ line 106 ~ parseAuthorName ~ separatorForAxiom`,
+		// 	separatorForAxiom
+		// );
 		let author = Array.from(item).splice(authorStart, separatorForTitle).join(String());
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 103 ~ parseAuthorName ~ author`, author);
+		// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 103 ~ parseAuthorName ~ author`, author);
 		let remainder = Array.from(item)
 			.splice(separatorForTitle + 1, itemEnd)
 			.join(String())
 			.trim();
-		console.log(
-			`🚀 ~ file: parseQuotes.svelte ~ line 105 ~ parseAuthorName ~ remainder`,
-			remainder
-		);
+		// console.log(
+		// 	`🚀 ~ file: parseQuotes.svelte ~ line 105 ~ parseAuthorName ~ remainder`,
+		// 	remainder
+		// );
 		return { item, remainder };
 	}
 
