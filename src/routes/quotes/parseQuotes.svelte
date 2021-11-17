@@ -50,7 +50,10 @@
 		let divs = htmlDoc.getElementsByTagName('div');
 		let item, remainder;
 		let quoteObj = { item, remainder };
-		for (let i = 200; i < 353; i++) {
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[0]`, divs[0])
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[1]`, divs[1])
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 54 ~ parseFile ~ divs[2]`, divs[2])
+		for (let i = 0; i < 25; i++) {
 			if (discardBreaks(divs[i])) {
 				item = discardBreaks(divs[i]);
 				quotes = [...quotes, item];
@@ -85,8 +88,6 @@
 	// I will need also a flag or rating to determine which quotes are authenticated, or the degree of confidence, plus sources for this
 
 	function parseQuote(item) {
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 63 ~ parseQuote ~ item`, item);
-
 		// parseQuoteText(item)
 		// parseAuthorName(item)
 		// parseAuthorCredential(item)
