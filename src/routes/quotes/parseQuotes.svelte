@@ -1,6 +1,17 @@
+<!-- <script context="module">
+    	export const load = async ({ fetch }) => {
+		const res = await fetch('/todos.json');
+		if (res.ok) {
+			const { todos } = await res.json();
+			return { props: { todos } };
+		}
+	};
+</script> -->
+
 <script>
 	import { storedQuotesFile, storedFileContent } from '../../stores/stores.js';
 	import { onMount } from 'svelte';
+    // import { saveFile} from '$lib/save-file'
 
 	let fsFileContent;
 	$: if (fsFileContent) {
@@ -68,9 +79,7 @@
 			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 49 ~ parseFile ~ quoteObj`, quoteObj);
 			// }
 		}
-		for (let i = 0; i < 20; i++) {
-			parseQuote(quotes[i]);
-		}
+        // saveFile(quotes, "quotes.json")
 	}
 	function isolateQuotationBlocks(divs) {
 		let quoteArray = [];
@@ -79,23 +88,23 @@
 			// checkDivsWhetherQuoteOrEmpty(divs[i])
 			if (div.innerText.length > 5) {
 				multiLineQuote++;
-				console.log(`${i}: isolateQuotationBlocks TRUE QUOTE line: ${multiLineQuote}`);
+				// console.log(`${i}: isolateQuotationBlocks TRUE QUOTE line: ${multiLineQuote}`);
 				console.log(`${div.innerText.slice(0, 50)}`);
 				quoteArray = [...quoteArray, div.innerText];
-				console.log(
-					`🚀 ~ file: parseQuotes.svelte ~ line 84 ~ isolateQuotationBlocks ~ quoteArray`,
-					quoteArray
-				);
+				// console.log(
+				// 	`🚀 ~ file: parseQuotes.svelte ~ line 84 ~ isolateQuotationBlocks ~ quoteArray`,
+				// 	quoteArray
+				// );
 			} else {
 				quotesArrays = [...quotesArrays, quoteArray];
-				console.log(`${i}: isolateQuotationBlocks FALSE EMPTY`);
+				// console.log(`${i}: isolateQuotationBlocks FALSE EMPTY`);
 				multiLineQuote = 0;
 				quoteArray = [];
 			}
 		}
-		console.log(
-			`🚀 ~ file: parseQuotes.svelte ~ line 76 ~ isolateQuotationBlocks ~ isolateQuotationBlocks completed`
-		);
+		// console.log(
+		// 	`🚀 ~ file: parseQuotes.svelte ~ line 76 ~ isolateQuotationBlocks ~ isolateQuotationBlocks completed`
+		// );
 	}
 
 	function checkDivsWhetherQuoteOrEmpty() {
@@ -108,39 +117,21 @@
 		}
 	}
 	function stringifyArray(item) {
-		console.log(
-			`🚀 ~ file: parseQuotes.svelte ~ line 109 ~ stringifyArray ~ item length ${item.length}`,
-			item
-		);
+		// console.log(
+		// 	`🚀 ~ file: parseQuotes.svelte ~ line 109 ~ stringifyArray ~ item length ${item.length}`,
+		// 	item
+		// );
 		let tempString = '';
 		if (item.length > 1) {
 			item.forEach((subItem) => {
-				subItem.replace(/(\\r\\n|\\n|\\r)/gm, '');
-				console.log(`🚀 ~ file: parseQuotes.svelte ~ line 111 ~ stringifyArray ~ subItem`, subItem);
-				tempString += `${subItem}\n`;
+				tempString += `${subItem}<br>`;
 			});
-			console.log(
-				`🚀 ~ file: parseQuotes.svelte ~ line 113 ~ stringifyArray ~ tempString`,
-				tempString
-			);
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 20 ~ stringifyArray ~ tempString`, tempString)
 			return tempString;
 		} else {
 			tempString = '';
-			let cleanItem = item[0].replace(/(\\r\\n|\\n|\\r)/gm, '');
-			console.log(`🚀 ~ file: parseQuotes.svelte ~ line 117 ~ stringifyArray ~ item[0]`, item[0]);
-			console.log(
-				`🚀 ~ file: parseQuotes.svelte ~ line 117 ~ stringifyArray ~ cleanItem`,
-				cleanItem
-			);
-			return cleanItem;
+			return item[0];
 		}
-	}
-
-	function discardBreaks(item) {
-		if (item.innterText.length > 5) {
-			return item.innerText.replaceAll(/(\\r\\n|\\n|\\r)/gm, '');
-		}
-		return 0;
 	}
 
 	// Quote structure from text:
@@ -245,7 +236,7 @@
 	{#each filteredQuotes as quote, i}
 		<div class="card p-3 m-12 shadow-md">
 			<span>{i + 1}: </span>
-			{quote}
+			{@html quote}
 		</div>
 	{/each}
 {/if}
