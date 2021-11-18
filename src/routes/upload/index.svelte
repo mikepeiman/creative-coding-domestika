@@ -1,6 +1,6 @@
 <script context="module">
 	export const load = async ({ fetch }) => {
-		const res = await fetch('/quotes.json');
+		const res = await fetch('/upload.json');
 		if (res.ok) {
 			const { quotes } = await res.json();
 			return { props: { quotes } };
@@ -10,12 +10,11 @@
 
 <script>
 	import Quotes from "$components/Quotes.svelte";
-	import ParseQuotes from "./parseQuotes.svelte";
-	import AddQuote from "./addQuote.svelte";
+	import ParseQuotes from "../quotes/parseQuotes.svelte";
 	export let quotes
 </script>
-<AddQuote />
-<ParseQuotes />
+
+<!-- <ParseQuotes /> -->
 <div class="quotes">
 	<!-- <Quotes {quotes}/> -->
 </div>
