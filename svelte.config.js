@@ -28,7 +28,7 @@ const config = {
 				exclude: ['@urql/svelte'],
 			},
 			ssr: {
-				noExternal: ['urql/svelte']
+				noExternal: ['@urql/svelte'] // does this need the @ symbol?
 			},
 		}
 	},

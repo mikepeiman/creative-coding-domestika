@@ -21,11 +21,12 @@
 		"sass": "^1.43.4",
 		"svelte": "^3.42.6",
 		"svelte-preprocess": "^4.9.8",
-		"tailwindcss": "^2.2.19",
-		"@urql/svelte": "^1.3.2"
+		"tailwindcss": "^2.2.19"
 	},
 	"type": "module",
 	"dependencies": {
+		"@urql/core": "^2.3.5",
+		"@urql/svelte": "^1.3.2",
 		"node-fetch": "^3.1.0"
 	}
 }

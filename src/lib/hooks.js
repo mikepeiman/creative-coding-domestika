@@ -1,3 +1,5 @@
+//  from https://github.com/sveltejs/kit/issues/70 @ joelhickok commented on Jul 31
+
 export async function handle({ request, resolve }) {
     if (request.path === '/upload.json' && request.method === 'POST') {
         const filename = request.query.get('filename')
