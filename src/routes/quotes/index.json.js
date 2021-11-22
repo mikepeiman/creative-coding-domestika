@@ -1,6 +1,7 @@
 import { client } from '$lib/dgraph-client'
 import { gql, request } from 'graphql-request'
-import { initClient, operationStore, query, mutation } from "@urql/svelte";
+
+
 const getAllQuotes = gql`query MyQuery {
   queryQuote {
     author {
@@ -13,19 +14,6 @@ const getAllQuotes = gql`query MyQuery {
   }
 }
 `
-
-const getAllQuotesUrql = operationStore(`
-  query {
-    quotes {
-      quoteBody
-      author {
-        name
-      }
-      tags {
-        tag
-      }
-    }
-  }`)
 export const get = async () => {
   try {
     const query = getAllQuotes

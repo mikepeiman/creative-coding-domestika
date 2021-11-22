@@ -104,57 +104,23 @@ function runAddQuotes() {
 //   ]
 // }
 
-const testData2 = {
-  data: [
-    {
-      "quoteBody": "Test 111",
-      "author": {
-        "name": "A",
-        "titleLong": ""
-      },
-      "context": "power",
-      "tags": {
-        "tag": "power"
-      }
-    },
-    {
-      "quoteBody": "Test 333",
-      "author": {
-        "name": "B",
-        "titleLong": ""
-      },
-      "context": "politics",
-      "tags": {
-        "tag": "politics"
-      }
-    }
-  ]
-}
-
 export const get = async ({ query }) => {
   try {
-    console.log(`🚀 ~ file: index.json.js ~ line 135 ~ get ~ query`, query)
     let value = query.get("data")
-    console.log(`🚀 ~ file: index.json.js ~ line 138 ~ get ~ value\n\n`, value, `\n\n`)
-    // let json = JSON.parse(value)
-    // console.log(`🚀 ~ file: index.json.js ~ line 140 ~ get ~ json`, json)
     let data = JSON.parse(value)
-    console.log(`🚀 ~ file: index.json.js ~ line 142 ~  data\n\n`, data, `\n\n`)
-    // console.log(`🚀 ~ file: index.json.js ~ line 142 ~ get ~ data`, JSON.parse(data))
-    console.log(`🚀 ~ file: index.json.js ~ line 146 ~ testData2\n\n`, (testData2), `\n\n`)
-
     const graphQuery = mutateQuotes
     await client.request(graphQuery, data).then((res) => {
-      // console.log(`🚀 ~ file: index.json.js ~ line 138 ~ awaitclient.request ~ res`, res)
+      console.log(`🚀 ~ file: index.json.js ~ line 138 ~ awaitclient.request ~ res`, res)
       // console.log(`🚀 ~ file: index.json.js ~ line 175 ~ awaitclient.request ~ data`, data)
       quotes = res.addQuote.quote
-      // console.log(`🚀 ~ file: index.json.js ~ line 144 ~ awaitclient.request ~ quotes`, quotes)
+      console.log(`🚀 ~ file: index.json.js ~ line 144 ~ awaitclient.request ~ quotes`, quotes)
     })
     return {
       status: 200,
-      body: { quotes }
+      body: { data }
     }
   } catch (error) {
+    console.log(`🚀 ~ file: index.json.js ~ line 123 ~ get ~ error`, error)
     return {
       body: { error: 'There was a server error' }
     }
