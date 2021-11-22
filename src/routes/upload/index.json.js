@@ -5,7 +5,7 @@ import { gql, request } from 'graphql-request'
 // initClient({
 //   url: VITE_DGRAPH_ENDPOINT
 // });
-export let id
+export let quotes
 let quotesBody = ""
 let author = ""
 let context = ""
@@ -13,17 +13,6 @@ let tag = ""
 let source = ""
 
 // setClient(client);
-
-// const mutateQuotes = operationStore(`
-// mutation addQuotes($data: [AddQuoteInput!]!) {
-//     addQuote(input: $data) {
-//       numUids
-//       quote {
-//         id
-//         quoteBody
-//       }
-//     }
-//   }`)
 
 const mutateQuotes = gql`
 mutation addQuotes($data: [AddQuoteInput!]!) {
@@ -35,14 +24,6 @@ mutation addQuotes($data: [AddQuoteInput!]!) {
       }
     }
   }`
-
-// const deleteAllQuotes = operationStore(`
-//   mutation deleteAllQuotes {
-//     deleteQuote(filter: {quoteBody: {}}) {
-//       numUids
-//     }
-//   }
-//   `)
 
 const deleteAllQuotes = gql`
   mutation deleteAllQuotes {
@@ -72,11 +53,6 @@ const deleteAllQuotes = gql`
   }
   `
 
-
-// const addQuotes = mutation({
-//   query: query
-// })
-
 function runAddQuotes() {
   // const quoteObject = [
   //   {
@@ -104,7 +80,7 @@ const data = {
       }
     },
     {
-      "quoteBody": "To learn who rules over you, simply find out who you are not allowed to criticize",
+      "quoteBody": "To learn who rules over you, simply find out who you are not allowed to criticize.",
       "author": {
         "name": "Voltaire",
         "titleLong": ""
@@ -155,24 +131,14 @@ const testData2 = {
   ]
 }
 
-// const deleteAllQuotesMutation = mutation(deleteAllQuotes)
-// const addQuotesMutation = mutation(mutateQuotes)
-// const getAllQuotesQuery = query(getAllQuotes)
-// let res = addQuotesMutation(testData2)
-// console.log(`🚀 ~ file: index.json.js ~ line 38 ~ res.data`, res.data)
-
-// export const post = async () => {
-//   return {
-//     status: 200,
-//     body: { data }
-//   }
-// }
-// **********************************************
 export const get = async () => {
   try {
     const query = mutateQuotes
     await client.request(query, data).then((data) => {
-      quotes = data.queryQuote
+      // console.log(`🚀 ~ file: index.json.js ~ line 138 ~ awaitclient.request ~ res`, res)
+      // console.log(`🚀 ~ file: index.json.js ~ line 175 ~ awaitclient.request ~ data`, data)
+      quotes = data.addQuote.quote
+      // console.log(`🚀 ~ file: index.json.js ~ line 144 ~ awaitclient.request ~ quotes`, quotes)
     })
     return {
       status: 200,
@@ -184,22 +150,3 @@ export const get = async () => {
     }
   }
 }
-
-
-// *************************************
-  // try {
-  //   const query = query
-  //   await client.request(query).then((res) => {
-  //     console.log(`🚀 ~ file: index.json.js ~ line 75 ~ awaitclient.request ~ res`, res)
-  //     quotes = data.queryQuote
-  //   })
-  //   return {
-  //     status: 200,
-  //     body: { quotes }
-  //   }
-  // } catch (error) {
-  //   return {
-  //     body: { error: 'There was a server error' }
-  //   }
-  // }
-// }
