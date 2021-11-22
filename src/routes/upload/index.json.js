@@ -40,7 +40,7 @@ const deleteAllQuotes = gql`
 //   `)
 
 
-  const getAllQuotes = gql`query MyQuery {
+const getAllQuotes = gql`query MyQuery {
     queryQuote {
       author {
         name
@@ -66,43 +66,43 @@ function runAddQuotes() {
 }
 
 
-const data = {
-  data: [
-    {
-      "quoteBody": "It is not for nothing that our age cries out for the redeemer personality; for the one who can emancipate himself from the grip of the collective psychosis and save at least his own soul, who lights a beacon of hope for others, proclaiming that here is at least one man who has succeeded in extricating himself from the fatal identity within the group psyche.",
-      "author": {
-        "name": "Carl Jung",
-        "titleLong": "PhD"
-      },
-      "context": "individuality and mature selfhood",
-      "tags": {
-        "tag": "redemption, individuality, collective, mass psychosis"
-      }
-    },
-    {
-      "quoteBody": "To learn who rules over you, simply find out who you are not allowed to criticize.",
-      "author": {
-        "name": "Voltaire",
-        "titleLong": ""
-      },
-      "context": "politics",
-      "tags": {
-        "tag": "politics, power"
-      }
-    },
-    {
-      "quoteBody": "Test 444",
-      "author": {
-        "name": "Voltaire",
-        "titleLong": ""
-      },
-      "context": "politics",
-      "tags": {
-        "tag": "politics, power"
-      }
-    }
-  ]
-}
+// const data = {
+//   data: [
+//     {
+//       "quoteBody": "It is not for nothing that our age cries out for the redeemer personality; for the one who can emancipate himself from the grip of the collective psychosis and save at least his own soul, who lights a beacon of hope for others, proclaiming that here is at least one man who has succeeded in extricating himself from the fatal identity within the group psyche.",
+//       "author": {
+//         "name": "Carl Jung",
+//         "titleLong": "PhD"
+//       },
+//       "context": "individuality and mature selfhood",
+//       "tags": {
+//         "tag": "redemption, individuality, collective, mass psychosis"
+//       }
+//     },
+//     {
+//       "quoteBody": "To learn who rules over you, simply find out who you are not allowed to criticize.",
+//       "author": {
+//         "name": "Voltaire",
+//         "titleLong": ""
+//       },
+//       "context": "politics",
+//       "tags": {
+//         "tag": "politics, power"
+//       }
+//     },
+//     {
+//       "quoteBody": "Test 444",
+//       "author": {
+//         "name": "Voltaire",
+//         "titleLong": ""
+//       },
+//       "context": "politics",
+//       "tags": {
+//         "tag": "politics, power"
+//       }
+//     }
+//   ]
+// }
 
 const testData2 = {
   data: [
@@ -131,13 +131,23 @@ const testData2 = {
   ]
 }
 
-export const get = async () => {
+export const get = async ({ query }) => {
   try {
-    const query = mutateQuotes
-    await client.request(query, data).then((data) => {
+    console.log(`🚀 ~ file: index.json.js ~ line 135 ~ get ~ query`, query)
+    let value = query.get("data")
+    console.log(`🚀 ~ file: index.json.js ~ line 138 ~ get ~ value\n\n`, value, `\n\n`)
+    // let json = JSON.parse(value)
+    // console.log(`🚀 ~ file: index.json.js ~ line 140 ~ get ~ json`, json)
+    let data = JSON.parse(value)
+    console.log(`🚀 ~ file: index.json.js ~ line 142 ~  data\n\n`, data, `\n\n`)
+    // console.log(`🚀 ~ file: index.json.js ~ line 142 ~ get ~ data`, JSON.parse(data))
+    console.log(`🚀 ~ file: index.json.js ~ line 146 ~ testData2\n\n`, (testData2), `\n\n`)
+
+    const graphQuery = mutateQuotes
+    await client.request(graphQuery, data).then((res) => {
       // console.log(`🚀 ~ file: index.json.js ~ line 138 ~ awaitclient.request ~ res`, res)
       // console.log(`🚀 ~ file: index.json.js ~ line 175 ~ awaitclient.request ~ data`, data)
-      quotes = data.addQuote.quote
+      quotes = res.addQuote.quote
       // console.log(`🚀 ~ file: index.json.js ~ line 144 ~ awaitclient.request ~ quotes`, quotes)
     })
     return {
