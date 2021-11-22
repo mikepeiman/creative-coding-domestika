@@ -1,25 +1,6 @@
 import { client } from '$lib/dgraph-client'
 import { gql, request } from 'graphql-request'
-
-// import { saveFile } from '$lib/save-file'
-// export let quote
-// const addQuote = gql`mutation MyMutation {
-//   addQuote(input: {
-//     quoteBody: "${quote.body}", 
-//     author: {
-//       titleLong: "${author.titleLong}", 
-//       name: "${author.name}"}, 
-//     context: "${quote.context}", 
-//     source: "${quote.source}", 
-//     tags: {tag: "${quote.tags}"}})
-// }
-// `
-// const deleteAllQuotes = gql`mutation MyMutation {
-//   deleteQuote(filter: {}) {
-//     numUids
-//   }
-// }
-// `
+import { initClient, operationStore, query, mutation } from "@urql/svelte";
 const getAllQuotes = gql`query MyQuery {
   queryQuote {
     author {
@@ -28,10 +9,23 @@ const getAllQuotes = gql`query MyQuery {
     tags {
       tag
     }
-    body
+    quoteBody
   }
 }
 `
+
+const getAllQuotesUrql = operationStore(`
+  query {
+    quotes {
+      quoteBody
+      author {
+        name
+      }
+      tags {
+        tag
+      }
+    }
+  }`)
 export const get = async () => {
   try {
     const query = getAllQuotes
@@ -48,21 +42,3 @@ export const get = async () => {
     }
   }
 }
-
-
-// export const post = async () => {
-//   try {
-//     const query = addQuote
-//     await client.request(query).then((data) => {
-//       console.log(`🚀 ~file: index.json.js ~line 48 ~awaitclient.request ~data`, data)
-//     })
-//     return {
-//       status: 200,
-//       body: { data }
-//     }
-//   } catch (error) {
-//     return {
-//       body: { error: 'There was a server error' }
-//     }
-//   }
-// }
