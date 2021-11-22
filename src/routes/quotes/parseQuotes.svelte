@@ -9,7 +9,7 @@
 </script> -->
 
 <script>
-	import { storedQuotesFile, storedFileContent } from '../../stores/stores.js';
+	import { storedQuotesFile, storedFileContent, storedQuotesArray } from '../../stores/stores.js';
 	import { onMount } from 'svelte';
     // import { saveFile} from '$lib/save-file'
 
@@ -64,22 +64,62 @@
 		let divs = htmlDoc.getElementsByTagName('div');
 		isolateQuotationBlocks(divs);
 		let item, remainder;
-		let quoteObj = { item, remainder };
-		for (let i = 0; i < quotesArrays.length; i++) {
+        let quoteBody, author, authorTitle, authorCredential, authorInstitution, source, tags, context;
+        let quote = { quoteBody, author, authorTitle,authorCredential, authorInstitution,source,tags,context };
+		let workingQuoteObject = {}
+
+		for (let i = 10; i < 20; i++) {
 			// was divs.length
 			// if (stringifyArray(quotesArrays[i])) { // was discardBreaks(divs[i])
 			item = stringifyArray(quotesArrays[i]); // was discardBreaks(divs[i])
 			if (item.includes('\\r') || item.includes('\\n')) {
                 item = item.replace(/(\\r\\n|\\n|\\r)/gm, '');
 			}
-			quotes = [...quotes, item];
-			quoteObj = parseQuoteText(item);
-			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 46 ~ parseFile ~ quoteObj`, quoteObj);
-			quoteObj = parseAuthorName(quoteObj['remainder']);
-			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 49 ~ parseFile ~ quoteObj`, quoteObj);
-			// }
+            workingQuoteObject = {}
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 75 ~ parseFile ~ item`, item)
+            workingQuoteObject['startingItem'] = item
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 81 ~ parseFile ~ workingQuoteObject`, workingQuoteObject)
+			workingQuoteObject = parseQuoteText(workingQuoteObject);
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 83 ~ parseFile ~ workingQuoteObject`, workingQuoteObject)
+			workingQuoteObject = parseAuthorName(workingQuoteObject);
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 85 ~ parseFile ~ workingQuoteObject`, workingQuoteObject)
+            quotes = [...quotes, workingQuoteObject];
 		}
+        storedQuotesArray.set(quotes)
         // saveFile(quotes, "quotes.json")
+	}
+    function parseQuoteText(workingQuoteObject) {
+        let item = workingQuoteObject['startingItem']
+		let itemEnd = item.length;
+		let quoteStart = item.indexOf('"') + 1;
+		let quoteEnd = item.indexOf('"', 2) - 1;
+        
+        workingQuoteObject['remainder'] = Array.from(item)
+			.splice(quoteEnd + 4, itemEnd)
+			.join(String())
+			.trim();
+		item = Array.from(item).splice(quoteStart, quoteEnd).join(String());
+        workingQuoteObject['quoteBody'] = item
+        workingQuoteObject['author'] = workingQuoteObject['remainder']
+		return workingQuoteObject;
+	}
+
+	function parseAuthorName( workingQuoteObject) {
+        let item = workingQuoteObject['remainder']
+		let itemEnd = item.length;
+		let authorStart = 0;
+		let separatorForTitle = item.indexOf(',');
+		let separatorForSource = item.indexOf('[');
+		let separatorForAxiom = item.indexOf(':');
+		let author = Array.from(item).splice(authorStart, separatorForTitle).join(String());
+        author.length
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 116 ~ parseAuthorName ~ author.length`, author.length)
+        // workingQuoteObject['author'] = author
+		workingQuoteObject['author'] = Array.from(item)
+			.splice(separatorForTitle + 1, itemEnd)
+			.join(String())
+			.trim();
+		return workingQuoteObject;
 	}
 	function isolateQuotationBlocks(divs) {
 		let quoteArray = [];
@@ -89,12 +129,8 @@
 			if (div.innerText.length > 5) {
 				multiLineQuote++;
 				// console.log(`${i}: isolateQuotationBlocks TRUE QUOTE line: ${multiLineQuote}`);
-				console.log(`${div.innerText.slice(0, 50)}`);
+				// console.log(`${div.innerText.slice(0, 50)}`);
 				quoteArray = [...quoteArray, div.innerText];
-				// console.log(
-				// 	`🚀 ~ file: parseQuotes.svelte ~ line 84 ~ isolateQuotationBlocks ~ quoteArray`,
-				// 	quoteArray
-				// );
 			} else {
 				quotesArrays = [...quotesArrays, quoteArray];
 				// console.log(`${i}: isolateQuotationBlocks FALSE EMPTY`);
@@ -159,48 +195,7 @@
 		// parseQuoteContext(item)
 	}
 
-	function parseQuoteText(item) {
-		let itemEnd = item.length;
-		let quoteStart = item.indexOf('"') + 1;
-		let quoteEnd = item.indexOf('"', 2) - 1;
-		let quote = Array.from(item).splice(quoteStart, quoteEnd).join(String());
-		let remainder = Array.from(item)
-			.splice(quoteEnd + 4, itemEnd)
-			.join(String())
-			.trim();
-		return { item, remainder };
-	}
 
-	function parseAuthorName(item) {
-		let itemEnd = item.length;
-		let authorStart = 0;
-		let separatorForTitle = item.indexOf(',');
-		// console.log(
-		// 	`🚀 ~ file: parseQuotes.svelte ~ line 102 ~ parseAuthorName ~ separatorForTitle`,
-		// 	separatorForTitle
-		// );
-		let separatorForSource = item.indexOf('[');
-		// console.log(
-		// 	`🚀 ~ file: parseQuotes.svelte ~ line 104 ~ parseAuthorName ~ separatorForSource`,
-		// 	separatorForSource
-		// );
-		let separatorForAxiom = item.indexOf(':');
-		// console.log(
-		// 	`🚀 ~ file: parseQuotes.svelte ~ line 106 ~ parseAuthorName ~ separatorForAxiom`,
-		// 	separatorForAxiom
-		// );
-		let author = Array.from(item).splice(authorStart, separatorForTitle).join(String());
-		// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 103 ~ parseAuthorName ~ author`, author);
-		let remainder = Array.from(item)
-			.splice(separatorForTitle + 1, itemEnd)
-			.join(String())
-			.trim();
-		// console.log(
-		// 	`🚀 ~ file: parseQuotes.svelte ~ line 105 ~ parseAuthorName ~ remainder`,
-		// 	remainder
-		// );
-		return { item, remainder };
-	}
 
 	function parseAuthorCredential(item) {
 		let itemEnd = item.length;
@@ -211,7 +206,7 @@
 			.splice(quoteEnd + 4, itemEnd)
 			.join(String())
 			.trim();
-		return { item, remainder };
+		return { quote, item, remainder };
 	}
 </script>
 
@@ -235,8 +230,10 @@
 {#if quotes.length}
 	{#each filteredQuotes as quote, i}
 		<div class="card p-3 m-12 shadow-md">
-			<span>{i + 1}: </span>
-			{@html quote}
+            <div class="badge badge-primary">{i + 1}</div>
+			<h1>{quote.quoteBody}</h1>  
+            <div class="divider divider-vertical">|</div>
+            <h1>{quote.author}</h1>  
 		</div>
 	{/each}
 {/if}

@@ -14,7 +14,7 @@
 	import AddQuote from "./addQuote.svelte";
 	export let quotes
 </script>
-<AddQuote />
+<!-- <AddQuote /> -->
 <ParseQuotes />
 <div class="quotes">
 	<!-- <Quotes {quotes}/> -->
