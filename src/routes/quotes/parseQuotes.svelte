@@ -76,7 +76,7 @@
 		};
 		let workingQuoteObject = {};
 
-		for (let i = 20; i < 25; i++) {
+		for (let i = 66; i < 76; i++) {
 			// was divs.length
 			// if (stringifyArray(quotesArrays[i])) { // was discardBreaks(divs[i])
 			item = stringifyArray(quotesArrays[i]); // was discardBreaks(divs[i])
@@ -109,7 +109,9 @@
 		let item = workingQuoteObject['startingItem'];
 		let itemEnd = item.length;
 		let quoteStart = item.indexOf('"') + 1;
-		let quoteEnd = item.indexOf('"', 2) - 1;
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 112 ~ parseQuoteText ~ quoteStart`, quoteStart)
+		let quoteEnd = item.indexOf('"', 10) - 1;
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 114 ~ parseQuoteText ~ quoteEnd`, quoteEnd)
 
 		workingQuoteObject['remainder'] = Array.from(item)
 			.splice(quoteEnd + 4, itemEnd)
@@ -176,7 +178,17 @@
 		let max = Math.max(...separatorValues);
 		// let min = Math.min(...separatorValues);
 		let i = 0;
-		let min = getMinNotFalse(separatorValues, i);
+        let validValues= []
+        let test = separatorValues.reduce((a , b) => {
+            if(a > b && b > -1) {
+                return a
+            } 
+            if(a < b && a > -1) {
+                return b
+            }
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 183 ~ findNextSeparatingCharacter ~ separat}orValues`, separatorValues)
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 183 ~ findNextSeparatingCharacter ~ test`, test)
+		let min = getMinNotFalse(separatorValues, i, validValues);
 		console.log(
 			`🚀 ~ file: parseQuotes.svelte ~ line 139 ~ findNextSeparatingCharacter ~ separatorValues`,
 			separatorValues
@@ -209,13 +221,20 @@
 		}
 		return separatorValue;
 	}
-	function getMinNotFalse(values, i) {
+	function getMinNotFalse(values, i, validValues) {
+
 		if (i < 5) {
 			if (values[i] > -1) {
-				return values[i];
+				validValues ? validValues = [...validValues, values[i]] : validValues = [values[i]]
+                console.log(`🚀 ~ file: parseQuotes.svelte ~ line 219 ~ getMinNotFalse ~ validValues`, validValues)
+                getMinNotFalse(values, i + 1)
 			} else {
 				getMinNotFalse(values, i + 1);
 			}
+            if (validValues?.length) {
+                return Math.min(...validValues)
+            }
+            return false
 		}
 		return false;
 	}
