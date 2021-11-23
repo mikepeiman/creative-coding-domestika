@@ -76,30 +76,18 @@
 		};
 		let workingQuoteObject = {};
 
-		for (let i = 66; i < 76; i++) {
+		for (let i = 66; i < 176; i++) {
 			// was divs.length
-			// if (stringifyArray(quotesArrays[i])) { // was discardBreaks(divs[i])
-			item = stringifyArray(quotesArrays[i]); // was discardBreaks(divs[i])
+			item = stringifyArray(quotesArrays[i]); 
 			if (item.includes('\\r') || item.includes('\\n')) {
 				item = item.replace(/(\\r\\n|\\n|\\r)/gm, '');
 			}
 			workingQuoteObject = {};
 			console.log(`🚀 ~ file: parseQuotes.svelte ~ line 75 ~ parseFile ~ item`, item);
 			workingQuoteObject['startingItem'] = item;
-			console.log(
-				`🚀 ~ file: parseQuotes.svelte ~ line 81 ~ parseFile ~ workingQuoteObject`,
-				workingQuoteObject
-			);
 			workingQuoteObject = parseQuoteText(workingQuoteObject);
-			console.log(
-				`🚀 ~ file: parseQuotes.svelte ~ line 83 ~ parseFile ~ workingQuoteObject`,
-				workingQuoteObject
-			);
 			workingQuoteObject = parseAuthorName(workingQuoteObject);
-			console.log(
-				`🚀 ~ file: parseQuotes.svelte ~ line 85 ~ parseFile ~ workingQuoteObject`,
-				workingQuoteObject
-			);
+            workingQuoteObject = parseNextPartOfQuote(workingQuoteObject)
 			quotes = [...quotes, workingQuoteObject];
 		}
 		storedQuotesArray.set(quotes);
@@ -126,6 +114,7 @@
 	function parseAuthorName(workingQuoteObject) {
 		let item = workingQuoteObject['remainder'];
 		let itemEnd = item.length;
+        let author, remainder, nextPart
 		let authorStart = 0;
 		let separatorForTitle = item.indexOf(',');
 		let separatorForSource = item.indexOf('[');
@@ -136,107 +125,94 @@
 			`🚀 ~ file: parseQuotes.svelte ~ line 133 ~ parseAuthorName ~ separatorValue`,
 			separatorValue
 		);
-		if (separatorValue > 0) {
-			let author = Array.from(item).splice(authorStart, separatorValue).join(String());
-			console.log(
-				`🚀 ~ file: parseQuotes.svelte ~ line 115 ~ parseAuthorName ~ authorStart, separatorForTitle`,
-				authorStart,
-				separatorForTitle
-			);
+		if (separatorValue > -1) {
+			author = Array.from(item).splice(0, separatorValue).join(String());
+            remainder = Array.from(item).splice(separatorValue, itemEnd).join(String())
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 141 ~ parseAuthorName ~ authorStart, separatorValue\n\n`, authorStart, separatorValue, `\n\n`)
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 142 ~ parseAuthorName ~ remainder\n\n`, remainder, `\n\n`)
 			author.length;
 			workingQuoteObject['author'] = author;
+            workingQuoteObject['remainder'] = remainder
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 144 ~ parseAuthorName ~ workingQuoteObject['author']`, workingQuoteObject['author'])
+            nextPart = nameNextPartOfQuote(item, separatorValue)
+            workingQuoteObject['nextPart'] = nextPart
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 149 ~ parseAuthorName ~ nextPart\n\n`, nextPart, `\n\n`)
 		} else {
 			workingQuoteObject['author'] = Array.from(item)
-				.splice(separatorForTitle + 1, itemEnd)
+				.splice(0, itemEnd)
 				.join(String())
 				.trim();
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 149 ~ parseAuthorName ~ workingQuoteObject['author']`, workingQuoteObject['author'])
+            workingQuoteObject['nextPart'] = "none"
+            workingQuoteObject['remainder'] = "none"
 		}
-
 		return workingQuoteObject;
 	}
+
+    function nameNextPartOfQuote(item, separatorValue){
+        let char = item.charAt(separatorValue)
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 158 ~ nameNextPartOfQuote ~ char`, char)
+        switch (char) {
+            case ",":
+                return "authorTitle"
+                break;
+                case ":":
+                return "axiom"
+                break;
+                case "(":
+                return "date"
+                break;
+                case "[":
+                return "source"
+                break;
+        
+            default:
+                return "none"
+                break;
+        }
+    }
+
+    function parseNextPartOfQuote(workingQuoteObject) {
+        let nextPart = workingQuoteObject['nextPart']
+        // switch (nextPart) {
+        //     case "none":
+                
+        //         break;
+        
+        //     default:
+        //         break;
+        // }
+        return workingQuoteObject
+    }
 
 	function findNextSeparatingCharacter(item) {
 		let separatorForTitle = item.indexOf(',');
 		let separatorForSource = item.indexOf('[');
 		let separatorForAxiom = item.indexOf(':');
 		let separatorForYear = item.indexOf('(');
-		let separatorValue = 0;
-		let separatorName = '';
-		let separatorNames = [
-			'separatorForTitle',
-			'separatorForSource',
-			'separatorForAxiom',
-			'separatorForYear'
-		];
 		let separatorValues = [
 			separatorForTitle,
 			separatorForSource,
 			separatorForAxiom,
 			separatorForYear
 		];
-		// separatorValues = separatorValues.map(val => val > -1 ? val : -1)
-		let max = Math.max(...separatorValues);
-		// let min = Math.min(...separatorValues);
-		let i = 0;
-        let validValues= []
-        let test = separatorValues.reduce((a , b) => {
-            if(a > b && b > -1) {
-                return a
-            } 
-            if(a < b && a > -1) {
-                return b
-            }
-        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 183 ~ findNextSeparatingCharacter ~ separat}orValues`, separatorValues)
-        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 183 ~ findNextSeparatingCharacter ~ test`, test)
-		let min = getMinNotFalse(separatorValues, i, validValues);
-		console.log(
-			`🚀 ~ file: parseQuotes.svelte ~ line 139 ~ findNextSeparatingCharacter ~ separatorValues`,
-			separatorValues
-		);
-		console.log(
-			`🚀 ~ file: parseQuotes.svelte ~ line 139 ~ findNextSeparatingCharacter ~ max\n\n`,
-			max,
-			`\n\n`
-		);
-		console.log(
-			`🚀 ~ file: parseQuotes.svelte ~ line 140 ~ findNextSeparatingCharacter ~ min\n\n`,
-			min,
-			`\n\n`
-		);
-		let idx = -1;
-		if (min > 0) {
-			idx = separatorValues.indexOf(min);
-		}
-		if (idx >= 0) {
-			separatorName = separatorNames[idx];
-			separatorValue = min;
-			console.log(
-				`🚀 ~ file: parseQuotes.svelte ~ line 144 ~ findNextSeparatingCharacter ~ separator\n
-            ********=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=**********\n`,
-				separatorName,
-				`: `,
-				idx,
-				`\n\n`
-			);
-		}
-		return separatorValue;
+		return getMinNotFalse(separatorValues);
 	}
-	function getMinNotFalse(values, i, validValues) {
 
-		if (i < 5) {
-			if (values[i] > -1) {
-				validValues ? validValues = [...validValues, values[i]] : validValues = [values[i]]
-                console.log(`🚀 ~ file: parseQuotes.svelte ~ line 219 ~ getMinNotFalse ~ validValues`, validValues)
-                getMinNotFalse(values, i + 1)
-			} else {
-				getMinNotFalse(values, i + 1);
-			}
-            if (validValues?.length) {
-                return Math.min(...validValues)
-            }
-            return false
-		}
-		return false;
+	function getMinNotFalse(values) {
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 227 ~ getMinNotFalse ~ values\n\n`, values, `\n\n`)
+        let first = -1
+        let minValid = -1
+        for(let i = 0; i < values.length; i++){
+            values[i] > -1 ? first = values[i] : values[i]
+            minValid == -1 ? minValid = first : minValid
+            minValid > first ? minValid = first : minValid
+            // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 231 ~ getMinNotFalse ~ \nvalues[i]`, values[i])
+            // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 232 ~ getMinNotFalse ~ \nfirst`, first)
+            // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 233 ~ getMinNotFalse ~ \nminValid`, minValid)
+        }
+        // console.log(`\n\ngetMinNotFalse BREAK**********************************\n\n`)
+        return minValid
 	}
 
 	function isolateQuotationBlocks(divs) {
@@ -353,6 +329,7 @@
 			<h1>{quote.quoteBody}</h1>
 			<div class="divider divider-vertical">|</div>
 			<h1>{quote.author}</h1>
+            <h1>{quote.nextPart}: {quote.remainder}</h1>
 		</div>
 	{/each}
 {/if}
