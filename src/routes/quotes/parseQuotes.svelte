@@ -10,7 +10,7 @@
 <script>
 	import { storedQuotesFile, storedFileContent, storedQuotesArray } from '../../stores/stores.js';
 	import { onMount } from 'svelte';
-import { each } from 'svelte/internal';
+	import { each } from 'svelte/internal';
 	// import { saveFile} from '$lib/save-file'
 
 	let fsFileContent;
@@ -76,15 +76,19 @@ import { each } from 'svelte/internal';
 			context
 		};
 
-		for (let i = 108; i < 122; i++) {
+		for (let i = 215; i < 220; i++) {
 			// was divs.length
 			item = stringifyArray(quotesArrays[i]);
 			if (item.includes('\\r') || item.includes('\\n')) {
 				item = item.replace(/(\\r\\n|\\n|\\r)/gm, '');
 			}
+			console.log(
+				'%cparseQuotes.svelte line:85 item',
+				'color: white; background-color: #007acc;',
+				item
+			);
 			let workingQuoteObject = {};
-            workingQuoteObject['details'] = []
-			console.log(`🚀 ~ file: parseQuotes.svelte ~ line 75 ~ parseFile ~ item`, item);
+			workingQuoteObject['details'] = [];
 			workingQuoteObject['startingItem'] = item;
 			workingQuoteObject = parseQuoteText(workingQuoteObject);
 			workingQuoteObject = parseQuoteRemainder(workingQuoteObject);
@@ -97,13 +101,7 @@ import { each } from 'svelte/internal';
 		let item = workingQuoteObject['startingItem'];
 		let itemEnd = item.length;
 		let quoteStart = item.indexOf('"') + 1;
-		console.log(
-			`🚀 ~ file: parseQuotes.svelte ~ line 112 ~ parseQuoteText ~ quoteStart`,
-			quoteStart
-		);
 		let quoteEnd = item.indexOf('"', 10) - 1;
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 114 ~ parseQuoteText ~ quoteEnd`, quoteEnd);
-
 		workingQuoteObject['remainder'] = Array.from(item)
 			.splice(quoteEnd + 4, itemEnd)
 			.join(String())
@@ -116,44 +114,38 @@ import { each } from 'svelte/internal';
 	function parseQuoteRemainder(workingQuoteObject) {
 		let item = workingQuoteObject['remainder'];
 		let itemEnd = item.length;
-		let author, remainder, nextPart, separatorValue = false;
+		let author,
+			remainder,
+			nextPart,
+			separatorValue = false;
 
 		if (workingQuoteObject['remainder']) {
-            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 122 ~ parseQuoteRemainder ~ workingQuoteObject`, workingQuoteObject)
+			console.log(
+				'\x1b[32m%s\x1b[0m',
+				'parseQuotes.svelte line:116 workingQuoteObject',
+				workingQuoteObject
+			);
+			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 122 ~ parseQuoteRemainder ~ workingQuoteObject`, workingQuoteObject)
 			separatorValue = findNextSeparatingCharacter(item);
-            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 123 ~ parseQuoteRemainder ~ separatorValue`, separatorValue)
-            if(item.toLowerCase().includes("axiom")){
-                console.log(`🚀 ~ file: parseQuotes.svelte ~ line 123 ~ parseQuoteRemainder ~ includes("axiom")`)
-                workingQuoteObject = parseQuoteAxiom(workingQuoteObject)
-                workingQuoteObject['author'] = false
-            }
-
-			if (separatorValue) {
-				nextPart = nameNextPartOfQuote(item, separatorValue);
-                console.log(`🚀 ~ file: parseQuotes.svelte ~ line 132 ~ parseQuoteRemainder ~ nextPart`, nextPart)
+			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 123 ~ parseQuoteRemainder ~ separatorValue`, separatorValue)
+			if (item.toLowerCase().includes('axiom')) {
+				// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 123 ~ parseQuoteRemainder ~ includes("axiom")`)
+				workingQuoteObject = parseQuoteAxiom(workingQuoteObject, separatorValue);
+				workingQuoteObject['author'] = false;
+			}
+			nextPart = nameNextPartOfQuote(item, separatorValue);
+			if (nextPart) {
+				if (!workingQuoteObject['author']) {
+					parseQuoteAuthorName(workingQuoteObject, separatorValue);
+				}
+				console.log('\x1b[42m%s\x1b[0m', 'parseQuotes.svelte line:128 nextPart', nextPart);
 				workingQuoteObject['nextPart'] = nextPart;
-                workingQuoteObject = parseNextPartOfQuote(workingQuoteObject);
-				author = Array.from(item).splice(0, separatorValue).join(String());
-				remainder = Array.from(item).splice(separatorValue, itemEnd).join(String());
-				console.log(
-					`🚀 ~ file: parseQuotes.svelte ~ line 142 ~ parseQuoteRemainder ~ nextPart\n\n`,
-					nextPart,
-					`\n\n`
-				);
-				console.log(
-					`🚀 ~ file: parseQuotes.svelte ~ line 142 ~ parseQuoteRemainder ~ remainder\n\n`,
-					remainder,
-					`\n\n`
-				);
-				console.log(
-					`🚀 ~ file: parseQuotes.svelte ~ line 142 ~ parseQuoteRemainder ~ author\n\n`,
-					author,
-					`\n\n`
-				);
-				workingQuoteObject['author'] = author;
-				workingQuoteObject['remainder'] = remainder;
+				workingQuoteObject = parseNextPartOfQuote(workingQuoteObject, separatorValue);
 			} else {
-				workingQuoteObject['author'] = Array.from(item).splice(0, itemEnd).join(String()).trim();
+				workingQuoteObject['remainder'] = item;
+				console.log('\x1b[41m%s\x1b[0m', 'parseQuotes.svelte line:142 item', item);
+				parseQuoteAuthorName(workingQuoteObject, separatorValue);
+				// workingQuoteObject['author'] = Array.from(item).splice(0, itemEnd).join(String()).trim();
 				console.log(
 					`🚀 ~ file: parseQuotes.svelte ~ line 149 ~ parseQuoteRemainder ~ workingQuoteObject['author']`,
 					workingQuoteObject['author']
@@ -161,6 +153,7 @@ import { each } from 'svelte/internal';
 				workingQuoteObject['nextPart'] = false;
 				workingQuoteObject['remainder'] = false;
 			}
+			// parseQuoteRemainder(workingQuoteObject)
 		}
 
 		return workingQuoteObject;
@@ -168,7 +161,16 @@ import { each } from 'svelte/internal';
 
 	function nameNextPartOfQuote(item, separatorValue) {
 		let char = item.charAt(separatorValue);
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 158 ~ nameNextPartOfQuote \n\n~ char`, char,`\n\n`);
+		console.log(
+			`🚀 ~ file: parseQuotes.svelte ~ line 158 ~ nameNextPartOfQuote \n\n~ char`,
+			char,
+			`\n\n`
+		);
+		console.log(
+			'%cparseQuotes.svelte line:169 item',
+			'color: white; background-color: #007acc;',
+			item
+		);
 		switch (char) {
 			case ',':
 				return 'authorTitle';
@@ -189,27 +191,28 @@ import { each } from 'svelte/internal';
 		}
 	}
 
-	function parseNextPartOfQuote(workingQuoteObject) {
+	function parseNextPartOfQuote(workingQuoteObject, separatorValue) {
 		let nextPart = workingQuoteObject['nextPart'];
+		console.log('\x1b[31m%s\x1b[0m', 'parseQuotes.svelte line:191 nextPart', nextPart);
 		switch (nextPart) {
 			case 'authorTitle':
-				return parseQuoteAuthorTitle(workingQuoteObject);
+				return parseQuoteAuthorTitle(workingQuoteObject, separatorValue);
 				break;
 
 			case 'date':
-				return parseQuoteDate(workingQuoteObject);
+				return parseQuoteDate(workingQuoteObject, separatorValue);
 				break;
 
 			case 'source':
-				return parseQuoteSource(workingQuoteObject);
+				return parseQuoteSource(workingQuoteObject, separatorValue);
 				break;
 
 			case 'context':
-				return parseQuoteContext(workingQuoteObject);
+				return parseQuoteContext(workingQuoteObject, separatorValue);
 				break;
 
 			case 'tag':
-				return parseQuoteTags(workingQuoteObject);
+				return parseQuoteTags(workingQuoteObject, separatorValue);
 				break;
 
 			default:
@@ -217,44 +220,108 @@ import { each } from 'svelte/internal';
 		}
 		return workingQuoteObject;
 	}
-    function parseQuoteAuthorTitle(workingQuoteObject) {
-        return workingQuoteObject
-    }
-    function parseQuoteAxiom(workingQuoteObject) {
-        let item = workingQuoteObject['remainder'].trim()
-        let separatorValue = findNextSeparatingCharacter(item);
-        let axiom = Array.from(item).splice(separatorValue + 1, item.length).join(String()).trim()
-        workingQuoteObject?.details?.push({'type': 'axiom', 'value': axiom})
-        return workingQuoteObject
-    }
-    function parseQuoteDate(workingQuoteObject) {
-        return workingQuoteObject
-    }
-    function parseQuoteSource(workingQuoteObject) {
-        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 233 ~ parseQuoteSource ~ workingQuoteObject`, workingQuoteObject)
-        let item = workingQuoteObject['remainder'].trim()
-        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 236 ~ parseQuoteSource ~ item`, item)
-        let len = item.length
-        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 238 ~ parseQuoteSource ~ len`, len)
-        let separatorValue = findNextSeparatingCharacter(item);
-        let end = getClosingCharacterValue(item, "]")
-        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 241 ~ parseQuoteSource ~ end`, end)
-        let source = Array.from(item).splice(separatorValue + 1, end - separatorValue - 1).join(String()).trim()
-        workingQuoteObject?.details?.push({'type': 'source', 'value': source})
-        return workingQuoteObject
-    }
-    function parseQuoteContext(workingQuoteObject) {
-        return workingQuoteObject
-    }
-    function parseQuoteTags(workingQuoteObject) {
-        return workingQuoteObject
-    }
+	function parseQuoteAuthorName(workingQuoteObject, separatorValue) {
+		console.log(
+			`🚀 ~ file: parseQuotes.svelte ~ line 224 ~ parseQuoteAuthorName ~ separatorValue`,
+			separatorValue
+		);
+		console.log(
+			`🚀 ~ file: parseQuotes.svelte ~ line 224 ~ parseQuoteAuthorName ~ workingQuoteObject`,
+			workingQuoteObject
+		);
+        let author, remainder
+		let item = workingQuoteObject['remainder'];
+		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 226 ~ parseQuoteAuthorName ~ item`, item);
+		let itemEnd = item.length;
+		if (separatorValue) {
+			author = Array.from(item).splice(0, separatorValue).join(String());
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 238 ~ parseQuoteAuthorName ~ author`, author)
+			remainder = Array.from(item).splice(separatorValue, itemEnd).join(String());
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 240 ~ parseQuoteAuthorName ~ remainder`, remainder)
+		} else {
+            author = workingQuoteObject['remainder']
+			remainder = false
+		}
+		workingQuoteObject['author'] = author;
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 246 ~ parseQuoteAuthorName ~ author`, author)
+		workingQuoteObject['remainder'] = remainder;
+		return workingQuoteObject;
+	}
 
-    function getClosingCharacterValue(item, char){
-        let separator = item.indexOf(char)
-		return separator
-    }
+	function parseQuoteAuthorTitle(workingQuoteObject, separatorValue) {
+		console.log(
+			`🚀 ~ file: parseQuotes.svelte ~ line 239 ~ parseQuoteAuthorTitle ~ workingQuoteObject`,
+			workingQuoteObject
+		);
+		console.log(
+			`🚀 ~ file: parseQuotes.svelte ~ line 239 ~ parseQuoteAuthorTitle ~ separatorValue`,
+			separatorValue
+		);
+		let item = workingQuoteObject['remainder'];
+		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 242 ~ parseQuoteAuthorTitle ~ item`, item);
+		let itemEnd = item.length;
+		let title = Array.from(item).splice(0, separatorValue).join(String());
+		let remainder = Array.from(item).splice(separatorValue, itemEnd).join(String());
+		workingQuoteObject['authorTitle'] = title;
+		workingQuoteObject['remainder'] = remainder;
+		workingQuoteObject['nextPart'] = false;
+		return workingQuoteObject;
+	}
+	function parseQuoteAxiom(workingQuoteObject, separatorValue) {
+		let item = workingQuoteObject['remainder'].trim();
+		separatorValue = findNextSeparatingCharacter(item);
+		let axiom = Array.from(item)
+			.splice(separatorValue + 1, item.length)
+			.join(String())
+			.trim();
+		workingQuoteObject?.details?.push({ type: 'axiom', value: axiom });
+		return workingQuoteObject;
+	}
+	function parseQuoteDate(workingQuoteObject, separatorValue) {
+		console.log(
+			'\x1b[31m%s\x1b[0m',
+			'parseQuotes.svelte line:239 workingQuoteObject',
+			workingQuoteObject
+		);
+		let item = workingQuoteObject['remainder'];
+		let itemEnd = item.length;
+		let date = Array.from(item).splice(0, separatorValue).join(String());
+		let remainder = Array.from(item).splice(separatorValue, itemEnd).join(String());
+		workingQuoteObject['nextPart'] = false;
+		return workingQuoteObject;
+	}
+	function parseQuoteSource(workingQuoteObject, separatorValue) {
+		console.log(
+			`🚀 ~ file: parseQuotes.svelte ~ line 233 ~ parseQuoteSource ~ workingQuoteObject`,
+			workingQuoteObject
+		);
+		let item = workingQuoteObject['remainder'].trim();
+		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 236 ~ parseQuoteSource ~ item`, item);
+		let len = item.length;
+		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 238 ~ parseQuoteSource ~ len`, len);
+		separatorValue = findNextSeparatingCharacter(item);
+		let end = getClosingCharacterValue(item, ']');
+		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 241 ~ parseQuoteSource ~ end`, end);
+		let source = Array.from(item)
+			.splice(separatorValue + 1, end - separatorValue - 1)
+			.join(String())
+			.trim();
+		workingQuoteObject?.details?.push({ type: 'source', value: source });
+		return workingQuoteObject;
+	}
+	function parseQuoteContext(workingQuoteObject, separatorValue) {
+		workingQuoteObject['nextPart'] = false;
+		return workingQuoteObject;
+	}
+	function parseQuoteTags(workingQuoteObject, separatorValue) {
+		workingQuoteObject['nextPart'] = false;
+		return workingQuoteObject;
+	}
 
+	function getClosingCharacterValue(item, char) {
+		let separator = item.indexOf(char);
+		return separator;
+	}
 
 	function findNextSeparatingCharacter(item) {
 		let separatorForTitle = item.indexOf(',');
@@ -279,7 +346,7 @@ import { each } from 'svelte/internal';
 		let first = -1;
 		let minValid = false;
 		for (let i = 0; i < values.length; i++) {
-            values[i] > -1 ? (first = values[i]) : values[i];
+			values[i] > -1 ? (first = values[i]) : values[i];
 			minValid == false && first > -1 ? (minValid = first) : minValid;
 			minValid > first && minValid ? (minValid = first) : minValid;
 			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 231 ~ getMinNotFalse ~ \nvalues[i]`, values[i])
@@ -345,14 +412,12 @@ import { each } from 'svelte/internal';
 		// parseQuoteSource(item)
 		// parseQuoteTags(item)
 		// parseQuoteContext(item)
-
 		// refactor workingQuoteObject for, after quoteBody and author, a nextParts array so any further details can be looped through
 		// in the markup.
-
-        // I'm seeing problems in structure here, philosophical problems, like - what is a quote, really?
-        // it's an expression of an idea. It could be a statement sourced from written or verbal content,
-        // a question, an axiom, a proverb. 
-        // So, perhaps I need a "type" property of every "quote"?
+		// I'm seeing problems in structure here, philosophical problems, like - what is a quote, really?
+		// it's an expression of an idea. It could be a statement sourced from written or verbal content,
+		// a question, an axiom, a proverb.
+		// So, perhaps I need a "type" property of every "quote"?
 	}
 
 	function parseAuthorCredential(item) {
@@ -366,7 +431,6 @@ import { each } from 'svelte/internal';
 			.trim();
 		return { quote, item, remainder };
 	}
-
 </script>
 
 <div class="flex flex-col items-center">
@@ -398,15 +462,15 @@ import { each } from 'svelte/internal';
 					<span class="rounded-none badge badge-success input-xs">{quote.author}</span>
 				</label>
 
-                {#if quote.details.length}
-                    {#each quote.details as detail}
-                    DETAILS
-                    <label class="input-group input-group-xs rounded-none">
-						<span class="quotePart rounded-none">{detail.type}</span>
-						<span class="rounded-none badge badge-info input-xs">{detail.value}</span>
-					</label>
-                    {/each}
-                {/if}
+				{#if quote.details.length}
+					{#each quote.details as detail}
+						DETAILS
+						<label class="input-group input-group-xs rounded-none">
+							<span class="quotePart rounded-none">{detail.type}</span>
+							<span class="rounded-none badge badge-info input-xs">{detail.value}</span>
+						</label>
+					{/each}
+				{/if}
 			</div>
 		</div>
 	{/each}
