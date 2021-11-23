@@ -358,7 +358,7 @@
                   </label>
 				{#if quote.nextPart}
                 <label class="input-group input-group-xs rounded-none">
-                    <span class="rounded-none">{quote.nextPart}</span> 
+                    <span class="quotePart rounded-none">{quote.nextPart}</span> 
                     <span class="rounded-none badge badge-info input-xs">{quote.remainder}</span>
                   </label>
 					<!-- <span class="badge badge-info badge-md">{quote.nextPart}: {quote.remainder}</span> -->
@@ -396,7 +396,8 @@
     }
 
     .quotePart {
-        background: black;
-        border-radius: 0px 0 0 10px;
+        background: rgba(0,0,0,0.8);
+        border-radius: 0px;
+        width: 4rem;
     }
 </style>
