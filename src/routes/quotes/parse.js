@@ -32,21 +32,27 @@ function getQuoteBody(workingQuoteObject) {
 
 function getQuoteAuthor(workingQuoteObject) {
     let { author, remainingText } = workingQuoteObject
-    workingQuoteObject['author'] = remainingText
+    workingQuoteObject['author'] = remainingText.trim()
+    console.log(`🚀 ~ file: parse.js ~ line 36 ~ getQuoteAuthor ~ remainingText`, remainingText)
     let textEnd = remainingText.length;
     let separatorValue = findNextSeparatingCharacter(remainingText);
-    if (separatorValue) {
+    if (separatorValue > -1) {
+        console.log(`🚀 ~ file: parse.js ~ line 39 ~ getQuoteAuthor ~ separatorValue`, separatorValue)
+        console.log('%cparse.js line:40 separatorValue', 'color: white; background-color: #26bfa5;', separatorValue);
         author = Array.from(remainingText).splice(0, separatorValue).join(String()).trim();
+        console.log(`🚀 ~ file: parse.js ~ line 42 ~ getQuoteAuthor ~ author`, author)
         remainingText = Array.from(remainingText).splice(separatorValue, textEnd).join(String()).trim();
+        console.log(`🚀 ~ file: parse.js ~ line 44 ~ getQuoteAuthor ~ remainingText`, remainingText)
         workingQuoteObject['remainingText'] = remainingText
     } else {
+        console.log('\x1b[41m%s\x1b[0m', 'parse.js line:45 separatorValue', separatorValue);
         author = workingQuoteObject['remainingText'].trim()
         workingQuoteObject['remainingText'] = false
         workingQuoteObject['parsingComplete'] = true
     }
     workingQuoteObject['author'] = author.trim();
-    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 246 ~ parseQuoteAuthorName ~ author`, author)
-    console.log(`🚀 ~ file: parse.js ~ line 51 ~ getQuoteAuthor ~ remainingText`, remainingText)
+    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 53 ~ parseQuoteAuthorName ~ author`, author)
+    console.log(`🚀 ~ file: parse.js ~ line 54 ~ getQuoteAuthor ~ remainingText`, remainingText)
     return workingQuoteObject
 }
 
