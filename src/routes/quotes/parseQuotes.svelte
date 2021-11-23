@@ -89,6 +89,8 @@
 			);
 			let workingQuoteObject = {}
             workingQuoteObject['originalText'] = item
+            workingQuoteObject['remainingText'] = item
+            workingQuoteObject['details'] = []
             workingQuoteObject = parse(workingQuoteObject);
 			// workingQuoteObject['details'] = [];
 			// workingQuoteObject['startingItem'] = item;
@@ -510,15 +512,21 @@
 				{#if quote.authorTitle}
 					<label class="input-group input-group-xs rounded-none">
 						<span class="quotePart rounded-none">Title</span>
-						<span class="rounded-none badge badge-info input-xs">{quote.authorTitle}</span>
+						<span class="rounded-none badge bg-coolGray-700 text-cyan-400 input-xs">{quote.authorTitle}</span>
 					</label>
 				{/if}
 				{#if quote.date}
 					<label class="input-group input-group-xs rounded-none">
-						<span class="quotePart rounded-none">Lived</span>
-						<span class="rounded-none badge badge-info input-xs">{quote.date}</span>
+						<span class="quotePart rounded-none">Date</span>
+						<span class="rounded-none badge badge-info bg-coolGray-900 text-blue-500 input-xs">{quote.date}</span>
 					</label>
 				{/if}
+                {#if quote.source}
+                <label class="input-group input-group-xs rounded-none">
+                    <span class="quotePart rounded-none">Source</span>
+                    <span class="rounded-none badge badge-warning input-xs">{quote.source}</span>
+                </label>
+            {/if}
 				{#if quote.details?.length}
 					{#each quote.details as detail}
 						DETAILS
