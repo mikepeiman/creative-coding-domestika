@@ -10,6 +10,7 @@
 <script>
 	import { storedQuotesFile, storedFileContent, storedQuotesArray } from '../../stores/stores.js';
 	import { onMount } from 'svelte';
+import { each } from 'svelte/internal';
 	// import { saveFile} from '$lib/save-file'
 
 	let fsFileContent;
@@ -75,7 +76,7 @@
 			context
 		};
 
-		for (let i = 106; i < 112; i++) {
+		for (let i = 108; i < 122; i++) {
 			// was divs.length
 			item = stringifyArray(quotesArrays[i]);
 			if (item.includes('\\r') || item.includes('\\n')) {
@@ -115,18 +116,21 @@
 	function parseQuoteRemainder(workingQuoteObject) {
 		let item = workingQuoteObject['remainder'];
 		let itemEnd = item.length;
-		let author, remainder, nextPart, separatorValue;
+		let author, remainder, nextPart, separatorValue = false;
 
 		if (workingQuoteObject['remainder']) {
             console.log(`🚀 ~ file: parseQuotes.svelte ~ line 122 ~ parseQuoteRemainder ~ workingQuoteObject`, workingQuoteObject)
 			separatorValue = findNextSeparatingCharacter(item);
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 123 ~ parseQuoteRemainder ~ separatorValue`, separatorValue)
             if(item.toLowerCase().includes("axiom")){
                 console.log(`🚀 ~ file: parseQuotes.svelte ~ line 123 ~ parseQuoteRemainder ~ includes("axiom")`)
                 workingQuoteObject = parseQuoteAxiom(workingQuoteObject)
+                workingQuoteObject['author'] = false
             }
 
 			if (separatorValue) {
 				nextPart = nameNextPartOfQuote(item, separatorValue);
+                console.log(`🚀 ~ file: parseQuotes.svelte ~ line 132 ~ parseQuoteRemainder ~ nextPart`, nextPart)
 				workingQuoteObject['nextPart'] = nextPart;
                 workingQuoteObject = parseNextPartOfQuote(workingQuoteObject);
 				author = Array.from(item).splice(0, separatorValue).join(String());
@@ -164,7 +168,7 @@
 
 	function nameNextPartOfQuote(item, separatorValue) {
 		let char = item.charAt(separatorValue);
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 158 ~ nameNextPartOfQuote ~ char`, char);
+		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 158 ~ nameNextPartOfQuote \n\n~ char`, char,`\n\n`);
 		switch (char) {
 			case ',':
 				return 'authorTitle';
@@ -176,7 +180,7 @@
 				return 'date';
 				break;
 			case '[':
-				return 'Tags';
+				return 'source';
 				break;
 
 			default:
@@ -227,6 +231,16 @@
         return workingQuoteObject
     }
     function parseQuoteSource(workingQuoteObject) {
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 233 ~ parseQuoteSource ~ workingQuoteObject`, workingQuoteObject)
+        let item = workingQuoteObject['remainder'].trim()
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 236 ~ parseQuoteSource ~ item`, item)
+        let len = item.length
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 238 ~ parseQuoteSource ~ len`, len)
+        let separatorValue = findNextSeparatingCharacter(item);
+        let end = getClosingCharacterValue(item, "]")
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 241 ~ parseQuoteSource ~ end`, end)
+        let source = Array.from(item).splice(separatorValue + 1, end - separatorValue - 1).join(String()).trim()
+        workingQuoteObject?.details?.push({'type': 'source', 'value': source})
         return workingQuoteObject
     }
     function parseQuoteContext(workingQuoteObject) {
@@ -235,6 +249,12 @@
     function parseQuoteTags(workingQuoteObject) {
         return workingQuoteObject
     }
+
+    function getClosingCharacterValue(item, char){
+        let separator = item.indexOf(char)
+		return separator
+    }
+
 
 	function findNextSeparatingCharacter(item) {
 		let separatorForTitle = item.indexOf(',');
@@ -251,17 +271,17 @@
 	}
 
 	function getMinNotFalse(values) {
-		console.log(
-			`🚀 ~ file: parseQuotes.svelte ~ line 227 ~ getMinNotFalse ~ values\n\n`,
-			values,
-			`\n\n`
-		);
+		// console.log(
+		// 	`🚀 ~ file: parseQuotes.svelte ~ line 227 ~ getMinNotFalse ~ values\n\n`,
+		// 	values,
+		// 	`\n\n`
+		// );
 		let first = -1;
 		let minValid = false;
 		for (let i = 0; i < values.length; i++) {
-			values[i] > -1 ? (first = values[i]) : values[i];
-			minValid == -1 ? (minValid = first) : minValid;
-			minValid > first ? (minValid = first) : minValid;
+            values[i] > -1 ? (first = values[i]) : values[i];
+			minValid == false && first > -1 ? (minValid = first) : minValid;
+			minValid > first && minValid ? (minValid = first) : minValid;
 			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 231 ~ getMinNotFalse ~ \nvalues[i]`, values[i])
 			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 232 ~ getMinNotFalse ~ \nfirst`, first)
 			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 233 ~ getMinNotFalse ~ \nminValid`, minValid)
@@ -325,8 +345,14 @@
 		// parseQuoteSource(item)
 		// parseQuoteTags(item)
 		// parseQuoteContext(item)
+
 		// refactor workingQuoteObject for, after quoteBody and author, a nextParts array so any further details can be looped through
 		// in the markup.
+
+        // I'm seeing problems in structure here, philosophical problems, like - what is a quote, really?
+        // it's an expression of an idea. It could be a statement sourced from written or verbal content,
+        // a question, an axiom, a proverb. 
+        // So, perhaps I need a "type" property of every "quote"?
 	}
 
 	function parseAuthorCredential(item) {
@@ -371,21 +397,16 @@
 					<span class="quotePart">Author</span>
 					<span class="rounded-none badge badge-success input-xs">{quote.author}</span>
 				</label>
-				{#if quote.nextPart}
-					<label class="input-group input-group-xs rounded-none">
-						<span class="quotePart rounded-none">{quote.nextPart}</span>
-						<span class="rounded-none badge badge-info input-xs">{quote.remainder}</span>
-					</label>
-					<!-- <span class="badge badge-info badge-md">{quote.nextPart}: {quote.remainder}</span> -->
-				{/if}
 
-				{#if quote.Tags && quote.nextPart}
-					<label class="input-group input-group-xs rounded-none">
-						<span class="quotePart rounded-none">{quote.nextPart}</span>
-						<span class="rounded-none badge badge-info input-xs">{quote.Tags}</span>
+                {#if quote.details.length}
+                    {#each quote.details as detail}
+                    DETAILS
+                    <label class="input-group input-group-xs rounded-none">
+						<span class="quotePart rounded-none">{detail.type}</span>
+						<span class="rounded-none badge badge-info input-xs">{detail.value}</span>
 					</label>
-					<!-- <span class="badge badge-info badge-md">{quote.nextPart}: {quote.remainder}</span> -->
-				{/if}
+                    {/each}
+                {/if}
 			</div>
 		</div>
 	{/each}
