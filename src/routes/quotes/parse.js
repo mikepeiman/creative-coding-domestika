@@ -1,14 +1,13 @@
 export const parse = (workingQuoteObject) => {
     let { originalText, quoteBody, author, authorTitle, source, lifespan, quoteDate, context, tags, remainingText, parsingComplete } = workingQuoteObject
     workingQuoteObject['remainingText'] = originalText
-    if(!quoteBody){
+    if(!workingQuoteObject['quoteBody']){
         workingQuoteObject = getQuoteBody(workingQuoteObject)
     }
-    if(!author){
+    if(!workingQuoteObject['author']){
         workingQuoteObject = getQuoteAuthor(workingQuoteObject)
-
     }
-    if(!parsingComplete){
+    if(!workingQuoteObject['parsingComplete']){
         workingQuoteObject = parseNextDetail(workingQuoteObject)
         parse(workingQuoteObject)
     }
@@ -21,14 +20,14 @@ function getQuoteBody(workingQuoteObject) {
     let { originalText, quoteBody, author, authorTitle, source, lifespan, quoteDate, context, tags, remainingText, parsingComplete } = workingQuoteObject
     workingQuoteObject['quoteBody'] = originalText
     let text = originalText
-    let textEnd = text.length;
-    let quoteStart = text.indexOf('"') + 1;
-    let quoteEnd = text.indexOf('"', 10) - 1;
-    workingQuoteObject['remainingText'] = Array.from(text)
+    let textEnd = remainingText.length;
+    let quoteStart = remainingText.indexOf('"') + 1;
+    let quoteEnd = remainingText.indexOf('"', 10) - 1;
+    workingQuoteObject['remainingText'] = Array.from(remainingText)
         .splice(quoteEnd + 4, textEnd)
         .join(String())
         .trim();
-    text = Array.from(text).splice(quoteStart, quoteEnd).join(String());
+    text = Array.from(remainingText).splice(quoteStart, quoteEnd).join(String());
     workingQuoteObject['quoteBody'] = text;
     return workingQuoteObject;
 }
@@ -36,27 +35,51 @@ function getQuoteBody(workingQuoteObject) {
 function getQuoteAuthor(workingQuoteObject) {
     let { originalText, quoteBody, author, authorTitle, source, lifespan, quoteDate, context, tags, remainingText, parsingComplete } = workingQuoteObject
     workingQuoteObject['author'] = remainingText
+    let textEnd = remainingText.length;
+    let separatorValue = findNextSeparatingCharacter(remainingText);
+    console.log(`🚀 ~ file: parse.js ~ line 41 ~ getQuoteAuthor ~ separatorValue`, separatorValue)
+    if (separatorValue) {
+        console.log('%cparse.js line:42 `true`', 'color: white; background-color: #007acc;', `true`);
+        author = Array.from(remainingText).splice(0, separatorValue).join(String()).trim();
+        remainingText = Array.from(remainingText).splice(separatorValue, textEnd).join(String()).trim();
+    } else {
+        author = workingQuoteObject['remainingText'].trim()
+        workingQuoteObject['remainingText'] = false
+        workingQuoteObject['parsingComplete'] = true
+    }
+    workingQuoteObject['author'] = author.trim();
+    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 246 ~ parseQuoteAuthorName ~ author`, author)
+    console.log(`🚀 ~ file: parse.js ~ line 51 ~ getQuoteAuthor ~ remainingText`, remainingText)
     return workingQuoteObject
 }
 
 function parseNextDetail(workingQuoteObject){
     let { originalText, quoteBody, author, authorTitle, source, lifespan, quoteDate, context, tags, remainingText, parsingComplete } = workingQuoteObject
-    let text = workingQuoteObject['remainingText']
-    let nextDetail = getNextDetail(workingQuoteObject)
+    let separatorValue = findNextSeparatingCharacter(remainingText);
+    let nextPart = nameNextPartOfQuote(remainingText, separatorValue)
+    console.log('\x1b[41m%s\x1b[0m', 'parse.js line:60 nextPart', nextPart);
+    console.log(`🚀 ~ file: parse.js ~ line 60 ~ parseNextDetail ~ nextPart`, nextPart)
+
+    workingQuoteObject['parsingComplete'] = true
+    // let nextDetail = getNextDetail(workingQuoteObject)
     return workingQuoteObject
 }
 
 function getNextDetail(workingQuoteObject) {
     let { originalText, author, authorTitle, quoteBody, source, lifespan, quoteDate, context, tags, remainingText, parsingComplete } = workingQuoteObject
     let separatorValue = findNextSeparatingCharacter(remainingText);
+    let nextPart = nameNextPartOfQuote(remainingText, separatorValue)
+    console.log(`🚀 ~ file: parse.js ~ line 67 ~ getNextDetail ~ nextPart`, nextPart)
+    console.log(`🚀 ~ file: parse.js ~ line 66 ~ getNextDetail ~ separatorValue`, separatorValue)
     workingQuoteObject['parsingComplete'] = true
 }
 
-function findNextSeparatingCharacter(text) {
-    let separatorForTitle = text.indexOf(',');
-    let separatorForTags = text.indexOf('[');
-    let separatorForAxiom = text.indexOf(':');
-    let separatorForYear = text.indexOf('(');
+function findNextSeparatingCharacter(remainingText) {
+    console.log(`🚀 ~ file: parse.js ~ line 68 ~ findNextSeparatingCharacter ~ text`, remainingText)
+    let separatorForTitle = remainingText.indexOf(',');
+    let separatorForTags = remainingText.indexOf('[');
+    let separatorForAxiom = remainingText.indexOf(':');
+    let separatorForYear = remainingText.indexOf('(');
     let separatorValues = [
         separatorForTitle,
         separatorForTags,
@@ -67,42 +90,42 @@ function findNextSeparatingCharacter(text) {
 }
 
 	function parseQuoteText(workingQuoteObject) {
-		let item = workingQuoteObject['startingItem'];
-		let itemEnd = item.length;
-		let quoteStart = item.indexOf('"') + 1;
-		let quoteEnd = item.indexOf('"', 10) - 1;
-		workingQuoteObject['remainder'] = Array.from(item)
-			.splice(quoteEnd + 4, itemEnd)
+		let text = workingQuoteObject['startingtext'];
+		let textEnd = remainingText.length;
+		let quoteStart = remainingText.indexOf('"') + 1;
+		let quoteEnd = remainingText.indexOf('"', 10) - 1;
+		workingQuoteObject['remainingText'] = Array.from(remainingText)
+			.splice(quoteEnd + 4, textEnd)
 			.join(String())
 			.trim();
-		item = Array.from(item).splice(quoteStart, quoteEnd).join(String());
-		workingQuoteObject['quoteBody'] = item;
+		text = Array.from(remainingText).splice(quoteStart, quoteEnd).join(String());
+		workingQuoteObject['quoteBody'] = text;
 		return workingQuoteObject;
 	}
 
-	function parseQuoteRemainder(workingQuoteObject) {
-		let item = workingQuoteObject['remainder'];
-		let itemEnd = item.length;
+	function parseQuoteremainingText(workingQuoteObject) {
+		let text = workingQuoteObject['remainingText'];
+		let textEnd = remainingText.length;
 		let author,
-			remainder,
+			remainingText,
 			nextPart,
 			separatorValue = false;
 
-		if (workingQuoteObject['remainder']) {
+		if (workingQuoteObject['remainingText']) {
 			console.log(
 				'\x1b[32m%s\x1b[0m',
 				'parseQuotes.svelte line:116 workingQuoteObject',
 				workingQuoteObject
 			);
-			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 122 ~ parseQuoteRemainder ~ workingQuoteObject`, workingQuoteObject)
-			separatorValue = findNextSeparatingCharacter(item);
-			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 123 ~ parseQuoteRemainder ~ separatorValue`, separatorValue)
-			if (item.toLowerCase().includes('axiom')) {
-				// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 123 ~ parseQuoteRemainder ~ includes("axiom")`)
+			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 122 ~ parseQuoteremainingText ~ workingQuoteObject`, workingQuoteObject)
+			separatorValue = findNextSeparatingCharacter(remainingText);
+			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 123 ~ parseQuoteremainingText ~ separatorValue`, separatorValue)
+			if (remainingText.toLowerCase().includes('axiom')) {
+				// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 123 ~ parseQuoteremainingText ~ includes("axiom")`)
 				workingQuoteObject = parseQuoteAxiom(workingQuoteObject, separatorValue);
 				workingQuoteObject['author'] = false;
 			}
-			nextPart = nameNextPartOfQuote(item, separatorValue);
+			nextPart = nameNextPartOfQuote(text, separatorValue);
 			if (nextPart) {
                 workingQuoteObject['nextPart'] = nextPart;
 				workingQuoteObject = parseNextPartOfQuote(workingQuoteObject, separatorValue);
@@ -113,34 +136,34 @@ function findNextSeparatingCharacter(text) {
 				workingQuoteObject['nextPart'] = nextPart;
 
 			} else {
-				workingQuoteObject['remainder'] = item;
-				console.log('\x1b[41m%s\x1b[0m', 'parseQuotes.svelte line:142 item', item);
+				workingQuoteObject['remainingText'] = text;
+				console.log('\x1b[41m%s\x1b[0m', 'parseQuotes.svelte line:142 text', remainingText);
 				parseQuoteAuthorName(workingQuoteObject, separatorValue);
-				// workingQuoteObject['author'] = Array.from(item).splice(0, itemEnd).join(String()).trim();
+				// workingQuoteObject['author'] = Array.from(remainingText).splice(0, textEnd).join(String()).trim();
 				console.log(
-					`🚀 ~ file: parseQuotes.svelte ~ line 149 ~ parseQuoteRemainder ~ workingQuoteObject['author']`,
+					`🚀 ~ file: parseQuotes.svelte ~ line 149 ~ parseQuoteremainingText ~ workingQuoteObject['author']`,
 					workingQuoteObject['author']
 				);
 				workingQuoteObject['nextPart'] = false;
-				workingQuoteObject['remainder'] = false;
+				workingQuoteObject['remainingText'] = false;
 			}
-			// parseQuoteRemainder(workingQuoteObject)
+			// parseQuoteremainingText(workingQuoteObject)
 		}
 
 		return workingQuoteObject;
 	}
 
-	function nameNextPartOfQuote(item, separatorValue) {
-		let char = item.charAt(separatorValue);
+	function nameNextPartOfQuote(remainingText, separatorValue) {
+		let char = remainingText.charAt(separatorValue);
 		console.log(
 			`🚀 ~ file: parseQuotes.svelte ~ line 158 ~ nameNextPartOfQuote \n\n~ char`,
 			char,
 			`\n\n`
 		);
 		console.log(
-			'%cparseQuotes.svelte line:169 item',
+			'%cparseQuotes.svelte line:169 text',
 			'color: white; background-color: #007acc;',
-			item
+			remainingText
 		);
 		switch (char) {
 			case ',':
@@ -191,39 +214,12 @@ function findNextSeparatingCharacter(text) {
 		}
 		return workingQuoteObject;
 	}
-	function parseQuoteAuthorName(workingQuoteObject, separatorValue) {
-		console.log(
-			`🚀 ~ file: parseQuotes.svelte ~ line 224 ~ parseQuoteAuthorName ~ separatorValue`,
-			separatorValue
-		);
-		console.log(
-			`🚀 ~ file: parseQuotes.svelte ~ line 224 ~ parseQuoteAuthorName ~ workingQuoteObject`,
-			workingQuoteObject
-		);
-        let author, remainder
-		let item = workingQuoteObject['remainder'];
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 226 ~ parseQuoteAuthorName ~ item`, item);
-		let itemEnd = item.length;
-		if (separatorValue) {
-			author = Array.from(item).splice(0, separatorValue).join(String());
-            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 238 ~ parseQuoteAuthorName ~ author`, author)
-			remainder = Array.from(item).splice(separatorValue, itemEnd).join(String());
-            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 240 ~ parseQuoteAuthorName ~ remainder`, remainder)
-		} else {
-            author = workingQuoteObject['remainder']
-			remainder = false
-		}
-		workingQuoteObject['author'] = author;
-        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 246 ~ parseQuoteAuthorName ~ author`, author)
-		workingQuoteObject['remainder'] = remainder;
-		return workingQuoteObject;
-	}
 
 	function parseQuoteAuthorTitle(workingQuoteObject, separatorValue) {
-        let title, remainder, nextPart
-		let item = workingQuoteObject['remainder'];
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 242 ~ parseQuoteAuthorTitle ~ item`, item);
-		let itemEnd = item.length;
+        let title, remainingText, nextPart
+		let text = workingQuoteObject['remainingText'];
+		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 242 ~ parseQuoteAuthorTitle ~ text`, remainingText);
+		let textEnd = remainingText.length;
 		console.log(
 			`🚀 ~ file: parseQuotes.svelte ~ line 239 ~ parseQuoteAuthorTitle ~ workingQuoteObject`,
 			workingQuoteObject
@@ -232,32 +228,32 @@ function findNextSeparatingCharacter(text) {
 			`🚀 ~ file: parseQuotes.svelte ~ line 239 ~ parseQuoteAuthorTitle ~ separatorValue`,
 			separatorValue
 		);
-        separatorValue = findNextSeparatingCharacter(item);
+        separatorValue = findNextSeparatingCharacter(remainingText);
         console.log(`🚀 ~ file: parseQuotes.svelte ~ line 261 ~ parseQuoteAuthorTitle ~ separatorValue`, separatorValue)
-        nextPart = nameNextPartOfQuote(item, separatorValue)
+        nextPart = nameNextPartOfQuote(text, separatorValue)
         workingQuoteObject['nextPart'] = nextPart
         console.log(`🚀 ~ file: parseQuotes.svelte ~ line 267 ~ parseQuoteAuthorTitle ~ nextPart`, nextPart)
 
         if (nextPart) {
-			title = Array.from(item).splice(1, separatorValue - 1).join(String()).trim();
+			title = Array.from(remainingText).splice(1, separatorValue - 1).join(String()).trim();
             console.log(`🚀 ~ file: parseQuotes.svelte ~ line 238 ~ parseQuoteAuthorName ~ title`, title)
-			remainder = Array.from(item).splice(separatorValue, itemEnd).join(String());
-            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 240 ~ parseQuoteAuthorName ~ remainder`, remainder)
+			remainingText = Array.from(remainingText).splice(separatorValue, textEnd).join(String());
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 240 ~ parseQuoteAuthorName ~ remainingText`, remainingText)
 		} else {
-            title = workingQuoteObject['remainder']
-			remainder = false
+            title = workingQuoteObject['remainingText']
+			remainingText = false
 		}
 		workingQuoteObject['authorTitle'] = title;
         workingQuoteObject.details.push({'type': 'Author title', 'value': title})
-		workingQuoteObject['remainder'] = remainder;
+		workingQuoteObject['remainingText'] = remainingText;
         console.log(`🚀 ~ file: parseQuotes.svelte ~ line 281 ~ parseQuoteAuthorTitle ~ workingQuoteObject\n\n`, workingQuoteObject,`\n\n`)
 		return workingQuoteObject;
 	}
 	function parseQuoteAxiom(workingQuoteObject, separatorValue) {
-		let item = workingQuoteObject['remainder'].trim();
-		separatorValue = findNextSeparatingCharacter(item);
-		let axiom = Array.from(item)
-			.splice(separatorValue + 1, item.length)
+		let text = workingQuoteObject['remainingText'].trim();
+		separatorValue = findNextSeparatingCharacter(remainingText);
+		let axiom = Array.from(remainingText)
+			.splice(separatorValue + 1, remainingText.length)
 			.join(String())
 			.trim();
 		workingQuoteObject.details.push({ type: 'axiom', value: axiom });
@@ -270,12 +266,12 @@ function findNextSeparatingCharacter(text) {
 			'parseQuotes.svelte line:239 workingQuoteObject',
 			workingQuoteObject
 		);
-		let item = workingQuoteObject['remainder'];
-        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 287 ~ parseQuoteDate ~ item`, item)
-        workingQuoteObject['date'] = item
-		let itemEnd = item.length;
-		let date = Array.from(item).splice(0, separatorValue).join(String());
-		let remainder = Array.from(item).splice(separatorValue, itemEnd).join(String());
+		let text = workingQuoteObject['remainingText'];
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 287 ~ parseQuoteDate ~ text`, remainingText)
+        workingQuoteObject['date'] = text
+		let textEnd = remainingText.length;
+		let date = Array.from(remainingText).splice(0, separatorValue).join(String());
+		let remainingText = Array.from(remainingText).splice(separatorValue, textEnd).join(String());
 		workingQuoteObject['nextPart'] = false;
 		return workingQuoteObject;
 	}
@@ -284,14 +280,14 @@ function findNextSeparatingCharacter(text) {
 			`🚀 ~ file: parseQuotes.svelte ~ line 233 ~ parseQuoteSource ~ workingQuoteObject`,
 			workingQuoteObject
 		);
-		let item = workingQuoteObject['remainder'].trim();
-		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 236 ~ parseQuoteSource ~ item`, item);
-		let len = item.length;
+		let text = workingQuoteObject['remainingText'].trim();
+		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 236 ~ parseQuoteSource ~ text`, remainingText);
+		let len = remainingText.length;
 		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 238 ~ parseQuoteSource ~ len`, len);
-		separatorValue = findNextSeparatingCharacter(item);
-		let end = getClosingCharacterValue(item, ']');
+		separatorValue = findNextSeparatingCharacter(remainingText);
+		let end = getClosingCharacterValue(text, ']');
 		console.log(`🚀 ~ file: parseQuotes.svelte ~ line 241 ~ parseQuoteSource ~ end`, end);
-		let source = Array.from(item)
+		let source = Array.from(remainingText)
 			.splice(separatorValue + 1, end - separatorValue - 1)
 			.join(String())
 			.trim();
@@ -307,8 +303,8 @@ function findNextSeparatingCharacter(text) {
 		return workingQuoteObject;
 	}
 
-	function getClosingCharacterValue(item, char) {
-		let separator = item.indexOf(char);
+	function getClosingCharacterValue(text, char) {
+		let separator = remainingText.indexOf(char);
 		return separator;
 	}
 
@@ -345,17 +341,17 @@ function findNextSeparatingCharacter(text) {
 	// tags are specified as `#(xxx xxx, ccccc, zzzz)` comma separated, OR each as `#xxx #yyy`
 	// I will need also a flag or rating to determine which quotes are authenticated, or the degree of confidence, plus Tagss for this
 
-	// need to clean quotes file more; multiline quotes are getting wrapped in <div>s as separate items
+	// need to clean quotes file more; multiline quotes are getting wrapped in <div>s as separate texts
 	// the <div><br></div> are useful here; they delineate the actual quotes
-	function parseQuote(item) {
-		// parseQuoteText(item)
-		// parseQuoteRemainder(item)
-		// parseAuthorCredential(item)
-		// parseAuthorLifespan(item)
-		// parseQuoteYear(item)
-		// parseQuoteSource(item)
-		// parseQuoteTags(item)
-		// parseQuoteContext(item)
+	function parseQuote(remainingText) {
+		// parseQuoteText(remainingText)
+		// parseQuoteremainingText(remainingText)
+		// parseAuthorCredential(remainingText)
+		// parseAuthorLifespan(remainingText)
+		// parseQuoteYear(remainingText)
+		// parseQuoteSource(remainingText)
+		// parseQuoteTags(remainingText)
+		// parseQuoteContext(remainingText)
 		// refactor workingQuoteObject for, after quoteBody and author, a nextParts array so any further details can be looped through
 		// in the markup.
 		// I'm seeing problems in structure here, philosophical problems, like - what is a quote, really?
