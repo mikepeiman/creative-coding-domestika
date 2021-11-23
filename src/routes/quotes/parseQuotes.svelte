@@ -349,7 +349,7 @@
 	{#each filteredQuotes as quote, i}
 		<div class="card p-3 m-12 shadow-md">
 			<div class="badge badge-primary">{i + 1}</div>
-			<h1>{quote.quoteBody}</h1>
+			<h1 class="quoteBody">{quote.quoteBody}</h1>
 			<div class="flex flex-col justify-items-start place-items-start">
 				<!-- <h1 class="badge badge-xl badge-success">{quote.author}</h1> -->
                 <label class="input-group input-group-xs rounded-none">
@@ -387,6 +387,13 @@
 		border-radius: 20px;
 		background-size: 60px 60px;
 	}
+
+    .quoteBody {
+        padding: 1rem;
+        background: rgba(2,0,36,1);
+        background:  linear-gradient(36deg, rgba(2,0,36,1) 0%, rgba(9,9,121,1) 35%, rgba(0,212,255,.2) 100%);
+        border-radius: 5px 5px 5px 0;
+    }
 
     .quotePart {
         background: black;
