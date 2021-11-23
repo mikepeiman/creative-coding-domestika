@@ -193,14 +193,14 @@
 
 	function parseNextPartOfQuote(workingQuoteObject) {
 		let nextPart = workingQuoteObject['nextPart'];
-		// switch (nextPart) {
-		//     case "none":
+		switch (nextPart) {
+		    case "source":
+            workingQuoteObject = parseQuoteSource(workingQuoteObject)
+		        break;
 
-		//         break;
-
-		//     default:
-		//         break;
-		// }
+		    default:
+		        break;
+		}
 		return workingQuoteObject;
 	}
 
@@ -242,38 +242,18 @@
 		let quoteArray = [];
 		for (let i = 0; i < divs.length; i++) {
 			let div = divs[i];
-			// checkDivsWhetherQuoteOrEmpty(divs[i])
 			if (div.innerText.length > 5) {
 				multiLineQuote++;
-				// console.log(`${i}: isolateQuotationBlocks TRUE QUOTE line: ${multiLineQuote}`);
-				// console.log(`${div.innerText.slice(0, 50)}`);
 				quoteArray = [...quoteArray, div.innerText];
 			} else {
 				quotesArrays = [...quotesArrays, quoteArray];
-				// console.log(`${i}: isolateQuotationBlocks FALSE EMPTY`);
 				multiLineQuote = 0;
 				quoteArray = [];
 			}
 		}
-		// console.log(
-		// 	`🚀 ~ file: parseQuotes.svelte ~ line 76 ~ isolateQuotationBlocks ~ isolateQuotationBlocks completed`
-		// );
 	}
 
-	function checkDivsWhetherQuoteOrEmpty() {
-		if (div.innerText.length > 5) {
-			console.log(`${i}: isolateQuotationBlocks TRUE QUOTE`);
-			console.log(`${div.innerText.slice(0, 50)}`);
-			quoteArray = [...quoteArray, div.innerText];
-		} else {
-			console.log(`${i}: isolateQuotationBlocks FALSE EMPTY`);
-		}
-	}
 	function stringifyArray(item) {
-		// console.log(
-		// 	`🚀 ~ file: parseQuotes.svelte ~ line 109 ~ stringifyArray ~ item length ${item.length}`,
-		// 	item
-		// );
 		let tempString = '';
 		if (item.length > 1) {
 			item.forEach((subItem) => {
@@ -313,6 +293,9 @@
 		// parseQuoteSource(item)
 		// parseQuoteTags(item)
 		// parseQuoteContext(item)
+
+        // refactor workingQuoteObject for, after quoteBody and author, a nextParts array so any further details can be looped through
+        // in the markup.
 	}
 
 	function parseAuthorCredential(item) {
@@ -326,6 +309,15 @@
 			.trim();
 		return { quote, item, remainder };
 	}
+
+    function parseQuoteSource(workingQuoteObject) {
+        let item = workingQuoteObject['remainder'].trim()
+        let sourceEnd = item.indexOf("]")
+        let source = Array.from(item).splice(1, sourceEnd - 1).join(String())
+        console.log(`🚀 ~ file: parseQuotes.svelte ~ line 314 ~ parseQuoteSource ~ source\n\n`, source, `\n\n`)
+        workingQuoteObject['source'] = source
+        return workingQuoteObject
+    }
 </script>
 
 <div class="flex flex-col items-center">
@@ -360,6 +352,14 @@
                 <label class="input-group input-group-xs rounded-none">
                     <span class="quotePart rounded-none">{quote.nextPart}</span> 
                     <span class="rounded-none badge badge-info input-xs">{quote.remainder}</span>
+                  </label>
+					<!-- <span class="badge badge-info badge-md">{quote.nextPart}: {quote.remainder}</span> -->
+				{/if}
+
+                {#if quote.source && quote.nextPart}
+                <label class="input-group input-group-xs rounded-none">
+                    <span class="quotePart rounded-none">{quote.nextPart}</span> 
+                    <span class="rounded-none badge badge-info input-xs">{quote.source}</span>
                   </label>
 					<!-- <span class="badge badge-info badge-md">{quote.nextPart}: {quote.remainder}</span> -->
 				{/if}
