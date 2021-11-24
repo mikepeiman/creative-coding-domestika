@@ -30,7 +30,7 @@
 	$: {
 		if (searchTerm) {
 			filteredQuotes = quotes.filter((quote) =>
-				quote.toLowerCase().includes(searchTerm.toLowerCase())
+				quote.originalText.toLowerCase().includes(searchTerm.toLowerCase()) 
 			);
 		} else {
 			filteredQuotes = [...quotes];
@@ -76,8 +76,7 @@
 			context
 		};
 
-		for (let i = 215; i < 220; i++) {
-			// was divs.length
+		for (let i = 0; i < quotesArrays.length; i++) {
 			item = stringifyArray(quotesArrays[i]);
 			if (item.includes('\\r') || item.includes('\\n')) {
 				item = item.replace(/(\\r\\n|\\n|\\r)/gm, '');
@@ -163,6 +162,11 @@
 		// it's an expression of an idea. It could be a statement sourced from written or verbal content,
 		// a question, an axiom, a proverb.
 		// So, perhaps I need a "type" property of every "quote"?
+
+        // 2021-11-23 working very well but not perfectly. 
+        // need still to parse for '@' context and '#' tags symbols, and clean up the ' - ' in front of some authors names
+        // author names also, sometimes first letter is cut off 'pocryphal'
+        // Gary Vee quotes - still needs parsing for source and nickname
 	}
 </script>
 
@@ -185,14 +189,14 @@
 <div class="quotes">
 	{#if quotes.length}
 		{#each filteredQuotes as quote, i}
-			<div class="card p-3 m-12 shadow-md bg-coolGray-900">
-				<div class="badge badge-primary">{i + 1}</div>
-				<h1 class="quoteBody">"{quote.quoteBody}" ~ {quote.author}</h1>
+			<div class="card quote p-3 m-12 shadow-md border-l-2 border-r-2 border-blue-900">
+				<div class="badge bg-blue-900">{i + 1}</div>
+				<h1 class="quoteBody">"{@html quote.quoteBody}" ~ {@html quote.author}</h1>
 				<div class="flex flex-col justify-items-start place-items-start">
 					<!-- <h1 class="badge badge-xl badge-success">{quote.author}</h1> -->
 					<label class="input-group input-group-xs rounded-none">
 						<span class="quotePart">Author</span>
-						<span class="rounded-none badge badge-success input-xs">{quote.author}</span>
+						<span class="rounded-none badge badge-success input-xs">{@html quote.author}</span>
 					</label>
 					{#if quote.authorTitle}
 						<label class="input-group input-group-xs rounded-none">
@@ -216,7 +220,7 @@
 							<span class="rounded-none badge badge-warning input-xs">{quote.source}</span>
 						</label>
 					{/if}
-					{#if quote.details?.length}
+					<!-- {#if quote.details?.length}
 						{#each quote.details as detail}
 							DETAILS
 							<label class="input-group input-group-xs rounded-none">
@@ -224,7 +228,7 @@
 								<span class="rounded-none badge badge-info input-xs">{detail.value}</span>
 							</label>
 						{/each}
-					{/if}
+					{/if} -->
 				</div>
 			</div>
 		{/each}
@@ -256,6 +260,15 @@
 		font-family: 'Outfit', sans-serif;
 		font-weight: 200;
 	}
+    .quote {
+        background: linear-gradient(
+			36deg,
+			rgba(2, 0, 36, 0) 0%,
+			rgba(9, 9, 121, .5) 35%,
+            rgba(2, 0, 36, 0) 100%,
+			rgba(0, 212, 255, 0.1) 100%
+		);
+    }
 
 	.badge {
 		font-family: 'Montserrat', sans-serif;
@@ -266,19 +279,14 @@
 		padding: 1rem;
         font-family: 'Merriweather', serif;
         font-family: 'Karla', sans-serif;
-        font-size: 200%;
+        font-size: 175%;
         /* font-family: 'Dancing Script', cursive;
         font-size: 250%; */
         font-weight: 300;
 		
         
-		background: rgba(2, 0, 36, 1);
-		background: linear-gradient(
-			36deg,
-			rgba(2, 0, 36, 1) 0%,
-			rgba(9, 9, 121, 1) 35%,
-			rgba(0, 212, 255, 0.2) 100%
-		);
+		/* background: rgba(2, 0, 36, 1); */
+
 		border-radius: 5px 5px 5px 0;
 	}
 

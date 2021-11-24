@@ -5,8 +5,8 @@
 </script>
 
 <Nav>
-	<div class="main">
-		<slot name="main" />
+	<div class="main bg-coolGray-900">
+		<slot name="main" class="bg-coolGray-900" />
 	</div>
 </Nav>
 <slot />

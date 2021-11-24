@@ -58,6 +58,11 @@ function getQuoteAuthor(workingQuoteObject) {
 
 function parseNextDetail(workingQuoteObject) {
     let { remainingText } = workingQuoteObject
+    if(!remainingText){
+        workingQuoteObject['parsingComplete'] = true
+        return workingQuoteObject
+    }
+    console.log(`🚀 ~ file: parse.js ~ line 61 ~ parseNextDetail ~ remainingText`, remainingText)
     let separatorValue = findNextSeparatingCharacter(remainingText);
     let nextPart = nameNextPartOfQuote(remainingText, separatorValue)
     console.log('\x1b[41m%s\x1b[0m', 'parse.js line:60 nextPart', nextPart);
@@ -161,7 +166,7 @@ function parseQuoteAuthorTitle(workingQuoteObject, separatorValue) {
         title = text
         text = false
     }
-    workingQuoteObject['authorTitle'] = title;
+    workingQuoteObject['authorTitle'] = title.trim();
     workingQuoteObject.details.push({ 'type': 'Author title', 'value': title })
     workingQuoteObject['remainingText'] = text;
     // workingQuoteObject['parsingComplete'] = true
