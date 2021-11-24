@@ -62,30 +62,12 @@
 		const parser = new DOMParser();
 		const htmlDoc = parser.parseFromString(doc, 'text/html');
 		let divs = htmlDoc.getElementsByTagName('div');
-		isolateQuotationBlocks(divs);
-		let item, remainder;
-		let quoteBody, author, authorTitle, authorCredential, authorInstitution, Tags, tags, context;
-		let quote = {
-			quoteBody,
-			author,
-			authorTitle,
-			authorCredential,
-			authorInstitution,
-			Tags,
-			tags,
-			context
-		};
-
+	    quotesArrays = isolateQuotationBlocks(divs);
 		for (let i = 0; i < quotesArrays.length; i++) {
-			item = stringifyArray(quotesArrays[i]);
+			let item = stringifyArray(quotesArrays[i]);
 			if (item.includes('\\r') || item.includes('\\n')) {
 				item = item.replace(/(\\r\\n|\\n|\\r)/gm, '');
 			}
-			console.log(
-				'%cparseQuotes.svelte line:85 item',
-				'color: white; background-color: #007acc;',
-				item
-			);
 			let workingQuoteObject = {};
 			workingQuoteObject['originalText'] = item;
 			workingQuoteObject['remainingText'] = item;
@@ -114,6 +96,7 @@
 				quoteArray = [];
 			}
 		}
+        return quotesArrays
 	}
 
 	function stringifyArray(item) {
@@ -122,10 +105,6 @@
 			item.forEach((subItem) => {
 				tempString += `${subItem}<br>`;
 			});
-			console.log(
-				`🚀 ~ file: parseQuotes.svelte ~ line 20 ~ stringifyArray ~ tempString`,
-				tempString
-			);
 			return tempString;
 		} else {
 			tempString = '';
@@ -162,14 +141,21 @@
 		// it's an expression of an idea. It could be a statement sourced from written or verbal content,
 		// a question, an axiom, a proverb.
 		// So, perhaps I need a "type" property of every "quote"?
+		// ..
 		// 2021-11-23 working very well but not perfectly.
 		// need still to parse for '@' context and '#' tags symbols, and clean up the ' - ' in front of some authors names
+		// .
 		// author names also, sometimes first letter is cut off 'pocryphal'
+		// .
 		// Gary Vee quotes - still needs parsing for source and nickname
+		// .
+		// Relman quote, missing Harvard Professor title (extended titles)
+		// .
+		// replace standard single quots with right-and-left single and double quotes within quotes
 	}
 </script>
 
-<div class="quotes-wrapper flex flex-col w-1/2">
+<div class="quotes-wrapper flex flex-col w-full">
 	<div class="fileinput-wrapper">
 		<input
 			class="input input-primary"
@@ -189,41 +175,46 @@
 		/>
 	</div>
 
-<div class="quotes">
-	{#if quotes.length}
-		{#each filteredQuotes as quote, i}
-			<div class="card quote p-3 m-12 shadow-md border-l-2 border-r-2 border-blue-900">
-				<div class="badge bg-blue-900">{i + 1}</div>
-				<h1 class="quoteBody">"{@html quote.quoteBody}" ~ {@html quote.author}</h1>
-				<div class="flex flex-col justify-items-start place-items-start">
-					<!-- <h1 class="badge badge-xl badge-success">{quote.author}</h1> -->
-					<label class="input-group input-group-xs rounded-none">
-						<span class="quotePart">Author</span>
-						<span class="rounded-none badge badge-success input-xs">{@html quote.author}</span>
-					</label>
-					{#if quote.authorTitle}
+	<div class="quotes">
+		{#if quotes.length}
+			{#each filteredQuotes as quote, i}
+				<div class="card quote p-3 m-12 shadow-md border-l-2 border-r-2 border-blue-900">
+					<div class="badge bg-blue-900">{i + 1}</div>
+					<h1 class="quote-body">
+						<span class="quote-mark">&ldquo;</span>{@html quote.quoteBody}<span class="quote-mark"
+							>&rdquo;</span
+						>
+						~ {@html quote.author}
+					</h1>
+					<div class="flex flex-col justify-items-start place-items-start">
+						<!-- <h1 class="badge badge-xl badge-success">{quote.author}</h1> -->
 						<label class="input-group input-group-xs rounded-none">
-							<span class="quotePart rounded-none">Title</span>
-							<span class="rounded-none badge bg-coolGray-700 text-cyan-400 input-xs"
-								>{quote.authorTitle}</span
-							>
+							<span class="quotePart">Author</span>
+							<span class="rounded-none badge badge-success input-xs">{@html quote.author}</span>
 						</label>
-					{/if}
-					{#if quote.date}
-						<label class="input-group input-group-xs rounded-none">
-							<span class="quotePart rounded-none">Date</span>
-							<span class="rounded-none badge badge-info bg-coolGray-900 text-blue-500 input-xs"
-								>{quote.date}</span
-							>
-						</label>
-					{/if}
-					{#if quote.source}
-						<label class="input-group input-group-xs rounded-none">
-							<span class="quotePart rounded-none">Source</span>
-							<span class="rounded-none badge badge-warning input-xs">{quote.source}</span>
-						</label>
-					{/if}
-					<!-- {#if quote.details?.length}
+						{#if quote.authorTitle}
+							<label class="input-group input-group-xs rounded-none">
+								<span class="quotePart rounded-none">Title</span>
+								<span class="rounded-none badge bg-coolGray-700 text-cyan-400 input-xs"
+									>{quote.authorTitle}</span
+								>
+							</label>
+						{/if}
+						{#if quote.date}
+							<label class="input-group input-group-xs rounded-none">
+								<span class="quotePart rounded-none">Date</span>
+								<span class="rounded-none badge badge-info bg-coolGray-900 text-blue-500 input-xs"
+									>{quote.date}</span
+								>
+							</label>
+						{/if}
+						{#if quote.source}
+							<label class="input-group input-group-xs rounded-none">
+								<span class="quotePart rounded-none">Source</span>
+								<span class="rounded-none badge badge-warning input-xs">{quote.source}</span>
+							</label>
+						{/if}
+						<!-- {#if quote.details?.length}
 						{#each quote.details as detail}
 							DETAILS
 							<label class="input-group input-group-xs rounded-none">
@@ -232,16 +223,34 @@
 							</label>
 						{/each}
 					{/if} -->
+					</div>
 				</div>
-			</div>
-		{/each}
-	{:else}
-		loading...
-	{/if}
+			{/each}
+		{:else}
+			loading...
+		{/if}
+	</div>
 </div>
-</div>
+
 <style>
-	@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Karla:ital,wght@0,200;0,300;1,200;1,300&family=Merriweather:ital,wght@0,300;1,300&family=Montserrat:ital,wght@0,100;0,300;0,500;0,800;1,100;1,300;1,500;1,800&family=Outfit:wght@200;500&display=swap');
+	@import url('https://fonts.googleapis.com/css2?family=Allura&family=Bad+Script&family=Coda:wght@400;800&family=Dancing+Script&family=Forum&family=Gideon+Roman&family=Great+Vibes&family=Karla:ital,wght@0,200;0,300;1,200;1,300&family=Lemonada:wght@300;400;500&family=Lobster&family=Merriweather:ital,wght@0,300;1,300&family=Monoton&family=Montserrat:ital,wght@0,100;0,300;0,500;0,800;1,100;1,300;1,500;1,800&family=Outfit:wght@200;500&family=Overlock:ital,wght@0,400;0,700;1,400;1,700&family=Staatliches&display=swap');
+
+	/* font-family: 'Allura', cursive;
+font-family: 'Bad Script', cursive;
+font-family: 'Coda', cursive;
+font-family: 'Dancing Script', cursive;
+font-family: 'Forum', cursive;
+font-family: 'Gideon Roman', cursive;
+font-family: 'Great Vibes', cursive;
+font-family: 'Karla', sans-serif;
+font-family: 'Lemonada', cursive;
+font-family: 'Lobster', cursive;
+font-family: 'Merriweather', serif;
+font-family: 'Monoton', cursive;
+font-family: 'Montserrat', sans-serif;
+font-family: 'Outfit', sans-serif;
+font-family: 'Overlock', cursive;
+font-family: 'Staatliches', cursive; */
 
 	input#filterTextBar {
 		margin: 4rem 0 0 0;
@@ -265,10 +274,18 @@
 		background-size: 60px 60px;
 	}
 	.quotes {
-		font-family: 'Outfit', sans-serif;
-		font-weight: 200;
+		/* font-family: 'Karla', sans-serif; */
+		/* font-family: 'Lemonada', cursive; */
+		font-family: 'Merriweather', serif;
+		/* font-family: 'Montserrat', sans-serif; */
+		/* font-family: 'Outfit', sans-serif; */
+		/* font-family: 'Overlock', cursive; */
+		/* font-family: 'Staatliches', cursive; */
+		
+		font-weight: 300;
 	}
 	.quote {
+		font-size: 150%;
 		background: linear-gradient(
 			36deg,
 			rgba(2, 0, 36, 0) 0%,
@@ -278,6 +295,33 @@
 		);
 	}
 
+	.quote-body {
+		/* background: rgba(10,20,30,1);  */
+		/* font-family: 'Gideon Roman', cursive; */
+		/* font-family: 'Forum', cursive; */
+		/* font-family: 'Bad Script', cursive; */
+	}
+
+	.quote-mark {
+		font-family: 'Montserrat', serif;
+		font-size: 125%;
+		font-weight: 300;
+		font-weight: 100;
+        color: rgba(100,200,255,1);
+
+		/* font-family: 'Bad Script', cursive; */
+		font-family: 'Coda', cursive;
+		/* font-family: 'Forum', cursive; */
+		/* font-family: 'Gideon Roman', cursive; */
+		/* font-family: 'Karla', sans-serif; */
+		/* font-family: 'Lemonada', cursive; */
+		/* font-family: 'Lobster', cursive; */
+		/* font-family: 'Merriweather', serif;
+        font-size: 100%; */
+		/* font-family: 'Outfit', sans-serif; */
+		/* font-family: 'Overlock', cursive; */
+		/* font-family: 'Staatliches', cursive; */
+	}
 	.badge {
 		font-family: 'Montserrat', sans-serif;
 		font-weight: normal;

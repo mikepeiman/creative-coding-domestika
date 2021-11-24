@@ -58,7 +58,7 @@ function getQuoteAuthor(workingQuoteObject) {
 
 function parseNextDetail(workingQuoteObject) {
     let { remainingText } = workingQuoteObject
-    if(!remainingText){
+    if (!remainingText) {
         workingQuoteObject['parsingComplete'] = true
         return workingQuoteObject
     }
@@ -113,6 +113,14 @@ function nameNextPartOfQuote(remainingText, separatorValue) {
             return 'source';
             break;
 
+        case '@':
+            return 'context';
+            break;
+
+        case '#':
+            return 'tags';
+            break;
+
         default:
             return false;
             break;
@@ -124,6 +132,10 @@ function parseNextPartOfQuote(workingQuoteObject, nextPart, separatorValue) {
     switch (nextPart) {
         case 'authorTitle':
             return parseQuoteAuthorTitle(workingQuoteObject, separatorValue);
+            break;
+
+        case 'axiom':
+            return parseQuoteAxiom(workingQuoteObject, separatorValue);
             break;
 
         case 'date':
@@ -138,7 +150,7 @@ function parseNextPartOfQuote(workingQuoteObject, nextPart, separatorValue) {
             return parseQuoteContext(workingQuoteObject, separatorValue);
             break;
 
-        case 'tag':
+        case 'tags':
             return parseQuoteTags(workingQuoteObject, separatorValue);
             break;
 
@@ -151,7 +163,7 @@ function parseNextPartOfQuote(workingQuoteObject, nextPart, separatorValue) {
 
 function parseQuoteAuthorTitle(workingQuoteObject, separatorValue) {
     let title, text, nextPart
-    text = workingQuoteObject['remainingText'];
+    text = workingQuoteObject['remainingText'].trim();
     let textEnd = text.length;
     text = Array.from(text).splice(separatorValue + 1, textEnd).join(String())
     separatorValue = findNextSeparatingCharacter(text);
@@ -174,13 +186,27 @@ function parseQuoteAuthorTitle(workingQuoteObject, separatorValue) {
     return workingQuoteObject;
 }
 function parseQuoteAxiom(workingQuoteObject, separatorValue) {
-    let text = workingQuoteObject['remainingText'].trim();
+    let title, text, nextPart
+    text = workingQuoteObject['remainingText'].trim();
+    let textEnd = text.length;
+    text = Array.from(text).splice(separatorValue + 1, textEnd).join(String())
     separatorValue = findNextSeparatingCharacter(text);
-    let axiom = Array.from(text)
-        .splice(separatorValue + 1, text.length)
-        .join(String())
-        .trim();
-    workingQuoteObject.details.push({ type: 'axiom', value: axiom });
+    nextPart = nameNextPartOfQuote(text, separatorValue)
+    console.log('%cparse.js line:148 nextPart', 'color: white; background-color: #007acc;', nextPart);
+    console.log(`🚀 ~ file: parse.js ~ line 148 ~ parseQuoteAuthorTitle ~ nextPart`, nextPart)
+    workingQuoteObject['nextPart'] = nextPart
+    if (nextPart) {
+        title = Array.from(text).splice(1, separatorValue - 1).join(String()).trim();
+        text = Array.from(text).splice(separatorValue, textEnd).join(String());
+    } else {
+        title = text
+        text = false
+    }
+    workingQuoteObject['authorTitle'] = title.trim();
+    workingQuoteObject.details.push({ 'type': 'Author title', 'value': title })
+    workingQuoteObject['remainingText'] = text;
+    // workingQuoteObject['parsingComplete'] = true
+    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 281 ~ parseQuoteAuthorTitle ~ workingQuoteObject\n\n`, workingQuoteObject, `\n\n`)
     return workingQuoteObject;
 }
 function parseQuoteDate(workingQuoteObject, separatorValue) {
@@ -232,24 +258,24 @@ function getClosingCharacterValue(text, char) {
 
 function getMinNotFalse(values) {
     console.log(
-    	`🚀 ~ file: parseQuotes.svelte ~ line 227 ~ getMinNotFalse ~ values\n\n`,
-    	values,
-    	`\n\n`
+        `🚀 ~ file: parseQuotes.svelte ~ line 227 ~ getMinNotFalse ~ values\n\n`,
+        values,
+        `\n\n`
     );
     let current = -1;
     let minValid = -1;
     for (let i = 0; i < values.length; i++) {
-        if(values[i] > -1){
+        if (values[i] > -1) {
             current = values[i]
-            console.log(`🚀 ~ file: parse.js ~ line 229 ~ getMinNotFalse ~ FOUND VALUE *** ${current} ***`, )
-            if(minValid > -1){
+            console.log(`🚀 ~ file: parse.js ~ line 229 ~ getMinNotFalse ~ FOUND VALUE *** ${current} ***`,)
+            if (minValid > -1) {
                 console.log(`🚀 ~ file: parse.js ~ line 231 ~ getMinNotFalse ~ minValid`, minValid)
-                if(minValid > current ){
+                if (minValid > current) {
                     console.log(`🚀 ~ file: parse.js ~ line 233 ~ getMinNotFalse ~ current < minValid`, current < minValid)
                     minValid = current
                 }
             } else {
-                if(current > -1){
+                if (current > -1) {
                     minValid = current
                     console.log(`🚀 ~ file: parse.js ~ line 240 ~ getMinNotFalse ~ minValid`, minValid)
                 }

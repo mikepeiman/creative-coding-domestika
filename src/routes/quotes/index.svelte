@@ -18,6 +18,6 @@
 
 <div class="flex">
 	<ParseQuotes />
-	<Quotes {quotes} />
-	<AddQuote />
+	<!-- <Quotes {quotes} /> -->
+	<!-- <AddQuote /> -->
 </div>
