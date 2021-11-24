@@ -87,11 +87,11 @@
 				'color: white; background-color: #007acc;',
 				item
 			);
-			let workingQuoteObject = {}
-            workingQuoteObject['originalText'] = item
-            workingQuoteObject['remainingText'] = item
-            workingQuoteObject['details'] = []
-            workingQuoteObject = parse(workingQuoteObject);
+			let workingQuoteObject = {};
+			workingQuoteObject['originalText'] = item;
+			workingQuoteObject['remainingText'] = item;
+			workingQuoteObject['details'] = [];
+			workingQuoteObject = parse(workingQuoteObject);
 			// workingQuoteObject['details'] = [];
 			// workingQuoteObject['startingItem'] = item;
 			// workingQuoteObject = parseQuoteText(workingQuoteObject);
@@ -182,56 +182,63 @@
 		bind:value={searchTerm}
 	/>
 </div>
-
-{#if quotes.length}
-	{#each filteredQuotes as quote, i}
-		<div class="card p-3 m-12 shadow-md">
-			<div class="badge badge-primary">{i + 1}</div>
-			<h1 class="quoteBody">{quote.quoteBody}</h1>
-			<div class="flex flex-col justify-items-start place-items-start">
-				<!-- <h1 class="badge badge-xl badge-success">{quote.author}</h1> -->
-				<label class="input-group input-group-xs rounded-none">
-					<span class="quotePart">Author</span>
-					<span class="rounded-none badge badge-success input-xs">{quote.author}</span>
-				</label>
-				{#if quote.authorTitle}
+<div class="quotes">
+	{#if quotes.length}
+		{#each filteredQuotes as quote, i}
+			<div class="card p-3 m-12 shadow-md bg-coolGray-900">
+				<div class="badge badge-primary">{i + 1}</div>
+				<h1 class="quoteBody">"{quote.quoteBody}" ~ {quote.author}</h1>
+				<div class="flex flex-col justify-items-start place-items-start">
+					<!-- <h1 class="badge badge-xl badge-success">{quote.author}</h1> -->
 					<label class="input-group input-group-xs rounded-none">
-						<span class="quotePart rounded-none">Title</span>
-						<span class="rounded-none badge bg-coolGray-700 text-cyan-400 input-xs">{quote.authorTitle}</span>
+						<span class="quotePart">Author</span>
+						<span class="rounded-none badge badge-success input-xs">{quote.author}</span>
 					</label>
-				{/if}
-				{#if quote.date}
-					<label class="input-group input-group-xs rounded-none">
-						<span class="quotePart rounded-none">Date</span>
-						<span class="rounded-none badge badge-info bg-coolGray-900 text-blue-500 input-xs">{quote.date}</span>
-					</label>
-				{/if}
-                {#if quote.source}
-                <label class="input-group input-group-xs rounded-none">
-                    <span class="quotePart rounded-none">Source</span>
-                    <span class="rounded-none badge badge-warning input-xs">{quote.source}</span>
-                </label>
-            {/if}
-				{#if quote.details?.length}
-					{#each quote.details as detail}
-						DETAILS
+					{#if quote.authorTitle}
 						<label class="input-group input-group-xs rounded-none">
-							<span class="quotePart rounded-none">{detail.type}</span>
-							<span class="rounded-none badge badge-info input-xs">{detail.value}</span>
+							<span class="quotePart rounded-none">Title</span>
+							<span class="rounded-none badge bg-coolGray-700 text-cyan-400 input-xs"
+								>{quote.authorTitle}</span
+							>
 						</label>
-					{/each}
-				{/if}
+					{/if}
+					{#if quote.date}
+						<label class="input-group input-group-xs rounded-none">
+							<span class="quotePart rounded-none">Date</span>
+							<span class="rounded-none badge badge-info bg-coolGray-900 text-blue-500 input-xs"
+								>{quote.date}</span
+							>
+						</label>
+					{/if}
+					{#if quote.source}
+						<label class="input-group input-group-xs rounded-none">
+							<span class="quotePart rounded-none">Source</span>
+							<span class="rounded-none badge badge-warning input-xs">{quote.source}</span>
+						</label>
+					{/if}
+					{#if quote.details?.length}
+						{#each quote.details as detail}
+							DETAILS
+							<label class="input-group input-group-xs rounded-none">
+								<span class="quotePart rounded-none">{detail.type}</span>
+								<span class="rounded-none badge badge-info input-xs">{detail.value}</span>
+							</label>
+						{/each}
+					{/if}
+				</div>
 			</div>
-		</div>
-	{/each}
-{/if}
+		{/each}
+	{/if}
+</div>
 
 <style>
 	/* ::-webkit-file-upload-button {
 		display: none;
 	} */
+    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Karla:ital,wght@0,200;0,300;1,200;1,300&family=Merriweather:ital,wght@0,300;1,300&family=Montserrat:ital,wght@0,100;0,300;0,500;0,800;1,100;1,300;1,500;1,800&family=Outfit:wght@200;500&display=swap');
 
-	input#fileInput {
+
+    input#fileInput {
 		display: inline-block;
 		width: 100%;
 		padding: 120px 0 0 0;
@@ -245,9 +252,26 @@
 		border-radius: 20px;
 		background-size: 60px 60px;
 	}
+	.quotes {
+		font-family: 'Outfit', sans-serif;
+		font-weight: 200;
+	}
+
+	.badge {
+		font-family: 'Montserrat', sans-serif;
+		font-weight: normal;
+	}
 
 	.quoteBody {
 		padding: 1rem;
+        font-family: 'Merriweather', serif;
+        font-family: 'Karla', sans-serif;
+        font-size: 200%;
+        /* font-family: 'Dancing Script', cursive;
+        font-size: 250%; */
+        font-weight: 300;
+		
+        
 		background: rgba(2, 0, 36, 1);
 		background: linear-gradient(
 			36deg,
