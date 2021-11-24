@@ -170,7 +170,7 @@
 	}
 </script>
 
-<div class="flex flex-col items-center">
+<div class="flex flex-row items-center">
 	<input
 		class="input input-primary"
 		id="fileInput"
@@ -178,14 +178,17 @@
 		bind:files={input_file}
 		on:change={readFile(input_file)}
 	/>
-
-	<input
-		type="text"
-		placeholder="Search quotes"
-		class="w-5/6 mt-5 input input-primary rounded-md text-lg p-4 border-2 border-grey-200"
-		bind:value={searchTerm}
-	/>
 </div>
+	<div class="flex w-full items-center justify-center">
+        <input
+            type="text"
+                id="filterTextBar"
+            placeholder="Search quotes"
+            class="w-5/6 mt-5 input input-primary rounded-md text-lg p-4 border-2 border-grey-200"
+            bind:value={searchTerm}
+        />
+    </div>
+
 <div class="quotes">
 	{#if quotes.length}
 		{#each filteredQuotes as quote, i}
@@ -232,6 +235,9 @@
 				</div>
 			</div>
 		{/each}
+        {:else}
+        loading... 
+
 	{/if}
 </div>
 
@@ -241,11 +247,17 @@
 	} */
     @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Karla:ital,wght@0,200;0,300;1,200;1,300&family=Merriweather:ital,wght@0,300;1,300&family=Montserrat:ital,wght@0,100;0,300;0,500;0,800;1,100;1,300;1,500;1,800&family=Outfit:wght@200;500&display=swap');
 
+    input#filterTextBar {
+        margin: 4rem 0 0 0;
+    }
 
     input#fileInput {
-		display: inline-block;
-		width: 100%;
-		padding: 120px 0 0 0;
+		/* display: inline-block;
+		width: 100%; */
+        position: absolute;
+        left: 2rem;
+        top: 2rem;
+		padding: 60px 0 0 0;
 		height: 0px;
 		overflow: hidden;
 		-webkit-box-sizing: border-box;
