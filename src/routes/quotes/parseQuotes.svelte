@@ -30,7 +30,7 @@
 	$: {
 		if (searchTerm) {
 			filteredQuotes = quotes.filter((quote) =>
-				quote.originalText.toLowerCase().includes(searchTerm.toLowerCase()) 
+				quote.originalText.toLowerCase().includes(searchTerm.toLowerCase())
 			);
 		} else {
 			filteredQuotes = [...quotes];
@@ -162,32 +162,32 @@
 		// it's an expression of an idea. It could be a statement sourced from written or verbal content,
 		// a question, an axiom, a proverb.
 		// So, perhaps I need a "type" property of every "quote"?
-
-        // 2021-11-23 working very well but not perfectly. 
-        // need still to parse for '@' context and '#' tags symbols, and clean up the ' - ' in front of some authors names
-        // author names also, sometimes first letter is cut off 'pocryphal'
-        // Gary Vee quotes - still needs parsing for source and nickname
+		// 2021-11-23 working very well but not perfectly.
+		// need still to parse for '@' context and '#' tags symbols, and clean up the ' - ' in front of some authors names
+		// author names also, sometimes first letter is cut off 'pocryphal'
+		// Gary Vee quotes - still needs parsing for source and nickname
 	}
 </script>
 
-<div class="flex flex-row items-center">
-	<input
-		class="input input-primary"
-		id="fileInput"
-		type="file"
-		bind:files={input_file}
-		on:change={readFile(input_file)}
-	/>
-</div>
+<div class="quotes-wrapper flex flex-col w-1/2">
+	<div class="fileinput-wrapper">
+		<input
+			class="input input-primary"
+			id="fileInput"
+			type="file"
+			bind:files={input_file}
+			on:change={readFile(input_file)}
+		/>
+	</div>
 	<div class="flex w-full items-center justify-center">
-        <input
-            type="text"
-                id="filterTextBar"
-            placeholder="Search quotes"
-            class="w-5/6 mt-5 input input-primary rounded-md text-lg p-4 border-2 border-grey-200"
-            bind:value={searchTerm}
-        />
-    </div>
+		<input
+			type="text"
+			id="filterTextBar"
+			placeholder="Search quotes"
+			class="w-5/6 mt-5 input input-primary rounded-md text-lg p-4 border-2 border-grey-200"
+			bind:value={searchTerm}
+		/>
+	</div>
 
 <div class="quotes">
 	{#if quotes.length}
@@ -235,28 +235,24 @@
 				</div>
 			</div>
 		{/each}
-        {:else}
-        loading... 
-
+	{:else}
+		loading...
 	{/if}
 </div>
-
+</div>
 <style>
-	/* ::-webkit-file-upload-button {
-		display: none;
-	} */
-    @import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Karla:ital,wght@0,200;0,300;1,200;1,300&family=Merriweather:ital,wght@0,300;1,300&family=Montserrat:ital,wght@0,100;0,300;0,500;0,800;1,100;1,300;1,500;1,800&family=Outfit:wght@200;500&display=swap');
+	@import url('https://fonts.googleapis.com/css2?family=Dancing+Script&family=Karla:ital,wght@0,200;0,300;1,200;1,300&family=Merriweather:ital,wght@0,300;1,300&family=Montserrat:ital,wght@0,100;0,300;0,500;0,800;1,100;1,300;1,500;1,800&family=Outfit:wght@200;500&display=swap');
 
-    input#filterTextBar {
-        margin: 4rem 0 0 0;
-    }
+	input#filterTextBar {
+		margin: 4rem 0 0 0;
+	}
 
-    input#fileInput {
+	input#fileInput {
 		/* display: inline-block;
 		width: 100%; */
-        position: absolute;
-        left: 2rem;
-        top: 2rem;
+		position: absolute;
+		left: 2rem;
+		top: 2rem;
 		padding: 60px 0 0 0;
 		height: 0px;
 		overflow: hidden;
@@ -272,15 +268,15 @@
 		font-family: 'Outfit', sans-serif;
 		font-weight: 200;
 	}
-    .quote {
-        background: linear-gradient(
+	.quote {
+		background: linear-gradient(
 			36deg,
 			rgba(2, 0, 36, 0) 0%,
-			rgba(9, 9, 121, .5) 35%,
-            rgba(2, 0, 36, 0) 100%,
+			rgba(9, 9, 121, 0.5) 35%,
+			rgba(2, 0, 36, 0) 100%,
 			rgba(0, 212, 255, 0.1) 100%
 		);
-    }
+	}
 
 	.badge {
 		font-family: 'Montserrat', sans-serif;
@@ -289,14 +285,13 @@
 
 	.quoteBody {
 		padding: 1rem;
-        font-family: 'Merriweather', serif;
-        font-family: 'Karla', sans-serif;
-        font-size: 175%;
-        /* font-family: 'Dancing Script', cursive;
+		font-family: 'Merriweather', serif;
+		font-family: 'Karla', sans-serif;
+		font-size: 175%;
+		/* font-family: 'Dancing Script', cursive;
         font-size: 250%; */
-        font-weight: 300;
-		
-        
+		font-weight: 300;
+
 		/* background: rgba(2, 0, 36, 1); */
 
 		border-radius: 5px 5px 5px 0;

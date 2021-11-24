@@ -9,13 +9,15 @@
 </script>
 
 <script>
-	import Quotes from "$components/Quotes.svelte";
-	import ParseQuotes from "./parseQuotes.svelte";
-	import AddQuote from "./addQuote.svelte";
-	export let quotes
+	import Quotes from '$components/Quotes.svelte';
+	import ParseQuotes from './parseQuotes.svelte';
+	import AddQuote from './addQuote.svelte';
+	export let quotes;
 </script>
-<!-- <AddQuote /> -->
-<ParseQuotes />
-<div class="quotes">
-	<!-- <Quotes {quotes}/> -->
+
+
+<div class="flex">
+	<ParseQuotes />
+	<Quotes {quotes} />
+	<AddQuote />
 </div>

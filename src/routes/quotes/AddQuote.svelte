@@ -1,6 +1,6 @@
 
 
-<div class="p-10 card bg-base-200 container">
+<div class="p-10 card bg-base-200 w-1/4">
     <div class="form-control flex">
       <label class="label max-w-xs">
         <span>Quote</span>
