@@ -10,7 +10,7 @@ export const parse = (workingQuoteObject) => {
         workingQuoteObject = parseNextDetail(workingQuoteObject)
         parse(workingQuoteObject)
     }
-    console.log(`🚀 ~ file: parse.js ~ line 14 ~ parse ~ workingQuoteObject`, workingQuoteObject)
+    // console.log(`🚀 ~ file: parse.js ~ line 14 ~ parse ~ workingQuoteObject`, workingQuoteObject)
     return workingQuoteObject
 }
 
@@ -75,14 +75,18 @@ function parseNextDetail(workingQuoteObject) {
 function findNextSeparatingCharacter(remainingText) {
     console.log(`🚀 ~ file: parse.js ~ line 68 ~ findNextSeparatingCharacter ~ text`, remainingText)
     let separatorForTitle = remainingText.indexOf(',');
-    let separatorForTags = remainingText.indexOf('[');
+    let separatorForSource = remainingText.indexOf('[');
     let separatorForAxiom = remainingText.indexOf(':');
     let separatorForYear = remainingText.indexOf('(');
+    let separatorForContext = remainingText.indexOf('@');
+    let separatorForTags = remainingText.indexOf('#');
     let separatorValues = [
         separatorForTitle,
-        separatorForTags,
+        separatorForSource,
         separatorForAxiom,
-        separatorForYear
+        separatorForYear,
+        separatorForTags,
+        separatorForContext
     ];
     return getMinNotFalse(separatorValues);
 }
@@ -244,10 +248,14 @@ function parseQuoteSource(workingQuoteObject, separatorValue) {
 }
 function parseQuoteContext(workingQuoteObject, separatorValue) {
     workingQuoteObject['nextPart'] = false;
+    workingQuoteObject['remainingText'] = false
+    workingQuoteObject['parsingComplete'] = true
     return workingQuoteObject;
 }
 function parseQuoteTags(workingQuoteObject, separatorValue) {
     workingQuoteObject['nextPart'] = false;
+    workingQuoteObject['remainingText'] = false
+    workingQuoteObject['parsingComplete'] = true
     return workingQuoteObject;
 }
 
