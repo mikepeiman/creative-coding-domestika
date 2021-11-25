@@ -63,7 +63,8 @@
 		const htmlDoc = parser.parseFromString(doc, 'text/html');
 		let divs = htmlDoc.getElementsByTagName('div');
 		quotesArrays = isolateQuotationBlocks(divs);
-		for (let i = 0; i < 50; i++) { //quotesArrays.length
+		for (let i = 0; i < 50; i++) {
+			//quotesArrays.length
 			let item = stringifyArray(quotesArrays[i]);
 			if (item.includes('\\r') || item.includes('\\n')) {
 				item = item.replace(/(\\r\\n|\\n|\\r)/gm, '');
@@ -111,7 +112,6 @@
 			return item[0];
 		}
 	}
-
 </script>
 
 <div class="quotes-wrapper flex flex-col w-full">
@@ -137,11 +137,11 @@
 	<div class="quotes">
 		{#if quotes.length}
 			{#each filteredQuotes as quote, i}
-				<div class="card quote p-3 m-12 shadow-md border-l-2 border-r-2 border-blue-900">
-					<div class="badge bg-blue-900">{i + 1}</div>
-					<h1 class="quote-body">
-						<span class="quote-mark text-sky-300">&ldquo;</span>{@html quote.quoteBody}<span class="quote-mark"
-							>&rdquo;</span
+				<div class="card quote p-3 m-12 shadow-md border-sky-500 rounded-sm">
+					<div class="badge bg-gray-700">{i + 1}</div>
+					<h1 class="quote-body p-8">
+						<span class="quote-mark text-sky-300">&ldquo;</span>{@html quote.quoteBody}<span
+							class="quote-mark text-sky-300">&rdquo;</span
 						>
 						<span class="quote-author text-sky-300">~ {@html quote.author}</span>
 					</h1>
@@ -149,12 +149,15 @@
 						<!-- <h1 class="badge badge-xl badge-success">{quote.author}</h1> -->
 						<label class="input-group input-group-xs rounded-none">
 							<span class="quotepart-label">Author</span>
-							<span class="rounded-none badge badge-success input-xs bg-coolGray-900 text-sky-300 input-xs">{@html quote.author}</span>
+							<span
+								class="rounded-none badge badge-success bg-coolGray-900 text-sky-300 input-xs"
+								>{@html quote.author}</span
+							>
 						</label>
 						{#if quote.authorTitle}
 							<label class="input-group input-group-xs rounded-none">
 								<span class="quotepart-label rounded-none">Title</span>
-								<span class="rounded-none badge bg-coolGray-700 text-sky-400 input-xs"
+								<span class="rounded-none badge badge-success bg-coolGray-900 text-sky-400 input-xs"
 									>{quote.authorTitle}</span
 								>
 							</label>
@@ -170,7 +173,10 @@
 						{#if quote.source}
 							<label class="input-group input-group-xs rounded-none">
 								<span class="quotepart-label rounded-none">Source</span>
-								<span class="rounded-none badge badge-warning input-xs bg-coolGray-900 text-sky-500 input-xs">{quote.source}</span>
+								<span
+									class="rounded-none badge badge-warning input-xs bg-coolGray-900 text-sky-500 input-xs"
+									>{quote.source}</span
+								>
 							</label>
 						{/if}
 						<!-- {#if quote.details?.length}

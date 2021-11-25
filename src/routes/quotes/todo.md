@@ -36,6 +36,10 @@
 * Relman quote, missing Harvard Professor title (extended titles)
 * replace standard single quots with right-and-left single and double quotes within quotes
 * add an "x" to clear input bar with a click
+* "Voltaire" is missing "V", showing as "oltaire"
+
+## CRUD features
+* If I add a date to a source, then any other quotes citing that source should be updated with the date. In other words, "source" has an attribute "date"
 
 ## Future UI/Design
 * Make author names clickable links; deliver single-page UI but use svelte transitions to both filter for their quotes, and to bring in additional author detail
