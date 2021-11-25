@@ -22,39 +22,53 @@ export const parse = (workingQuoteObject) => {
 
 function getQuoteBody(workingQuoteObject) {
     let { originalText, remainingText } = workingQuoteObject
-    let text, quote
+    let text, splitText, quote, remainder, authorSplit
     text = workingQuoteObject['quoteBody'] = originalText
-    let splitText = text.split(`"`)
+    splitText = text.split(`"`)
     quote = splitText[1]
     splitText
-    let remainder = splitText[2]
+    remainder = splitText[2]
     let len = text.length;
-    let char = `"`
-    let quoteStart = text.indexOf(char) + 1;
-    let quoteEnd = text.indexOf(char, 1) - 1
-    // quote = Array.from(remainingText).splice(quoteStart, quoteEnd).join(String());
-    workingQuoteObject['remainingText'] = Array.from(remainingText)
-        .splice(quoteEnd, len)
+    let char = `-`
+ 
+    // if(remainder.includes("-")){
+    //     authorSplit = remainder.split("-")
+    //     authorSplit.length
+    //     remainder = authorSplit[1]
+    // }
+    let authorStart = remainder.indexOf("-")
+    authorStart = authorStart > -1 ? authorStart : 0;
+    remainder = Array.from(remainder)
+        .splice(authorStart, len)
         .join(String())
         .trim();
     quote
+    remainder
+    workingQuoteObject['remainingText'] = remainder
     workingQuoteObject['quoteBody'] = quote;
     return workingQuoteObject;
 }
-
+function authorContainsDash(author){
+    if(author.includes("-")){
+        return author.split("-")[1].trim()
+    }
+    return author.trim()
+}
 function getQuoteAuthor(workingQuoteObject) {
     let { author, remainingText } = workingQuoteObject
     workingQuoteObject['author'] = remainingText.trim()
     // console.log(`🚀 ~ file: parse.js ~ line 36 ~ getQuoteAuthor ~ remainingText`, remainingText)
     let textEnd = remainingText.length;
     let separatorValue = findNextSeparatingCharacter(remainingText);
-    if (separatorValue > -1) {
-        author = Array.from(remainingText).splice(0, separatorValue).join(String()).trim();
+    if (separatorValue > -1 && separatorValue) {
+        author = Array.from(remainingText).splice(0, separatorValue).join(String());
+        author = authorContainsDash(author)
         remainingText = Array.from(remainingText).splice(separatorValue, textEnd).join(String()).trim();
         workingQuoteObject['remainingText'] = remainingText
     } else {
         // console.log('\x1b[41m%s\x1b[0m', 'parse.js line:45 separatorValue', separatorValue);
-        author = workingQuoteObject['remainingText'].trim()
+        author = authorContainsDash(workingQuoteObject['remainingText'])
+        workingQuoteObject['author'] = author
         workingQuoteObject['remainingText'] = false
         workingQuoteObject['parsingComplete'] = true
     }
@@ -74,110 +88,17 @@ function parseNextDetail(workingQuoteObject) {
     // console.log(`🚀 ~ file: parse.js ~ line 61 ~ parseNextDetail ~ remainingText`, remainingText)
     let separatorValue = findNextSeparatingCharacter(remainingText);
     nextPart = nameNextPartOfQuote(remainingText, separatorValue)
-    // console.log('\x1b[41m%s\x1b[0m', 'parse.js line:60 nextPart', nextPart);
-    // console.log(`🚀 ~ file: parse.js ~ line 60 ~ parseNextDetail ~ nextPart`, nextPart)
+
     workingQuoteObject = parseNextPartOfQuote(workingQuoteObject, nextPart, separatorValue)
     // workingQuoteObject['parsingComplete'] = true
     return workingQuoteObject
-}
-
-function findNextSeparatingCharacter(remainingText) {
-    let separators = [
-        {"name": "title", "openingChar": ",", "closingChar": ",", "value": false},
-        {"name": "source", "openingChar": "[", "closingChar": "]", "value": false},
-        {"name": "axiom", "openingChar": ":", "closingChar": "", "value": false},
-        {"name": "year", "openingChar": "(", "closingChar": ")", "value": false},
-        {"name": "context", "openingChar": "@", "closingChar": ")", "value": false},
-        {"name": "tags", "openingChar": "#", "closingChar": "", "value": false},
-    ]
-    separators.forEach(separator => {
-        separator.value = remainingText.indexOf(separator.openingChar)
-    })
-    return getMinNotFalse(separators);
-}
-
-function isLetter(c) {
-    return c.toLowerCase() != c.toUpperCase();
-}
-
-function nextInstanceOfChar(text, charIndex) {
-    return text.charAt(charIndex + 1)
-}
-
-function nameNextPartOfQuote(remainingText, separatorValue) {
-    let char = remainingText.charAt(separatorValue);
-    if (char == '(') {
-        let nextChar = nextInstanceOfChar(remainingText, separatorValue)
-        if (isLetter(nextChar)) {
-            return 'authorTitle'
-        }
-    }
-    switch (char) {
-        case ',':
-            return 'authorTitle';
-            break;
-        case ':':
-            return 'axiom';
-            break;
-        case '(':
-            return 'date';
-            break;
-        case '[':
-            return 'source';
-            break;
-
-        case '@':
-            return 'context';
-            break;
-
-        case '#':
-            return 'tags';
-            break;
-
-        default:
-            return false;
-            break;
-    }
-}
-
-function parseNextPartOfQuote(workingQuoteObject, nextPart, separatorValue) {
-    // console.log('\x1b[31m%s\x1b[0m', 'parseQuotes.svelte line:191 nextPart', nextPart);
-    switch (nextPart) {
-        case 'authorTitle':
-            return parseQuoteAuthorTitle(workingQuoteObject, separatorValue);
-            break;
-
-        case 'axiom':
-            return parseQuoteAxiom(workingQuoteObject, separatorValue);
-            break;
-
-        case 'date':
-            return parseQuoteDate(workingQuoteObject, separatorValue);
-            break;
-
-        case 'source':
-            return parseQuoteSource(workingQuoteObject, separatorValue);
-            break;
-
-        case 'context':
-            return parseQuoteContext(workingQuoteObject, separatorValue);
-            break;
-
-        case 'tags':
-            return parseQuoteTags(workingQuoteObject, separatorValue);
-            break;
-
-        default:
-            workingQuoteObject['parsingComplete'] = true
-            break;
-    }
-    return workingQuoteObject;
 }
 
 function parseQuoteAuthorTitle(workingQuoteObject, separatorValue) {
     let title, text, nextPart
     text = workingQuoteObject['remainingText'].trim();
     let splitText = text.split(",")
+    splitText
     let textEnd = text.length;
     text = Array.from(text).splice(separatorValue + 1, textEnd).join(String())
     separatorValue = findNextSeparatingCharacter(text);
@@ -185,13 +106,13 @@ function parseQuoteAuthorTitle(workingQuoteObject, separatorValue) {
     workingQuoteObject['nextPart'] = nextPart
     if (nextPart) {
         title = Array.from(text).splice(1, separatorValue - 1).join(String()).trim();
-        text = Array.from(text).splice(separatorValue, textEnd).join(String());
+        workingQuoteObject['remainingText'] = text = Array.from(text).splice(separatorValue, textEnd).join(String());
     } else {
         title = text
         text = false
     }
     workingQuoteObject['authorTitle'] = title.trim();
-    workingQuoteObject.details.push({ 'type': 'Author title', 'value': title })
+    workingQuoteObject.details?.push({ 'type': 'Author title', 'value': title })
     workingQuoteObject['remainingText'] = text;
     // workingQuoteObject['parsingComplete'] = true
     // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 281 ~ parseQuoteAuthorTitle ~ workingQuoteObject\n\n`, workingQuoteObject, `\n\n`)
@@ -313,6 +234,101 @@ function parseQuoteTags(workingQuoteObject, separatorValue) {
     return workingQuoteObject;
 }
 
+
+function findNextSeparatingCharacter(remainingText) {
+    let separators = [
+        {"name": "title", "openingChar": ",", "closingChar": ",", "value": false},
+        {"name": "source", "openingChar": "[", "closingChar": "]", "value": false},
+        {"name": "axiom", "openingChar": ":", "closingChar": "", "value": false},
+        {"name": "year", "openingChar": "(", "closingChar": ")", "value": false},
+        {"name": "context", "openingChar": "@", "closingChar": ")", "value": false},
+        {"name": "tags", "openingChar": "#", "closingChar": "", "value": false},
+    ]
+    separators.forEach(separator => {
+        separator.value = remainingText.indexOf(separator.openingChar)
+    })
+    return getMinNotFalse(separators);
+}
+
+function isLetter(c) {
+    return c.toLowerCase() != c.toUpperCase();
+}
+
+function nextInstanceOfChar(text, charIndex) {
+    return text.charAt(charIndex + 1)
+}
+
+function nameNextPartOfQuote(remainingText, separatorValue) {
+    let char = remainingText.charAt(separatorValue);
+    if (char == '(') {
+        let nextChar = nextInstanceOfChar(remainingText, separatorValue)
+        if (isLetter(nextChar)) {
+            return 'authorTitle'
+        }
+    }
+    switch (char) {
+        case ',':
+            return 'authorTitle';
+            break;
+        case ':':
+            return 'axiom';
+            break;
+        case '(':
+            return 'date';
+            break;
+        case '[':
+            return 'source';
+            break;
+
+        case '@':
+            return 'context';
+            break;
+
+        case '#':
+            return 'tags';
+            break;
+
+        default:
+            return false;
+            break;
+    }
+}
+
+function parseNextPartOfQuote(workingQuoteObject, nextPart, separatorValue) {
+    // console.log('\x1b[31m%s\x1b[0m', 'parseQuotes.svelte line:191 nextPart', nextPart);
+    switch (nextPart) {
+        case 'authorTitle':
+            return parseQuoteAuthorTitle(workingQuoteObject, separatorValue);
+            break;
+
+        case 'axiom':
+            return parseQuoteAxiom(workingQuoteObject, separatorValue);
+            break;
+
+        case 'date':
+            return parseQuoteDate(workingQuoteObject, separatorValue);
+            break;
+
+        case 'source':
+            return parseQuoteSource(workingQuoteObject, separatorValue);
+            break;
+
+        case 'context':
+            return parseQuoteContext(workingQuoteObject, separatorValue);
+            break;
+
+        case 'tags':
+            return parseQuoteTags(workingQuoteObject, separatorValue);
+            break;
+
+        default:
+            workingQuoteObject['parsingComplete'] = true
+            break;
+    }
+    return workingQuoteObject;
+}
+
+
 function getClosingCharacterValue(text, char) {
     let separator = text.indexOf(char);
     return separator;
@@ -368,10 +384,12 @@ let test5 = `"The medical profession is being bought by the pharmaceutical indus
 medicine, but also in terms of teaching and research. The academic institutions of this country are allowing
 themselves to be the paid agents of the pharmaceutical industry. I think it’s disgraceful." - Arnold Seymour Relman,
 Harvard professor, former Editor-In-Chief of the NEJM (New England Journal of Medicine)`
-workingQuoteObject['originalText'] = workingQuoteObject['remainingText'] = test5
-// workingQuoteObject['remainingText'] = test4
-workingQuoteObject['details'] = [];
-workingQuoteObject['tags'] = [];
+let test6 = `"Journalists cannot serve two masters. To the extent that they take on the task of suppressing information or
+biting their tongue for the sake of some political agenda, they are betraying the trust of the public and corrupting
+their own profession." Thomas Sowell`
+let test7 = `"I must judge for myself, but how can I judge, how can any man judge, unless his mind has been opened and
+enlarged by reading." - John Adams`
+workingQuoteObject['originalText'] = workingQuoteObject['remainingText'] = test6
 
 let result = parse(workingQuoteObject)
 result
