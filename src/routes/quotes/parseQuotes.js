@@ -111,7 +111,7 @@ function parseQuoteAuthorTitle(workingQuoteObject, separatorValue) {
         title = text
         text = false
     }
-    workingQuoteObject['authorTitle'] = title.trim();
+    workingQuoteObject.authorTitle?.push(title.trim())
     workingQuoteObject.details?.push({ 'type': 'Author title', 'value': title })
     workingQuoteObject['remainingText'] = text;
     // workingQuoteObject['parsingComplete'] = true
@@ -389,7 +389,7 @@ biting their tongue for the sake of some political agenda, they are betraying th
 their own profession." Thomas Sowell`
 let test7 = `"I must judge for myself, but how can I judge, how can any man judge, unless his mind has been opened and
 enlarged by reading." - John Adams`
-workingQuoteObject['originalText'] = workingQuoteObject['remainingText'] = test6
+workingQuoteObject['originalText'] = workingQuoteObject['remainingText'] = test5
 
 let result = parse(workingQuoteObject)
 result

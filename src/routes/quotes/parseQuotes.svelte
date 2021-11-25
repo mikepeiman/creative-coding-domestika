@@ -72,8 +72,9 @@
 			let workingQuoteObject = {};
 			workingQuoteObject['originalText'] = workingQuoteObject['remainingText'] = item;
 			workingQuoteObject['details'] = [];
+			workingQuoteObject['authorTitle'] = [];
 			workingQuoteObject['tags'] = [];
-            // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 77 ~ parseFile ~ workingQuoteObject`, workingQuoteObject)
+			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 77 ~ parseFile ~ workingQuoteObject`, workingQuoteObject)
 			workingQuoteObject = parse(workingQuoteObject);
 			// workingQuoteObject['details'] = [];
 			// workingQuoteObject['startingItem'] = item;
@@ -157,9 +158,12 @@
 						{#if quote.authorTitle}
 							<label class="input-group input-group-xs rounded-none">
 								<span class="quotepart-label rounded-none">Title</span>
-								<span class="rounded-none badge badge-success bg-coolGray-900 text-sky-400 input-xs"
-									>{quote.authorTitle}</span
-								>
+								{#each quote.authorTitle as title}
+									<span
+										class="rounded-none badge badge-success bg-coolGray-900 text-sky-400 input-xs"
+										>{title}</span
+									>
+								{/each}
 							</label>
 						{/if}
 						{#if quote.date}
@@ -200,14 +204,14 @@
 							</label>
 						{/if}
 						{#if quote.details?.length}
-						{#each quote.details as detail}
-							DETAILS
-							<label class="input-group input-group-xs rounded-none">
-								<span class="quotepart-label rounded-none">{detail.type}</span>
-								<span class="rounded-none badge badge-info input-xs">{detail.value}</span>
-							</label>
-						{/each}
-					{/if}
+							{#each quote.details as detail}
+								DETAILS
+								<label class="input-group input-group-xs rounded-none">
+									<span class="quotepart-label rounded-none">{detail.type}</span>
+									<span class="rounded-none badge badge-info input-xs">{detail.value}</span>
+								</label>
+							{/each}
+						{/if}
 					</div>
 				</div>
 			{/each}
