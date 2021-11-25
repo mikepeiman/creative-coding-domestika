@@ -43,4 +43,6 @@
 
 ## Future UI/Design
 * Make author names clickable links; deliver single-page UI but use svelte transitions to both filter for their quotes, and to bring in additional author detail
-        
+
+## Reminders
+* Remember that all this work on string manipulation, graphs and datasets, and UI are directly applicable to the serious and significant software that I want to develop, most especially LifeIQ/MetaBrain

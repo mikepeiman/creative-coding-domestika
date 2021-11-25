@@ -1,12 +1,17 @@
+import { quotes } from "../upload/index.json"
+
 export const parse = (workingQuoteObject) => {
-    let { originalText } = workingQuoteObject
+    // let { originalText, nextPart } = workingQuoteObject
+    // console.log(`🚀 ~ file: parseQuotes.js ~ line 3 ~ parse ~ originalText`, originalText)
     if (!workingQuoteObject['quoteBody']) {
+        // workingQuoteObject['nextPart'] = 'quoteBody'
         workingQuoteObject = getQuoteBody(workingQuoteObject)
     }
     if (!workingQuoteObject['author']) {
         workingQuoteObject = getQuoteAuthor(workingQuoteObject)
     }
-    if (!workingQuoteObject['parsingComplete']) {
+    
+    if (!workingQuoteObject['parsingComplete']) {  /*? nextPart */
         workingQuoteObject = parseNextDetail(workingQuoteObject)
         parse(workingQuoteObject)
     }
@@ -17,17 +22,23 @@ export const parse = (workingQuoteObject) => {
 
 function getQuoteBody(workingQuoteObject) {
     let { originalText, remainingText } = workingQuoteObject
-    workingQuoteObject['quoteBody'] = originalText
-    let text = originalText
-    let textEnd = remainingText.length;
-    let quoteStart = remainingText.indexOf('"') + 1;
-    let quoteEnd = remainingText.indexOf('"', 10) - 1;
+    let text, quote
+    text = workingQuoteObject['quoteBody'] = originalText
+    let splitText = text.split(`"`)
+    quote = splitText[1]
+    splitText
+    let remainder = splitText[2]
+    let len = text.length;
+    let char = `"`
+    let quoteStart = text.indexOf(char) + 1;
+    let quoteEnd = text.indexOf(char, 1) - 1
+    // quote = Array.from(remainingText).splice(quoteStart, quoteEnd).join(String());
     workingQuoteObject['remainingText'] = Array.from(remainingText)
-        .splice(quoteEnd + 4, textEnd)
+        .splice(quoteEnd, len)
         .join(String())
         .trim();
-    text = Array.from(remainingText).splice(quoteStart, quoteEnd).join(String());
-    workingQuoteObject['quoteBody'] = text;
+    quote
+    workingQuoteObject['quoteBody'] = quote;
     return workingQuoteObject;
 }
 
@@ -55,14 +66,14 @@ function getQuoteAuthor(workingQuoteObject) {
 }
 
 function parseNextDetail(workingQuoteObject) {
-    let { remainingText } = workingQuoteObject
+    let { remainingText, nextPart } = workingQuoteObject
     if (!remainingText) {
         workingQuoteObject['parsingComplete'] = true
         return workingQuoteObject
     }
     // console.log(`🚀 ~ file: parse.js ~ line 61 ~ parseNextDetail ~ remainingText`, remainingText)
     let separatorValue = findNextSeparatingCharacter(remainingText);
-    let nextPart = nameNextPartOfQuote(remainingText, separatorValue)
+    nextPart = nameNextPartOfQuote(remainingText, separatorValue)
     // console.log('\x1b[41m%s\x1b[0m', 'parse.js line:60 nextPart', nextPart);
     // console.log(`🚀 ~ file: parse.js ~ line 60 ~ parseNextDetail ~ nextPart`, nextPart)
     workingQuoteObject = parseNextPartOfQuote(workingQuoteObject, nextPart, separatorValue)
@@ -71,37 +82,36 @@ function parseNextDetail(workingQuoteObject) {
 }
 
 function findNextSeparatingCharacter(remainingText) {
-    // console.log(`🚀 ~ file: parse.js ~ line 68 ~ findNextSeparatingCharacter ~ text`, remainingText)
-    let separatorForTitle = remainingText.indexOf(',');
-    let separatorForSource = remainingText.indexOf('[');
-    let separatorForAxiom = remainingText.indexOf(':');
-    let separatorForYear = remainingText.indexOf('(');
-    let separatorForContext = remainingText.indexOf('@');
-    let separatorForTags = remainingText.indexOf('#');
-    let separatorValues = [
-        separatorForTitle,
-        separatorForSource,
-        separatorForAxiom,
-        separatorForYear,
-        separatorForContext,
-        separatorForTags,
+    let separators = [
+        {"name": "title", "openingChar": ",", "closingChar": ",", "value": false},
+        {"name": "source", "openingChar": "[", "closingChar": "]", "value": false},
+        {"name": "axiom", "openingChar": ":", "closingChar": "", "value": false},
+        {"name": "year", "openingChar": "(", "closingChar": ")", "value": false},
+        {"name": "context", "openingChar": "@", "closingChar": ")", "value": false},
+        {"name": "tags", "openingChar": "#", "closingChar": "", "value": false},
+    ]
+    separators.forEach(separator => {
+        separator.value = remainingText.indexOf(separator.openingChar)
+    })
+    return getMinNotFalse(separators);
+}
 
-    ];
-    return getMinNotFalse(separatorValues);
+function isLetter(c) {
+    return c.toLowerCase() != c.toUpperCase();
+}
+
+function nextInstanceOfChar(text, charIndex) {
+    return text.charAt(charIndex + 1)
 }
 
 function nameNextPartOfQuote(remainingText, separatorValue) {
     let char = remainingText.charAt(separatorValue);
-    console.log(
-        `🚀 ~ file: parseQuotes.svelte ~ line 158 ~ nameNextPartOfQuote \n\n~ char`,
-        char,
-        `\n\n`
-    );
-    console.log(
-        '%cparseQuotes.svelte line:169 text',
-        'color: white; background-color: #007acc;',
-        remainingText
-    );
+    if (char == '(') {
+        let nextChar = nextInstanceOfChar(remainingText, separatorValue)
+        if (isLetter(nextChar)) {
+            return 'authorTitle'
+        }
+    }
     switch (char) {
         case ',':
             return 'authorTitle';
@@ -131,7 +141,7 @@ function nameNextPartOfQuote(remainingText, separatorValue) {
 }
 
 function parseNextPartOfQuote(workingQuoteObject, nextPart, separatorValue) {
-    console.log('\x1b[31m%s\x1b[0m', 'parseQuotes.svelte line:191 nextPart', nextPart);
+    // console.log('\x1b[31m%s\x1b[0m', 'parseQuotes.svelte line:191 nextPart', nextPart);
     switch (nextPart) {
         case 'authorTitle':
             return parseQuoteAuthorTitle(workingQuoteObject, separatorValue);
@@ -167,12 +177,11 @@ function parseNextPartOfQuote(workingQuoteObject, nextPart, separatorValue) {
 function parseQuoteAuthorTitle(workingQuoteObject, separatorValue) {
     let title, text, nextPart
     text = workingQuoteObject['remainingText'].trim();
+    let splitText = text.split(",")
     let textEnd = text.length;
     text = Array.from(text).splice(separatorValue + 1, textEnd).join(String())
     separatorValue = findNextSeparatingCharacter(text);
     nextPart = nameNextPartOfQuote(text, separatorValue)
-    console.log('%cparse.js line:148 nextPart', 'color: white; background-color: #007acc;', nextPart);
-    console.log(`🚀 ~ file: parse.js ~ line 148 ~ parseQuoteAuthorTitle ~ nextPart`, nextPart)
     workingQuoteObject['nextPart'] = nextPart
     if (nextPart) {
         title = Array.from(text).splice(1, separatorValue - 1).join(String()).trim();
@@ -185,7 +194,7 @@ function parseQuoteAuthorTitle(workingQuoteObject, separatorValue) {
     workingQuoteObject.details.push({ 'type': 'Author title', 'value': title })
     workingQuoteObject['remainingText'] = text;
     // workingQuoteObject['parsingComplete'] = true
-    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 281 ~ parseQuoteAuthorTitle ~ workingQuoteObject\n\n`, workingQuoteObject, `\n\n`)
+    // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 281 ~ parseQuoteAuthorTitle ~ workingQuoteObject\n\n`, workingQuoteObject, `\n\n`)
     return workingQuoteObject;
 }
 function parseQuoteAxiom(workingQuoteObject, separatorValue) {
@@ -195,8 +204,6 @@ function parseQuoteAxiom(workingQuoteObject, separatorValue) {
     text = Array.from(text).splice(separatorValue + 1, textEnd).join(String())
     separatorValue = findNextSeparatingCharacter(text);
     nextPart = nameNextPartOfQuote(text, separatorValue)
-    console.log('%cparse.js line:148 nextPart', 'color: white; background-color: #007acc;', nextPart);
-    console.log(`🚀 ~ file: parse.js ~ line 148 ~ parseQuoteAuthorTitle ~ nextPart`, nextPart)
     workingQuoteObject['nextPart'] = nextPart
     if (nextPart) {
         title = Array.from(text).splice(1, separatorValue - 1).join(String()).trim();
@@ -208,8 +215,6 @@ function parseQuoteAxiom(workingQuoteObject, separatorValue) {
     workingQuoteObject['authorTitle'] = title.trim();
     workingQuoteObject.details.push({ 'type': 'Author title', 'value': title })
     workingQuoteObject['remainingText'] = text;
-    // workingQuoteObject['parsingComplete'] = true
-    console.log(`🚀 ~ file: parseQuotes.svelte ~ line 281 ~ parseQuoteAuthorTitle ~ workingQuoteObject\n\n`, workingQuoteObject, `\n\n`)
     return workingQuoteObject;
 }
 function parseQuoteDate(workingQuoteObject, separatorValue) {
@@ -318,48 +323,53 @@ function getNextCharacterValue(text, char, first) {
     return separatorIndex
 }
 
-function getMinNotFalse(values) {
-    // console.log(
-    //     `🚀 ~ file: parseQuotes.svelte ~ line 227 ~ getMinNotFalse ~ values\n\n`,
-    //     values,
-    //     `\n\n`
-    // );
+function getMinNotFalse(separators) {
+    separators
     let current = -1;
     let minValid = -1;
-
-    for (let i = 0; i < values.length; i++) {
-        if (values[i] > -1) {
-            current = values[i]
-            // console.log(`🚀 ~ file: parse.js ~ line 229 ~ getMinNotFalse ~ FOUND VALUE *** ${current} ***`,)
-            if (minValid > -1) {
-                // console.log(`🚀 ~ file: parse.js ~ line 231 ~ getMinNotFalse ~ minValid before checking current: : : `, minValid)
-                if (minValid > current) {
-                    // console.log(`🚀 ~ file: parse.js ~ line 233 ~ getMinNotFalse ~ current < minValid`, current < minValid)
-                    minValid = current
-                }
-            } else {
-                minValid = current
-            }
-            // console.log(`🚀 ~ file: parse.js ~ line 240 ~ getMinNotFalse ~ minValid`, minValid)
-        }
-        // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 231 ~ getMinNotFalse ~ \nvalues[i]`, values[i])
-        // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 232 ~ getMinNotFalse ~ \ncurrent`, current)
-        // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 233 ~ getMinNotFalse ~ \nminValid`, minValid)
+    const charsFound = separators.filter(sep => sep.value > -1)
+    if(!charsFound.length) {
+        return false
     }
+    const minSeparator = charsFound.reduce((min, item) => {return min > item.value ? item.value : min}, charsFound[0].value)
+    minSeparator
+    // for (let i = 0; i < separators.length; i++) {
+    //     if (separators[i].value > -1) {
+    //         current = separators[i].value
+    //         // console.log(`🚀 ~ file: parse.js ~ line 229 ~ getMinNotFalse ~ FOUND VALUE *** ${current} ***`,)
+    //         if (minValid > -1) {
+    //             // console.log(`🚀 ~ file: parse.js ~ line 231 ~ getMinNotFalse ~ minValid before checking current: : : `, minValid)
+    //             if (minValid > current) {
+    //                 // console.log(`🚀 ~ file: parse.js ~ line 233 ~ getMinNotFalse ~ current < minValid`, current < minValid)
+    //                 minValid = current
+    //             }
+    //         } else {
+    //             minValid = current
+    //         }
+    //         // console.log(`🚀 ~ file: parse.js ~ line 240 ~ getMinNotFalse ~ minValid`, minValid)
+    //     }
+    //     // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 231 ~ getMinNotFalse ~ \nseparators[i]`, separators[i])
+    //     // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 232 ~ getMinNotFalse ~ \ncurrent`, current)
+    //     // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 233 ~ getMinNotFalse ~ \nminValid`, minValid)
+    // }
     // console.log(`\n\ngetMinNotFalse BREAK**********************************\n\n`)
-    return minValid;
+    return minSeparator;
 }
 
 let workingQuoteObject = {};
 
-let item = `""Fortunately, some are born with spiritual immune systems that sooner or later give rejection to the illusory  worldview grafted upon them from birth through social conditioning. They begin sensing that something is amiss, and  start looking for answers. Inner knowledge and anomalous outer experiences show them a side of reality others are  oblivious to, and so begins their journey of awakening. Each step of the journey is made by following the heart  instead of following the crowd and by choosing knowledge over the veils of ignorance." - Henri Bergson"`;
-let item2 = `"XML is like violence: If it isn’t working, you aren’t using enough of it." - unknown, #humor #software-development #coding`
-let item3 = `"Isn't it true that all miracles originate in the human heart?" - Michael Peiman @(Or perhaps they
+let test = `""Fortunately, some are born with spiritual immune systems that sooner or later give rejection to the illusory  worldview grafted upon them from birth through social conditioning. They begin sensing that something is amiss, and  start looking for answers. Inner knowledge and anomalous outer experiences show them a side of reality others are  oblivious to, and so begins their journey of awakening. Each step of the journey is made by following the heart  instead of following the crowd and by choosing knowledge over the veils of ignorance." - Henri Bergson"`;
+let test2 = `"XML is like violence: If it isn’t working, you aren’t using enough of it." - unknown, #humor #software-development #coding`
+let test3 = `"Isn't it true that all miracles originate in the human heart?" - Michael Peiman @(Or perhaps they
     originate in God, and are birthed through the human heart) #insight #spirituality #God`
-let item4 = `"Do you have the courage to bring forth this work? The treasures that are hidden inside you are hoping that
+let test4 = `"Do you have the courage to bring forth this work? The treasures that are hidden inside you are hoping that
     you'll say yes." - Jack Gilbert @(What do you want to do with your life?)`
-workingQuoteObject['originalText'] = workingQuoteObject['remainingText'] = item4
-// workingQuoteObject['remainingText'] = item4
+let test5 = `"The medical profession is being bought by the pharmaceutical industry, not only in terms of the practice of
+medicine, but also in terms of teaching and research. The academic institutions of this country are allowing
+themselves to be the paid agents of the pharmaceutical industry. I think it’s disgraceful." - Arnold Seymour Relman,
+Harvard professor, former Editor-In-Chief of the NEJM (New England Journal of Medicine)`
+workingQuoteObject['originalText'] = workingQuoteObject['remainingText'] = test5
+// workingQuoteObject['remainingText'] = test4
 workingQuoteObject['details'] = [];
 workingQuoteObject['tags'] = [];
 

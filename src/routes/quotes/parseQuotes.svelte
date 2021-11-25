@@ -63,15 +63,14 @@
 		const htmlDoc = parser.parseFromString(doc, 'text/html');
 		let divs = htmlDoc.getElementsByTagName('div');
 		quotesArrays = isolateQuotationBlocks(divs);
-		for (let i = 0; i < 15; i++) {
+		for (let i = 54; i < 64; i++) {
 			//quotesArrays.length
 			let item = stringifyArray(quotesArrays[i]);
 			if (item.includes('\\r') || item.includes('\\n')) {
 				item = item.replace(/(\\r\\n|\\n|\\r)/gm, '');
 			}
 			let workingQuoteObject = {};
-			workingQuoteObject['originalText'] = item;
-			workingQuoteObject['remainingText'] = item;
+			workingQuoteObject['originalText'] = workingQuoteObject['remainingText'] = item;
 			workingQuoteObject['details'] = [];
 			workingQuoteObject['tags'] = [];
             // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 77 ~ parseFile ~ workingQuoteObject`, workingQuoteObject)
@@ -166,7 +165,7 @@
 						{#if quote.date}
 							<label class="input-group input-group-xs rounded-none">
 								<span class="quotepart-label rounded-none">Date</span>
-								<span class="rounded-none badge badge-info bg-coolGray-700 text-gray-400 input-xs"
+								<span class="rounded-none badge badge-info bg-coolGray-900 text-gray-400 input-xs"
 									>{quote.date}</span
 								>
 							</label>
@@ -200,7 +199,7 @@
 								>
 							</label>
 						{/if}
-						<!-- {#if quote.details?.length}
+						{#if quote.details?.length}
 						{#each quote.details as detail}
 							DETAILS
 							<label class="input-group input-group-xs rounded-none">
@@ -208,7 +207,7 @@
 								<span class="rounded-none badge badge-info input-xs">{detail.value}</span>
 							</label>
 						{/each}
-					{/if} -->
+					{/if}
 					</div>
 				</div>
 			{/each}
