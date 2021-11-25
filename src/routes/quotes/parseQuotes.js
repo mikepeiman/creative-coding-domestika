@@ -11,6 +11,7 @@ export const parse = (workingQuoteObject) => {
         parse(workingQuoteObject)
     }
     // console.log(`🚀 ~ file: parse.js ~ line 14 ~ parse ~ workingQuoteObject`, workingQuoteObject)
+    /*?  workingQuoteObject */
     return workingQuoteObject
 }
 
@@ -36,13 +37,9 @@ function getQuoteAuthor(workingQuoteObject) {
     console.log(`🚀 ~ file: parse.js ~ line 36 ~ getQuoteAuthor ~ remainingText`, remainingText)
     let textEnd = remainingText.length;
     let separatorValue = findNextSeparatingCharacter(remainingText);
-    if (separatorValue > 0) {
-        console.log(`🚀 ~ file: parse.js ~ line 39 ~ getQuoteAuthor ~ separatorValue`, separatorValue)
-        console.log('%cparse.js line:40 separatorValue', 'color: white; background-color: #26bfa5;', separatorValue);
+    if (separatorValue > -1) {
         author = Array.from(remainingText).splice(0, separatorValue).join(String()).trim();
-        console.log(`🚀 ~ file: parse.js ~ line 42 ~ getQuoteAuthor ~ author`, author)
-        remainingText = Array.from(remainingText).splice(separatorValue, textEnd).join(String()).trim();
-        console.log(`🚀 ~ file: parse.js ~ line 44 ~ getQuoteAuthor ~ remainingText`, remainingText)
+        remainingText = Array.from(remainingText).splice(separatorValue + 1, textEnd).join(String()).trim();
         workingQuoteObject['remainingText'] = remainingText
     } else {
         console.log('\x1b[41m%s\x1b[0m', 'parse.js line:45 separatorValue', separatorValue);
@@ -63,18 +60,18 @@ function parseNextDetail(workingQuoteObject) {
         workingQuoteObject['parsingComplete'] = true
         return workingQuoteObject
     }
-    console.log(`🚀 ~ file: parse.js ~ line 61 ~ parseNextDetail ~ remainingText`, remainingText)
+    // console.log(`🚀 ~ file: parse.js ~ line 61 ~ parseNextDetail ~ remainingText`, remainingText)
     let separatorValue = findNextSeparatingCharacter(remainingText);
     let nextPart = nameNextPartOfQuote(remainingText, separatorValue)
-    console.log('\x1b[41m%s\x1b[0m', 'parse.js line:60 nextPart', nextPart);
-    console.log(`🚀 ~ file: parse.js ~ line 60 ~ parseNextDetail ~ nextPart`, nextPart)
+    // console.log('\x1b[41m%s\x1b[0m', 'parse.js line:60 nextPart', nextPart);
+    // console.log(`🚀 ~ file: parse.js ~ line 60 ~ parseNextDetail ~ nextPart`, nextPart)
     workingQuoteObject = parseNextPartOfQuote(workingQuoteObject, nextPart, separatorValue)
     // workingQuoteObject['parsingComplete'] = true
     return workingQuoteObject
 }
 
 function findNextSeparatingCharacter(remainingText) {
-    console.log(`🚀 ~ file: parse.js ~ line 68 ~ findNextSeparatingCharacter ~ text`, remainingText)
+    // console.log(`🚀 ~ file: parse.js ~ line 68 ~ findNextSeparatingCharacter ~ text`, remainingText)
     let separatorForTitle = remainingText.indexOf(',');
     let separatorForSource = remainingText.indexOf('[');
     let separatorForAxiom = remainingText.indexOf(':');
@@ -275,7 +272,7 @@ function parseQuoteContext(workingQuoteObject, separatorValue) {
     return workingQuoteObject;
 }
 function parseQuoteTags(workingQuoteObject, separatorValue) {
-    console.log(`🚀 ~ file: parse.js ~ line 257 ~ parseQuoteTags ~ workingQuoteObject`, workingQuoteObject)
+    // console.log(`🚀 ~ file: parse.js ~ line 257 ~ parseQuoteTags ~ workingQuoteObject`, workingQuoteObject)
     let { remainingText } = workingQuoteObject
     let text = remainingText.trim();
     console.log(`🚀 ~ file: parse.js ~ line 281 ~ parseQuoteTags ~ text`, text)
@@ -283,23 +280,30 @@ function parseQuoteTags(workingQuoteObject, separatorValue) {
     separatorValue = findNextSeparatingCharacter(text);
     console.log(`🚀 ~ file: parse.js ~ line 255 ~ parseQuoteTags ~ separatorValue`, separatorValue)
     let start = separatorValue + 1
-    let end = text.length - start;
-    let thisPart = Array.from(text)
+    // let end = text.length - getClosingCharacterValue(text, `#`);
+    let end = getNextCharacterValue(text, `#`, start) - 1
+    let thisPart
+    if(end > -1){
+         thisPart = Array.from(text)
         .splice(start, end)
         .join(String())
         .trim();
-    start = thisPart.length
+    } else {
+        thisPart = Array.from(text)
+        .splice(start, text.length)
+        .join(String())
+        .trim();
+    }
+
+    start = thisPart.length + 1
     end = text.length - 1
     remainingText = Array.from(text).splice(start, end).join(String()).trim()
-    console.log(`🚀 ~ file: parse.js ~ line 284 ~ parseQuoteTags ~ remainingText`, remainingText)
+    // console.log(`🚀 ~ file: parse.js ~ line 284 ~ parseQuoteTags ~ remainingText`, remainingText)
     workingQuoteObject['remainingText'] = remainingText
     workingQuoteObject['tags'].push(thisPart)
-    console.log(`🚀 ~ file: parse.js ~ line 297 ~ parseQuoteTags ~ thisPart`, thisPart)
+    // console.log(`🚀 ~ file: parse.js ~ line 297 ~ parseQuoteTags ~ thisPart`, thisPart)
     workingQuoteObject?.details?.push({ type: 'tags', value: thisPart });
-    console.log(`🚀 ~ file: parse.js ~ line 287 ~ parseQuoteTags ~ workingQuoteObject`, workingQuoteObject)
-    workingQuoteObject['nextPart'] = false;
-    workingQuoteObject['remainingText'] = false
-    workingQuoteObject['parsingComplete'] = true
+    // console.log(`🚀 ~ file: parse.js ~ line 287 ~ parseQuoteTags ~ workingQuoteObject`, workingQuoteObject)
     return workingQuoteObject;
 }
 
@@ -308,29 +312,34 @@ function getClosingCharacterValue(text, char) {
     return separator;
 }
 
+function getNextCharacterValue(text, char, first) {
+    let separatorIndex = text.indexOf(char, first+1)
+    return separatorIndex
+}
+
 function getMinNotFalse(values) {
-    console.log(
-        `🚀 ~ file: parseQuotes.svelte ~ line 227 ~ getMinNotFalse ~ values\n\n`,
-        values,
-        `\n\n`
-    );
+    // console.log(
+    //     `🚀 ~ file: parseQuotes.svelte ~ line 227 ~ getMinNotFalse ~ values\n\n`,
+    //     values,
+    //     `\n\n`
+    // );
     let current = -1;
     let minValid = -1;
 
     for (let i = 0; i < values.length; i++) {
         if (values[i] > -1) {
             current = values[i]
-            console.log(`🚀 ~ file: parse.js ~ line 229 ~ getMinNotFalse ~ FOUND VALUE *** ${current} ***`,)
+            // console.log(`🚀 ~ file: parse.js ~ line 229 ~ getMinNotFalse ~ FOUND VALUE *** ${current} ***`,)
             if (minValid > -1) {
-                console.log(`🚀 ~ file: parse.js ~ line 231 ~ getMinNotFalse ~ minValid before checking current: : : `, minValid)
+                // console.log(`🚀 ~ file: parse.js ~ line 231 ~ getMinNotFalse ~ minValid before checking current: : : `, minValid)
                 if (minValid > current) {
-                    console.log(`🚀 ~ file: parse.js ~ line 233 ~ getMinNotFalse ~ current < minValid`, current < minValid)
+                    // console.log(`🚀 ~ file: parse.js ~ line 233 ~ getMinNotFalse ~ current < minValid`, current < minValid)
                     minValid = current
                 }
             } else {
                 minValid = current
             }
-            console.log(`🚀 ~ file: parse.js ~ line 240 ~ getMinNotFalse ~ minValid`, minValid)
+            // console.log(`🚀 ~ file: parse.js ~ line 240 ~ getMinNotFalse ~ minValid`, minValid)
         }
         // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 231 ~ getMinNotFalse ~ \nvalues[i]`, values[i])
         // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 232 ~ getMinNotFalse ~ \ncurrent`, current)
@@ -340,34 +349,14 @@ function getMinNotFalse(values) {
     return minValid;
 }
 
+let workingQuoteObject = {};
 
-// Quote structure from text:
-// quotes are in `" "` quotation marks
-// author is attributed with ` - `
-// author credential/identity is indicated after `,`
-// Tags material/reference is enclosed within `[ ]`
-// an axiomatic saying is prefaced with `Axiom: ` before the name of it `Axiom: Brandolinie's Law`
-// author DOB-Death noted as `(####-####)`
-// quotation year noted at `(####)`
-// if there is additional context or comment, it is signified by `@(xxx xxx)`
-// tags are specified as `#(xxx xxx, ccccc, zzzz)` comma separated, OR each as `#xxx #yyy`
-// I will need also a flag or rating to determine which quotes are authenticated, or the degree of confidence, plus Tagss for this
+let item = `""Fortunately, some are born with spiritual immune systems that sooner or later give rejection to the illusory  worldview grafted upon them from birth through social conditioning. They begin sensing that something is amiss, and  start looking for answers. Inner knowledge and anomalous outer experiences show them a side of reality others are  oblivious to, and so begins their journey of awakening. Each step of the journey is made by following the heart  instead of following the crowd and by choosing knowledge over the veils of ignorance." - Henri Bergson"`;
+let item2 = `"XML is like violence: If it isn’t working, you aren’t using enough of it." - unknown, #humor #software-development #coding`
+workingQuoteObject['originalText'] = item2
+workingQuoteObject['remainingText'] = item2
+workingQuoteObject['details'] = [];
+workingQuoteObject['tags'] = [];
 
-// need to clean quotes file more; multiline quotes are getting wrapped in <div>s as separate texts
-// the <div><br></div> are useful here; they delineate the actual quotes
-function parseQuote(remainingText) {
-    // parseQuoteText(remainingText)
-    // parseQuoteremainingText(remainingText)
-    // parseAuthorCredential(remainingText)
-    // parseAuthorLifespan(remainingText)
-    // parseQuoteYear(remainingText)
-    // parseQuoteSource(remainingText)
-    // parseQuoteTags(remainingText)
-    // parseQuoteContext(remainingText)
-    // refactor workingQuoteObject for, after quoteBody and author, a nextParts array so any further details can be looped through
-    // in the markup.
-    // I'm seeing problems in structure here, philosophical problems, like - what is a quote, really?
-    // it's an expression of an idea. It could be a statement sourced from written or verbal content,
-    // a question, an axiom, a proverb.
-    // So, perhaps I need a "type" property of every "quote"?
-}
+let result = parse(workingQuoteObject)
+result

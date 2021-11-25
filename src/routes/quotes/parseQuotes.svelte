@@ -10,7 +10,7 @@
 <script>
 	import { storedQuotesFile, storedFileContent, storedQuotesArray } from '../../stores/stores.js';
 	import { onMount } from 'svelte';
-	import { parse } from './parse.js';
+	import { parse } from './parseQuotes.js';
 	// import { saveFile} from '$lib/save-file'
 
 	let fsFileContent;
@@ -63,7 +63,7 @@
 		const htmlDoc = parser.parseFromString(doc, 'text/html');
 		let divs = htmlDoc.getElementsByTagName('div');
 		quotesArrays = isolateQuotationBlocks(divs);
-		for (let i = 270; i < 330; i++) {
+		for (let i = 0; i < 15; i++) {
 			//quotesArrays.length
 			let item = stringifyArray(quotesArrays[i]);
 			if (item.includes('\\r') || item.includes('\\n')) {
@@ -74,6 +74,7 @@
 			workingQuoteObject['remainingText'] = item;
 			workingQuoteObject['details'] = [];
 			workingQuoteObject['tags'] = [];
+            console.log(`🚀 ~ file: parseQuotes.svelte ~ line 77 ~ parseFile ~ workingQuoteObject`, workingQuoteObject)
 			workingQuoteObject = parse(workingQuoteObject);
 			// workingQuoteObject['details'] = [];
 			// workingQuoteObject['startingItem'] = item;
