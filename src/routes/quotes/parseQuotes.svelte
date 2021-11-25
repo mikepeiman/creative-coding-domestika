@@ -63,7 +63,7 @@
 		const htmlDoc = parser.parseFromString(doc, 'text/html');
 		let divs = htmlDoc.getElementsByTagName('div');
 		quotesArrays = isolateQuotationBlocks(divs);
-		for (let i = 0; i < 50; i++) {
+		for (let i = 270; i < 330; i++) {
 			//quotesArrays.length
 			let item = stringifyArray(quotesArrays[i]);
 			if (item.includes('\\r') || item.includes('\\n')) {
@@ -73,6 +73,7 @@
 			workingQuoteObject['originalText'] = item;
 			workingQuoteObject['remainingText'] = item;
 			workingQuoteObject['details'] = [];
+			workingQuoteObject['tags'] = [];
 			workingQuoteObject = parse(workingQuoteObject);
 			// workingQuoteObject['details'] = [];
 			// workingQuoteObject['startingItem'] = item;
@@ -149,8 +150,7 @@
 						<!-- <h1 class="badge badge-xl badge-success">{quote.author}</h1> -->
 						<label class="input-group input-group-xs rounded-none">
 							<span class="quotepart-label">Author</span>
-							<span
-								class="rounded-none badge badge-success bg-coolGray-900 text-sky-300 input-xs"
+							<span class="rounded-none badge badge-success bg-coolGray-900 text-sky-300 input-xs"
 								>{@html quote.author}</span
 							>
 						</label>
@@ -176,6 +176,26 @@
 								<span
 									class="rounded-none badge badge-warning input-xs bg-coolGray-900 text-sky-500 input-xs"
 									>{quote.source}</span
+								>
+							</label>
+						{/if}
+						{#if quote.tags.length}
+							{#each quote.tags as tag}
+								<label class="input-group input-group-xs rounded-none">
+									<span class="quotepart-label rounded-none">Tags</span>
+									<span
+										class="rounded-none badge badge-warning input-xs bg-coolGray-900 text-sky-500 input-xs"
+										>{tag}</span
+									>
+								</label>
+							{/each}
+						{/if}
+						{#if quote.context}
+							<label class="input-group input-group-xs rounded-none">
+								<span class="quotepart-label rounded-none">Context</span>
+								<span
+									class="rounded-none badge badge-warning input-xs bg-coolGray-900 text-sky-500 input-xs"
+									>{quote.context}</span
 								>
 							</label>
 						{/if}
