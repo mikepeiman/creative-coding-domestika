@@ -63,17 +63,15 @@
 		const htmlDoc = parser.parseFromString(doc, 'text/html');
 		let divs = htmlDoc.getElementsByTagName('div');
 		quotesArrays = isolateQuotationBlocks(divs);
-		for (let i = 54; i < 64; i++) {
-			//quotesArrays.length
+		for (let i = 0; i < 660; i++) { 
+			// 54-64 gives the meical journal quotes
 			let item = stringifyArray(quotesArrays[i]);
 			if (item.includes('\\r') || item.includes('\\n')) {
 				item = item.replace(/(\\r\\n|\\n|\\r)/gm, '');
 			}
 			let workingQuoteObject = {};
 			workingQuoteObject['originalText'] = workingQuoteObject['remainingText'] = item;
-			workingQuoteObject['details'] = [];
-			workingQuoteObject['authorTitle'] = [];
-			workingQuoteObject['tags'] = [];
+			workingQuoteObject['details'] =	workingQuoteObject['authorTitle'] =	workingQuoteObject['tags'] = workingQuoteObject['sources'] = []
 			// console.log(`🚀 ~ file: parseQuotes.svelte ~ line 77 ~ parseFile ~ workingQuoteObject`, workingQuoteObject)
 			workingQuoteObject = parse(workingQuoteObject);
 			// workingQuoteObject['details'] = [];
