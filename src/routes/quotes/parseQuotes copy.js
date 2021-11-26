@@ -1,3 +1,5 @@
+import { quotes } from "../upload/index.json"
+
 export const parse = (workingQuoteObject) => {
     // let { originalText, nextPart } = workingQuoteObject
     // console.log(`🚀 ~ file: parseQuotes.js ~ line 3 ~ parse ~ originalText`, originalText)
