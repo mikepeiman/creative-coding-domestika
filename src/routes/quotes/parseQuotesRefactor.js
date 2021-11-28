@@ -1,17 +1,5 @@
 
-
-
-
-
-
 let separators = {
-    title: {"openingChar": ",", "closingChar": ",", "value": false},
-    source: {"openingChar": "[", "closingChar": "]", "value": false},
-    axiom: {"openingChar": ":", "closingChar": "", "value": false},
-    year: {"openingChar": "(", "closingChar": ")", "value": false},
-    context: {"openingChar": "@", "closingChar": ")", "value": false},
-    tags: {"openingChar": "#", "closingChar": "", "value": false},
-}let separators = {
     title: {"openingChar": ",", "closingChar": ",", "value": false},
     source: {"openingChar": "[", "closingChar": "]", "value": false},
     axiom: {"openingChar": ":", "closingChar": "", "value": false},

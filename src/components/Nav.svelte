@@ -7,6 +7,7 @@
         <a href="/posts">Blog</a>
         <a href="/todos">Todos</a>
         <a href="/quotes">Quotes</a>
+        <a href="/creative">Creative</a>
     </nav>
 </div>
 

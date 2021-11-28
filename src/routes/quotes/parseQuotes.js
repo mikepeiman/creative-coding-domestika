@@ -54,13 +54,14 @@ function authorContainsDash(author){
 }
 function getQuoteAuthor(workingQuoteObject) {
     let { author, remainingText } = workingQuoteObject
-    workingQuoteObject['author'] = remainingText.trim()
-    // console.log(`🚀 ~ file: parse.js ~ line 36 ~ getQuoteAuthor ~ remainingText`, remainingText)
+    workingQuoteObject['author'] = remainingText
+    console.log(remainingText)
     let textEnd = remainingText.length;
     let separatorValue = findNextSeparatingCharacter(remainingText);
     if (separatorValue > -1 && separatorValue) {
-        author = Array.from(remainingText).splice(0, separatorValue).join(String());
         author = authorContainsDash(author)
+        author = Array.from(remainingText).splice(0, separatorValue).join(String());
+
         remainingText = Array.from(remainingText).splice(separatorValue, textEnd).join(String()).trim();
         workingQuoteObject['remainingText'] = remainingText
     } else {
@@ -70,7 +71,7 @@ function getQuoteAuthor(workingQuoteObject) {
         workingQuoteObject['remainingText'] = false
         workingQuoteObject['parsingComplete'] = true
     }
-    workingQuoteObject['author'] = author.trim();
+    workingQuoteObject['author'] = author;
     // console.log(`🚀 ~ file: parseQuotes.svelte ~ line 53 ~ parseQuoteAuthorName ~ author`, author)
     // console.log(`🚀 ~ file: parse.js ~ line 54 ~ getQuoteAuthor ~ remainingText`, remainingText)
     // console.log(`🚀 ~ file: parse.js ~ line 54 ~ getQuoteAuthor ~ workingQuoteObject`, workingQuoteObject)
@@ -142,6 +143,7 @@ function parseQuoteDate(workingQuoteObject, separatorValue) {
     let textEnd = remainingText.length;
     let date = Array.from(remainingText).splice(separatorValue + 1, textEnd - separatorValue - 2).join(String());
     workingQuoteObject['date'] = date
+    let remainderStart = textEnd - date.length
     console.log(`🚀 ~ file: parse.js ~ line 193 ~ parseQuoteDate ~ date`, date)
     remainingText = Array.from(remainingText).splice(separatorValue, textEnd).join(String());
     console.log(`🚀 ~ file: parse.js ~ line 195 ~ parseQuoteDate ~ remainingText`, remainingText)
@@ -177,17 +179,12 @@ function parseQuoteContext(workingQuoteObject, separatorValue) {
     // console.log(`🚀 ~ file: parse.js ~ line 255 ~ parseQuoteContext ~ separatorValue`, separatorValue)
     let start = separatorValue + 2
     let end = getClosingCharacterValue(text, ')');
-    let newPart = text.split('(')[1]
-    let context = newPart.split(')')[0]
-    let remainder = newPart.split(')')[1].trim()
-    // let thisPart = Array.from(text)
-    //     .splice(start, end - 2)
-    //     .join(String())
-    //     .trim();
-    // let remainderStart = thisPart.length + start
-    // end = text.length - 1
-    // remainingText = Array.from(text).splice(remainderStart, end).join(String()).trim()
-    // // console.log(`🚀 ~ file: parse.js ~ line 284 ~ parseQuoteContext ~ remainingText`, remainingText)
+    let newPart = text.split('(')[1] ? text.split('(')[1] : text
+    let context = newPart.split(')')[0] ? newPart.split(')')[0] : newPart
+    let remainder = newPart.split(')')[1] ? newPart.split(')')[1].trim() : false
+    if(!remainder){
+        workingQuoteObject['parsingComplete'] = true
+    }
     workingQuoteObject['remainingText'] = remainder
     workingQuoteObject['context'] = context
     workingQuoteObject?.details?.push({ type: 'context', value: context });
@@ -235,6 +232,7 @@ function parseQuoteTags(workingQuoteObject, separatorValue) {
 
 function findNextSeparatingCharacter(remainingText) {
     let separators = [
+        {"name": "author", "openingChar": "-", "closingChar": "", "value": false},
         {"name": "title", "openingChar": ",", "closingChar": ",", "value": false},
         {"name": "source", "openingChar": "[", "closingChar": "]", "value": false},
         {"name": "axiom", "openingChar": ":", "closingChar": "", "value": false},
@@ -265,6 +263,9 @@ function nameNextPartOfQuote(remainingText, separatorValue) {
         }
     }
     switch (char) {
+        case '-':
+            return 'authorName';
+            break;
         case ',':
             return 'authorTitle';
             break;
@@ -295,6 +296,10 @@ function nameNextPartOfQuote(remainingText, separatorValue) {
 function parseNextPartOfQuote(workingQuoteObject, nextPart, separatorValue) {
     // console.log('\x1b[31m%s\x1b[0m', 'parseQuotes.svelte line:191 nextPart', nextPart);
     switch (nextPart) {
+        case 'authorName':
+            return parseQuoteAuthor(workingQuoteObject, separatorValue);
+            break;
+
         case 'authorTitle':
             return parseQuoteAuthorTitle(workingQuoteObject, separatorValue);
             break;
@@ -387,6 +392,13 @@ biting their tongue for the sake of some political agenda, they are betraying th
 their own profession." Thomas Sowell`
 let test7 = `"I must judge for myself, but how can I judge, how can any man judge, unless his mind has been opened and
 enlarged by reading." - John Adams`
+let test8 = `"Most people would rather live a comfortable lie than the possibility of an uncomfortable truth." -
+Wilhelmus Peiman (2019-09-27)`
+let test9 = `"The only way to eat an elephant is one bite at a time." - anonymous`
+let test10 = `"Antifa: because nothing says &ldquo;I hate fascism&rdquo; like attacking anyone who has an independent
+thought." -
+@yeebingeebin [YouTube]`
+workingQuoteObject['originalText'] = workingQuoteObject['remainingText'] = test10
 
 workingQuoteObject['originalText'] = workingQuoteObject['remainingText'] = test5
 let result = parse(workingQuoteObject)
