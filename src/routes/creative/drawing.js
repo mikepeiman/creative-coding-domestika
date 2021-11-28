@@ -15,17 +15,17 @@ let drawArc = (x, y, r, start, end) => {
 	context.arc(x, y, r, start, end);
 	context.stroke();
 };
-let drawRect = (i, originX, originY, width, height, gap, lineWidth) => {
+export let drawRect = (context, i, originX, originY, width, height, gap, lineWidth) => {
+	context.strokeStyle = "#aabbff"
 	context.beginPath();
-	width = width + ((width + gap) * i)
-	height = height + ((height + gap) * i)
+	originX = width + ((width + gap) * i)
+	originY = height + ((height + gap) * i)
 	context.rect(originX, originY, width, height);
-	context.fill();
 	context.lineWidth = lineWidth;
 	context.stroke();
+	// context.strokeStyle = "#aabbff"
+	context.fill();
 };
-export let drawOnCanvas = (canvas, context) => {
-	for (let i = 0; i < 5; i++) {
-		drawRect(i, 100, 100, 40, 40, 40, 5);
-	}
-};
+export const drawOnCanvas = (context) => {
+	drawRect(context, i, 100, 100, 40, 40, 40, 5);
+}
