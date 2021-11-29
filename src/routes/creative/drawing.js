@@ -28,6 +28,8 @@ export const drawRect = (context, originX, originY, width, height, gap, lineWidt
 export const setItemColor = (i, j, totalItems) => {
 	let hueOffset = 30
 	let hueInterval = 360 / (totalItems)
-	let currentFactor = i + j
-	return `hsla(${(currentFactor + (i*.75)) * hueInterval + hueOffset}, 45%, 45%, .4)`;
+	let offset = Math.random() * 5
+	let currentFactor = (i+offset)*(j+offset);
+	let color = `hsla(${(currentFactor + (i*.75)) * hueInterval + hueOffset}, 45%, 45%, .4)`;
+	return color
 }
