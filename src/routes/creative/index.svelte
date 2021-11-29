@@ -16,11 +16,15 @@
 		gap,
 		width,
 		height,
-        pageMargin
+		originX,
+		originY,
+		pageMargin;
+	originX = 100;
+	originY = 100;
 	itemsPerLine = 25;
 	itemsPerColumn = 25;
 	gapPercentage = 0.2;
-    pageMargin = 150
+	pageMargin = 150;
 	widthPercentage = 1 - gapPercentage;
 	heightPercentage = 1 - gapPercentage;
 	gap = widthPerItem * gapPercentage;
@@ -34,29 +38,32 @@
 	$: innerWidth, innerHeight;
 	$: width = widthPerItem * 0.8;
 	$: gap = widthPerItem * 0.2;
-	// $: if(browser) { recalculateDrawing()}
+	// $: if(browser) { drawGrid()}
 	onMount(() => {
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
 		widthPerItem = (innerWidth - pageMargin) / itemsPerLine;
-		heightPerItem = (innerHeight - pageMargin * 3) / itemsPerColumn;
+		// heightPerItem = (innerHeight - pageMargin) / itemsPerColumn;
+        heightPerItem = 100
+        widthPerItem =100
 		gap = widthPerItem * gapPercentage;
-		width = widthPerItem * widthPercentage;
-		height = heightPerItem * heightPercentage;
+		width = widthPerItem 
+		height = heightPerItem 
 		console.log(`🚀 ~ file: index.svelte ~ line 11 ~ onMount ~ innerHeight`, innerHeight);
 		context = canvas.getContext('2d');
 		context.fillStyle = '#0099ff';
-		recalculateDrawing();
+		drawGrid();
 		// for (let i = 0; i < itemsPerLine; i++) {
 		// 	drawRect(context, i, 100, 100, width, 40, gap, 5);
 		// }
 	});
 
-	function recalculateDrawing() {
+	function drawGrid() {
 		for (let j = 0; j < itemsPerColumn; j++) {
 			for (let i = 0; i < itemsPerLine; i++) {
-                let fill = `#${i}${i}${i}${j}${j}${j}`;
-				drawRect(context, i, j, 100, 100, width, height, gap, 5, fill);
+				let fill = `#${i}${i}${i}${j}${j}${j}`;
+				drawRect(context, i, j, originX, originY, width, height, gap, 5, fill);
+				drawRect(context, i, j, originX + 8, originY + 8, width - 16, height - 16, gap, 10, fill);
 			}
 		}
 	}
