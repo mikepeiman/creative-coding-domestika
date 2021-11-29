@@ -3,39 +3,46 @@
 	import { onMount } from 'svelte';
 	import { drawRect } from './drawing';
 	let canvas, context, innerWidth, innerHeight;
-	let itemsPerLine,
-		itemsPerColumn,
-		gap,
-		width,
-		height,
-		originX,
-		originY
-	originX = 100
+	let itemsPerLine, itemsPerColumn, gap, width, height, originX, originY, totalItems;
+	originX = 100;
 	originY = 100;
 	itemsPerLine = 12;
 	itemsPerColumn = 12;
-
+	totalItems = itemsPerColumn * itemsPerLine;
 	$: innerWidth, innerHeight;
 	onMount(() => {
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
-		gap = 40
-		width = height = 100
+		gap = 40;
+		width = height = 100;
 		context = canvas.getContext('2d');
 		context.fillStyle = '#0099ff';
 		drawGrid();
 	});
-
+    let fill
 	function drawGrid() {
+        context.clearRect(0, 0, canvas.width, canvas.height)
 		for (let j = 0; j < itemsPerColumn; j++) {
 			for (let i = 0; i < itemsPerLine; i++) {
-				let fill = `#${i}${i}${i}${j}${j}${j}`;
-                let x = originX + (width + gap )* i
-                let y= originY + (height + gap )* j
-				drawRect(context, i, j, x, y, width, height, gap, 5, fill);
-				drawRect(context, i, j, x + 8, y + 8, width - 16, height - 16, gap, 5, fill);
+                fill = `hsla(180, 50%, 50%, .2)`;
+				let x = originX + (width + gap) * i;
+				let y = originY + (height + gap) * j;
+
+                drawRect(context, i, j, x, y, width, height, gap, 5, fill);
+				if (Math.random() > 0.5) {
+					fill = setItemColor(i, j, totalItems);
+					drawRect(context, i, j, x + 8, y + 8, width - 16, height - 16, gap, 5, fill);
+				}
+                fill = `hsla(180, 50%, 50%, .2)`;
 			}
 		}
+	}
+
+	function setItemColor(i, j, totalItems) {
+		let hueOffset = 30;
+		let hueInterval = 360 / totalItems;
+		let currentFactor = i + j;
+		return `hsla(${currentFactor * hueInterval + hueOffset}, 50%, 50%, 1)`;
 	}
 </script>
 
@@ -44,6 +51,7 @@
 <svelte:window bind:innerHeight bind:innerWidth />
 <div class="flex flex-col content-center items-center w-full">
 	<h1 class="text-sky-300 w-full text-center text-3xl bold">Creative Coding</h1>
+    <button class="btn btn-outline btn-primary" on:click={drawGrid}>Generate</button>
 	<div class="flex w-full items-center justify-center m-12">
 		<canvas bind:this={canvas} />
 	</div>

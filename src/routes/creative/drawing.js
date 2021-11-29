@@ -24,13 +24,13 @@ export let drawRect = (context, i, j, originX, originY, width, height, gap, line
 	context.lineWidth = lineWidth;
 	context.stroke();
 	// context.strokeStyle = "#aabbff"
-	context.fillStyle = setItemColor(i, j, totalItems)
+	context.fillStyle = fill; //setItemColor(i, j, totalItems)
 	context.fill();
 };
 
 function setItemColor(i, j, totalItems) {
-	let hueOffset = 180
-	let hueInterval = 360 / totalItems
+	let hueOffset = 30
+	let hueInterval = 360 / (totalItems)
 	let currentFactor = i + j
 	return `hsla(${(currentFactor + (i*.75)) * hueInterval + hueOffset}, 45%, 45%, .4)`;
 }
