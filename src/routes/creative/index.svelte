@@ -8,62 +8,35 @@
 	let canvas, context, innerWidth, innerHeight;
 	let itemsPerLine,
 		itemsPerColumn,
-		widthPerItem,
-		heightPerItem,
-		gapPercentage,
-		widthPercentage,
-		heightPercentage,
 		gap,
 		width,
 		height,
 		originX,
-		originY,
-		pageMargin;
-	originX = 100;
+		originY
+	originX = 100
 	originY = 100;
-	itemsPerLine = 25;
-	itemsPerColumn = 25;
-	gapPercentage = 0.2;
-	pageMargin = 150;
-	widthPercentage = 1 - gapPercentage;
-	heightPercentage = 1 - gapPercentage;
-	gap = widthPerItem * gapPercentage;
-	width = widthPerItem * widthPercentage;
-	height = heightPerItem * heightPercentage;
-	$: widthPerItem = innerWidth / itemsPerLine;
-	$: console.log(
-		`🚀 ~ file: index.svelte ~ line 9 ~ ${widthPerItem} = ${innerWidth} / ${itemsPerLine}`,
-		(widthPerItem = innerWidth / itemsPerLine)
-	);
+	itemsPerLine = 12;
+	itemsPerColumn = 12;
+
 	$: innerWidth, innerHeight;
-	$: width = widthPerItem * 0.8;
-	$: gap = widthPerItem * 0.2;
-	// $: if(browser) { drawGrid()}
 	onMount(() => {
 		canvas.width = innerWidth;
 		canvas.height = innerHeight;
-		widthPerItem = (innerWidth - pageMargin) / itemsPerLine;
-		// heightPerItem = (innerHeight - pageMargin) / itemsPerColumn;
-        heightPerItem = 100
-        widthPerItem =100
-		gap = widthPerItem * gapPercentage;
-		width = widthPerItem 
-		height = heightPerItem 
-		console.log(`🚀 ~ file: index.svelte ~ line 11 ~ onMount ~ innerHeight`, innerHeight);
+		gap = 40
+		width = height = 100
 		context = canvas.getContext('2d');
 		context.fillStyle = '#0099ff';
 		drawGrid();
-		// for (let i = 0; i < itemsPerLine; i++) {
-		// 	drawRect(context, i, 100, 100, width, 40, gap, 5);
-		// }
 	});
 
 	function drawGrid() {
 		for (let j = 0; j < itemsPerColumn; j++) {
 			for (let i = 0; i < itemsPerLine; i++) {
 				let fill = `#${i}${i}${i}${j}${j}${j}`;
-				drawRect(context, i, j, originX, originY, width, height, gap, 5, fill);
-				drawRect(context, i, j, originX + 8, originY + 8, width - 16, height - 16, gap, 10, fill);
+                let x = originX + (width + gap )* i
+                let y= originY + (height + gap )* j
+				drawRect(context, i, j, x, y, width, height, gap, 5, fill);
+				drawRect(context, i, j, x + 8, y + 8, width - 16, height - 16, gap, 5, fill);
 			}
 		}
 	}
