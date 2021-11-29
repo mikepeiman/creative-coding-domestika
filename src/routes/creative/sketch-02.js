@@ -16,14 +16,13 @@ const sketch = () => {
     const h = height * 0.3;
 
     context.save()
-
     context.translate(x, y);
     context.rotate(1);
     context.beginPath();
     context.rect(-w * 0.5, -h * 0.5, w, h);
     context.fill();
-
     context.restore()
+
     context.translate(200, 200)
     context.beginPath()
     context.arc(0, 0, 50, 0, Math.PI * 2)
