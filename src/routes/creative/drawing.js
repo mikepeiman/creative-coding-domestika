@@ -24,12 +24,17 @@ export let drawRect = (context, i, j, originX, originY, width, height, gap, line
 	context.lineWidth = lineWidth;
 	context.stroke();
 	// context.strokeStyle = "#aabbff"
-	context.fillStyle = fill
+	context.fillStyle = setItemColor(i, j, totalItems)
 	context.fill();
 };
-export const drawOnCanvas = (context) => {
-	drawRect(context, i, 100, 100, 160, 40, 40, 5);
+
+function setItemColor(i, j, totalItems) {
+	let hueOffset = 180
+	let hueInterval = 360 / totalItems
+	let currentFactor = i + j
+	return `hsla(${(currentFactor + (i*.75)) * hueInterval + hueOffset}, 45%, 45%, .4)`;
 }
+
 let canvas, context, innerWidth, innerHeight;
 let itemsPerLine,
 	itemsPerColumn,
@@ -43,13 +48,14 @@ let itemsPerLine,
 	height,
 	originX,
 	originY,
-	pageMargin;
+	pageMargin,
+	totalItems;
 gap = 10
 width = 50
 height = 50
 itemsPerColumn = 5
 itemsPerLine = 5
-
+totalItems = itemsPerLine * itemsPerColumn
 let drawRectData = (i, j, originX, originY, width, height, gap, lineWidth, fill) => {
 	originX = width + (width + gap) * i
 	originX

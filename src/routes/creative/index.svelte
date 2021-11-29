@@ -1,10 +1,7 @@
 <!-- Canvas REPL for help: https://svelte.dev/repl/e4fd9f9f6fd24f909c073a02f1a921cc?version=3.44.2 -->
 <script>
-	import { browser } from '$app/env';
-
 	import { onMount } from 'svelte';
-	import { draw } from 'svelte/transition';
-	import { drawOnCanvas, drawRect } from './drawing';
+	import { drawRect } from './drawing';
 	let canvas, context, innerWidth, innerHeight;
 	let itemsPerLine,
 		itemsPerColumn,
