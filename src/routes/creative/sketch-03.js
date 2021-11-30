@@ -3,25 +3,25 @@ const math = require('canvas-sketch-util/math')
 const random = require('canvas-sketch-util/random')
 
 const settings = {
-  dimensions: [ 2048, 2048 ]
+  dimensions: [2048, 2048]
 };
+let agents = []
+const sketch = ({ context, width, height }) => {
 
-const sketch = () => {
+  for (let i = 0; i < 40; i++) {
+    let x = random.range(0, width)
+    let y = random.range(0, height)
+    let agent = new Agent(x, y)
+    agents = [...agents, agent]
+  }
+
   return ({ context, width, height }) => {
     context.fillStyle = 'white';
     context.fillRect(0, 0, width, height);
 
-for (let i = 0; i < 40; i++) {
-  let agent = new Agent(random.range(1, width), random.range(1, height))
-  agent.draw(context)
-  
-}
-
-    const agentA = new Agent(800, 400)
-    const agentB = new Agent(300, 700)
-
-    agentA.draw(context)
-    agentB.draw(context)
+    agents.forEach(agent => {
+      agent.draw(context)
+    })
   };
 };
 
@@ -32,7 +32,7 @@ class Point {
   constructor(x, y, radius) {
     this.x = x
     this.y = y
-    
+
   }
 }
 
