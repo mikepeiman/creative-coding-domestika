@@ -40,7 +40,7 @@ const sketch = () => {
     let w = width * 1;
     let h = height * .01;
 
-    const num = 7
+    const num = 17
     radius = width * .3
     color = `hsla(${random.range(0, 360)}, ${random.range(10, 60)}%, ${random.range(10, 60)}%, ${random.range(0.1, 0.9)})`
     let color1 = `hsla(${random.range(0, 60)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
@@ -49,6 +49,7 @@ const sketch = () => {
     let color4 = `hsla(${random.range(180, 240)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
     let color5 = `hsla(${random.range(240, 300)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
     let color6 = `hsla(${random.range(300, 360)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
+    // =========================================================================
     let bg1, bg2, bg3, bg4
     bg1 = context.createRadialGradient(0, 0, width * .5, 100, 100, width)
     bg1 = context.createRadialGradient(random.range(0, width),random.range(0, width), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75))
@@ -60,18 +61,47 @@ const sketch = () => {
     bg2.addColorStop(1, color3)
     bg2.addColorStop(0.5, color4)
     bg2.addColorStop(0, color5)
-
+    // =========================================================================
+    let color1b = `hsla(${random.range(0, 60)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1,0.3)})`
+    let color2b = `hsla(${random.range(60, 180)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1,0.3)})`
+    let color3b = `hsla(${random.range(120, 240)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1,0.3)})`
+    let color4b = `hsla(${random.range(180, 240)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1,0.3)})`
+    let color5b = `hsla(${random.range(240, 60)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1,0.3)})`
+    let color6b = `hsla(${random.range(300, 40)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1,0.3)})`
+    // =========================================================================
+    bg3 = context.createRadialGradient(0, 0, width * .5, 100, 100, width)
+    bg3 = context.createRadialGradient(random.range(0, width),random.range(0, width), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75))
+    bg3.addColorStop(0, color1b)
+    bg3.addColorStop(0.5, color6b)
+    bg3.addColorStop(1, color2b)
+    bg4 = context.createRadialGradient(0, 0, width * .5, 100, 100, width)
+    bg4 = context.createRadialGradient(random.range(0, width),random.range(0, width), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75))
+    bg4.addColorStop(1, color3b)
+    bg4.addColorStop(0.5, color4b)
+    bg4.addColorStop(0, color5b)
+    // =============================================================================
     let off1 = width * .025
     let off2 = off1 * 2
     let off3 = off1 * 3
+    let off4 = off1 * 4
     context.fillStyle = '#000';
     context.fillRect(0, 0, width, height);
-    context.fillStyle = bg1
-    context.fillRect(off1, off1, width - off1 * 2, height - off1 * 2);
+    context.fillStyle = bg3
+    context.fillRect(off4, off1, width - off1 * 2, height - off2 * 2);
     context.shadowBlur = random.range(50, 200)
     context.shadowColor = color6
-    context.fillStyle = bg2;
-    context.fillRect(off2, off2, width - off2 * 2, height - off2 * 2);
+    context.fillStyle = bg4;
+    context.fillRect(off3, off2, width - off2 * 2, height - off2 * 2);
+    context.shadowBlur = random.range(50, 200)
+    context.shadowColor = color6
+    context.fillStyle = bg3
+    context.fillRect(off1, off1, width - off1 * 2, height - off3 * 2);
+    context.shadowBlur = random.range(50, 200)
+    context.shadowColor = color6
+    context.fillStyle = bg4;
+    context.fillRect(off2, off2, width - off2 * 2, height - off4 * 2);
+    context.shadowBlur = random.range(50, 200)
+    context.shadowColor = color6
     // context.fillStyle = '#000'; 
     // context.fillRect(off3, off3, width - off3*2, height - off3*2);
     for (let i = 0; i < num; i++) {
@@ -175,8 +205,8 @@ const sketch = () => {
       // =======================================================================
       let grd = context.createLinearGradient(random.range(0, 100), random.range(0, 2000), x + i, y - i)
 
-      context.shadowBlur = random.range(50, 200)
-      context.shadowColor = color6
+      // context.shadowBlur = random.range(50, 200)
+      // context.shadowColor = color6
       // grd.addColorStop(0, color)
       // grd.addColorStop(.25, color1)
       // grd.addColorStop(.5, color3)
