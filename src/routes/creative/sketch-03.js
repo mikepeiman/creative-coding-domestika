@@ -6,6 +6,17 @@ const settings = {
   dimensions: [2048, 2048],
   animate: true
 };
+
+// =============================================================================
+// basic animation example below; canvas-sketch 'animate' setting calls this on main return function
+// =============================================================================
+const animate = () => {
+  console.log(`Mike animate`)
+  requestAnimationFrame(animate)
+}
+// animate()
+// ============================================================================= 
+
 let agents = []
 const sketch = ({ context, width, height }) => {
 
@@ -24,6 +35,7 @@ const sketch = ({ context, width, height }) => {
     agents.forEach(agent => {
       agent.update()
       agent.draw(pen)
+      agent.bounce(width, height)
     })
   };
 };
@@ -48,6 +60,15 @@ class Agent {
   update() {
     this.pos.x += this.vel.x 
     this.pos.y += this.vel.y
+  }
+
+  bounce(width, height){
+    if(this.pos.x <= 0 || this.pos.x >= width){
+      this.vel.x *= -1
+    }
+    if(this.pos.y <= 0 || this.pos.y >= height){
+      this.vel.y *= -1
+    }
   }
 
   draw(pen) {

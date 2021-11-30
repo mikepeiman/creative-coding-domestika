@@ -5,6 +5,7 @@ import { setItemColor } from './drawing.js'
 
 const settings = {
   dimensions: [4096, 4096],
+  // animate: true
 
 };
 let color, width, radius, slice, angle
