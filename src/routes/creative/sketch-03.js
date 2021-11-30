@@ -1,4 +1,6 @@
 const canvasSketch = require('canvas-sketch');
+const math = require('canvas-sketch-util/math')
+const random = require('canvas-sketch-util/random')
 
 const settings = {
   dimensions: [ 2048, 2048 ]
@@ -8,6 +10,12 @@ const sketch = () => {
   return ({ context, width, height }) => {
     context.fillStyle = 'white';
     context.fillRect(0, 0, width, height);
+
+for (let i = 0; i < 40; i++) {
+  let agent = new Agent(random.range(1, width), random.range(1, height))
+  agent.draw(context)
+  
+}
 
     const agentA = new Agent(800, 400)
     const agentB = new Agent(300, 700)
