@@ -8,103 +8,125 @@ const settings = {
   // animate: true
 
 };
-let color, width, radius, slice, angle
-color = `hsla(180, 50%, 50%, 1)`
-width = 4096
-radius = width * .3
-slice = math.degToRad(360 / 1)
-angle = slice * 1
-const sketch = () => {
+
+const sketch = ({ context, width, height }) => {
+  console.log(`🚀 ~ file: sketch-02.js ~ line 13 ~ sketch ~ width`, width)
+
+  let color, radius, slice, angle
+  color = `hsla(180, 50%, 50%, 1)`
+  radius = width * .3
+  slice = math.degToRad(360 / 1)
+  angle = slice * 1
+
+  let color1 = `hsla(${random.range(0, 60)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
+  let color2 = `hsla(${random.range(60, 120)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
+  let color3 = `hsla(${random.range(120, 180)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
+  let color4 = `hsla(${random.range(180, 240)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
+  let color5 = `hsla(${random.range(240, 300)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
+  let color6 = `hsla(${random.range(300, 360)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
+
+  let bg1, bg2, bg3, bg4
+
+  // =========================================================================
+  let color1b = `hsla(${random.range(0, 60)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1, 0.3)})`
+  let color2b = `hsla(${random.range(60, 180)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1, 0.3)})`
+  let color3b = `hsla(${random.range(120, 240)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1, 0.3)})`
+  let color4b = `hsla(${random.range(180, 240)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1, 0.3)})`
+  let color5b = `hsla(${random.range(240, 60)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1, 0.3)})`
+  let color6b = `hsla(${random.range(300, 40)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1, 0.3)})`
+  // =========================================================================
+  let wRange1a = random.range(0, width)
+  let wRange1b = random.range(0, width)
+  let wRange1c = random.range(width * .25, width * .75)
+  let wRange1d = random.range(width * .25, width * .75)
+  let wRange1e = random.range(width * .25, width * .75)
+  let wRange1f = random.range(width * .25, width * .75)
+  bg1 = context.createRadialGradient(wRange1a, wRange1b, wRange1c, wRange1d, wRange1e, wRange1f)
+  bg1.addColorStop(0, color1)
+  bg1.addColorStop(0.5, color6)
+  bg1.addColorStop(1, color2)
+  // =============================================================================
+  let wRange2a = random.range(0, width)
+  let wRange2b = random.range(0, width)
+  let wRange2c = random.range(width * .25, width * .75)
+  let wRange2d = random.range(width * .25, width * .75)
+  let wRange2e = random.range(width * .25, width * .75)
+  let wRange2f = random.range(width * .25, width * .75)
+  bg2 = context.createRadialGradient(wRange2a, wRange2b, wRange2c, wRange2d, wRange2e, wRange2f)
+  bg2.addColorStop(1, color3)
+  bg2.addColorStop(0.5, color4)
+  bg2.addColorStop(0, color5)
+  // =============================================================================
+  let wRange3a = random.range(0, width)
+  let wRange3b = random.range(0, width)
+  let wRange3c = random.range(width * .25, width * .75)
+  let wRange3d = random.range(width * .25, width * .75)
+  let wRange3e = random.range(width * .25, width * .75)
+  let wRange3f = random.range(width * .25, width * .75)
+  bg3 = context.createRadialGradient(wRange3a, wRange3b, wRange3c, wRange3d, wRange3e, wRange3f)
+  bg3.addColorStop(0, color1b)
+  bg3.addColorStop(0.5, color6b)
+  bg3.addColorStop(1, color2b)
+  // =============================================================================
+  let wRange4a = random.range(0, width)
+  let wRange4b = random.range(0, width)
+  let wRange4c = random.range(width * .25, width * .75)
+  let wRange4d = random.range(width * .25, width * .75)
+  let wRange4e = random.range(width * .25, width * .75)
+  let wRange4f = random.range(width * .25, width * .75)
+  bg4 = context.createRadialGradient(wRange4a, wRange4b, wRange4c, wRange4d, wRange4e, wRange4f)
+  bg4.addColorStop(1, color3b)
+  bg4.addColorStop(0.5, color4b)
+  bg4.addColorStop(0, color5b)
+  // =============================================================================
+  let off1 = width * .025
+  let off2 = off1 * 2
+  let off3 = off1 * 3
+  let off4 = off1 * 4
+  context.fillRect(0, 0, width, height);
+  context.fillStyle = 'black';
+  context.fillStyle = '#000';
+  context.fillRect(0, 0, width, height);
+  context.fillStyle = bg3
+  context.fillRect(off4, off1, width - off1 * 2, height - off2 * 2);
+  context.shadowBlur = random.range(50, 200)
+  context.shadowColor = color6
+  context.fillStyle = bg4;
+  context.fillRect(off3, off2, width - off2 * 2, height - off2 * 2);
+  context.shadowBlur = random.range(50, 200)
+  context.shadowColor = color6
+  context.fillStyle = bg3
+  context.fillRect(off1, off1, width - off1 * 2, height - off3 * 2);
+  context.shadowBlur = random.range(50, 200)
+  context.shadowColor = color6
+  context.fillStyle = bg4;
+  context.fillRect(off2, off2, width - off2 * 2, height - off4 * 2);
+  context.shadowBlur = random.range(50, 200)
+  context.shadowColor = color6
+  // ===========================================================================
+  color = `hsla(${random.range(0, 360)}, ${random.range(10, 60)}%, ${random.range(10, 60)}%, ${random.range(0.1, 0.9)})`
+
+  // ===========================================================================
+  // Main loop - animates
+  // ===========================================================================
   return ({ context, width, height }) => {
-
-    // context.clearRect(0, 0, canvas.width, canvas.height);
-    context.fillRect(0, 0, width, height);
-    context.fillStyle = 'black';
-
-    // =========================================================================
-    // first attempt to add image
-    // =========================================================================
-    // context.save()
-    // let img = new Image(width,height)
-    // img.onload = () => {
-    //   context.drawImage(img,0,0,width,height,0,0,width,height)
-    // }
-    // img.src = './20211106_151003.jpg'
-    // context.restore()
-    // =========================================================================
-    // /end add image
-    // =========================================================================
-
     const cx = width * 0.5;
     const cy = height * 0.5;
     let x, y
     let w = width * 1;
     let h = height * .01;
+    // context.clearRect(0, 0, canvas.width, canvas.height);
 
-    const num = 17
+
     radius = width * .3
-    color = `hsla(${random.range(0, 360)}, ${random.range(10, 60)}%, ${random.range(10, 60)}%, ${random.range(0.1, 0.9)})`
-    let color1 = `hsla(${random.range(0, 60)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-    let color2 = `hsla(${random.range(60, 120)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-    let color3 = `hsla(${random.range(120, 180)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-    let color4 = `hsla(${random.range(180, 240)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-    let color5 = `hsla(${random.range(240, 300)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-    let color6 = `hsla(${random.range(300, 360)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
+
     // =========================================================================
-    let bg1, bg2, bg3, bg4
-    bg1 = context.createRadialGradient(0, 0, width * .5, 100, 100, width)
-    bg1 = context.createRadialGradient(random.range(0, width),random.range(0, width), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75))
-    bg1.addColorStop(0, color1)
-    bg1.addColorStop(0.5, color6)
-    bg1.addColorStop(1, color2)
-    bg2 = context.createRadialGradient(0, 0, width * .5, 100, 100, width)
-    bg2 = context.createRadialGradient(random.range(0, width),random.range(0, width), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75))
-    bg2.addColorStop(1, color3)
-    bg2.addColorStop(0.5, color4)
-    bg2.addColorStop(0, color5)
-    // =========================================================================
-    let color1b = `hsla(${random.range(0, 60)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1,0.3)})`
-    let color2b = `hsla(${random.range(60, 180)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1,0.3)})`
-    let color3b = `hsla(${random.range(120, 240)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1,0.3)})`
-    let color4b = `hsla(${random.range(180, 240)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1,0.3)})`
-    let color5b = `hsla(${random.range(240, 60)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1,0.3)})`
-    let color6b = `hsla(${random.range(300, 40)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1,0.3)})`
-    // =========================================================================
-    bg3 = context.createRadialGradient(0, 0, width * .5, 100, 100, width)
-    bg3 = context.createRadialGradient(random.range(0, width),random.range(0, width), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75))
-    bg3.addColorStop(0, color1b)
-    bg3.addColorStop(0.5, color6b)
-    bg3.addColorStop(1, color2b)
-    bg4 = context.createRadialGradient(0, 0, width * .5, 100, 100, width)
-    bg4 = context.createRadialGradient(random.range(0, width),random.range(0, width), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75), random.range(width * .25, width * .75))
-    bg4.addColorStop(1, color3b)
-    bg4.addColorStop(0.5, color4b)
-    bg4.addColorStop(0, color5b)
+
     // =============================================================================
-    let off1 = width * .025
-    let off2 = off1 * 2
-    let off3 = off1 * 3
-    let off4 = off1 * 4
-    context.fillStyle = '#000';
-    context.fillRect(0, 0, width, height);
-    context.fillStyle = bg3
-    context.fillRect(off4, off1, width - off1 * 2, height - off2 * 2);
-    context.shadowBlur = random.range(50, 200)
-    context.shadowColor = color6
-    context.fillStyle = bg4;
-    context.fillRect(off3, off2, width - off2 * 2, height - off2 * 2);
-    context.shadowBlur = random.range(50, 200)
-    context.shadowColor = color6
-    context.fillStyle = bg3
-    context.fillRect(off1, off1, width - off1 * 2, height - off3 * 2);
-    context.shadowBlur = random.range(50, 200)
-    context.shadowColor = color6
-    context.fillStyle = bg4;
-    context.fillRect(off2, off2, width - off2 * 2, height - off4 * 2);
-    context.shadowBlur = random.range(50, 200)
-    context.shadowColor = color6
+
     // context.fillStyle = '#000'; 
     // context.fillRect(off3, off3, width - off3*2, height - off3*2);
+    const num = 17
     for (let i = 0; i < num; i++) {
       radius = width * random.range(0.1, .4)
       slice = math.degToRad(360 / num)
@@ -220,24 +242,10 @@ const sketch = () => {
       grd.addColorStop(random.range(0.8, 1), color4)
 
       context.strokeStyle = grd
-      // context.strokeStyle = color
-      // =======================================================================
       context.stroke()
       context.restore()
-
-
-
     }
-
   };
 };
-
-const degreesToRadiants = (degrees) => {
-  return degrees / 180 * Math.PI
-}
-
-const randomRange = (min, max) => {
-  return Math.random() * (max - min) + min
-}
 
 canvasSketch(sketch, settings);
