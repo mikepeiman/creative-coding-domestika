@@ -4,7 +4,8 @@ const random = require('canvas-sketch-util/random')
 import { setItemColor} from './drawing.js'
 
 const settings = {
-  dimensions: [1080, 1080]
+  dimensions: [4096, 4096],
+
 };
 
 const sketch = () => {
@@ -35,8 +36,8 @@ const sketch = () => {
     let w = width * 1;
     let h = height * .01;
     
-    const num = 500
-    const radius = width * 0.3
+    const num = 15
+    const radius = width * .5
     let color = `hsla(180, 50%, 50%, 1)`
 
     
@@ -83,10 +84,10 @@ const sketch = () => {
       context.beginPath();
       context.moveTo(x,y)
       context.lineTo(cx, cy);
-      context.lineCap = 'round'
-      color = `hsla(${random.range(120, 210)}, ${random.range(65,85)}%, ${random.range(5,35)}%, ${random.range(0.005, .0015)})`
+      // context.lineCap = 'round'
+      color = `hsla(${random.range(320, 80)}, ${random.range(65,85)}%, ${random.range(55,15)}%, ${random.range(0.075, .001)})`
       context.strokeStyle = color
-      context.lineWidth = random.range(300, 1500)
+      context.lineWidth = random.range(300, 150)
       context.fill();
       context.stroke()
       context.closePath()
@@ -101,9 +102,9 @@ const sketch = () => {
       // =======================================================================
       context.rotate(-angle)
       context.beginPath()
-      context.arc(0, 0, radius * random.range(.1,2), slice * random.range(-15, 5), slice * random.range(11.5,0.5))
+      context.arc(0, 0, radius * random.range(1,.2), slice * random.range(.25, .21), slice * random.range(.05, .2))
       context.lineCap = 'round'
-      context.lineWidth = random.range(7, 30)
+      context.lineWidth = random.range(27, 130)
       color = `hsla(${random.range(0, 180)}, ${random.range(65,85)}%, ${random.range(15,85)}%, ${random.range(0.05, .5)})`
       // =======================================================================
       // try gradients
@@ -112,6 +113,8 @@ const sketch = () => {
       let color2 = `hsla(${random.range(240, 360)}, ${random.range(65,85)}%, ${random.range(15,85)}%, ${random.range(0.05, .4)})`
       let color3 = `hsla(${random.range(0, 90)}, ${random.range(65,85)}%, ${random.range(15,85)}%, ${random.range(0.1, .5)})`
       let color4 = `hsla(${random.range(90, 180)}, ${random.range(65,85)}%, ${random.range(15,85)}%, ${random.range(0.05, .4)})`
+      context.shadowBlur = random.range(100,20)
+      context.shadowColor = color3
       let grd = context.createLinearGradient(0, 0, cx, cy)
       grd.addColorStop(0, color)
       grd.addColorStop(.25, color1)
