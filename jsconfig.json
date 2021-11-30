@@ -8,8 +8,10 @@
 			"$components/*": ["src/components/*"],
 			"$utils": ["src/utils"],
 			"$utils/*": ["src/utils/*"],
-			"$api/*": ["src/routes/api"],
+			"$api": ["src/routes/api"],
 			"$api/*": ["src/routes/api/*"],
+			"$static": ["static"],
+			"$static/*": ["static/*"],
 		}
 	},
 	"include": ["src/**/*.d.ts", "src/**/*.js", "src/**/*.svelte"]

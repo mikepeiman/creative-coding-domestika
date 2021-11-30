@@ -1,7 +1,8 @@
 <!-- Canvas REPL for help: https://svelte.dev/repl/e4fd9f9f6fd24f909c073a02f1a921cc?version=3.44.2 -->
 <script>
 	import { onMount } from 'svelte';
-	import { drawRect } from './drawing';
+	import { drawRect, setItemColor } from './drawing';
+    
 	let canvas, context, innerWidth, innerHeight;
 	let itemsPerLine, itemsPerColumn, gap, width, height, originX, originY, totalItems;
 	originX = 100;
@@ -39,12 +40,12 @@
 	}
 	let hueOffset = 30;
 	let hueInterval = 360 / totalItems;
-	function setItemColor(i, j) {
-        let offset = Math.random() * 5
-		let currentFactor = (i+offset)*(j+offset);
-        console.log(`🚀 ~ file: index.svelte ~ line 44 ~ setItemColor ~ currentFactor`, currentFactor)
-		return `hsla(${currentFactor * hueInterval + hueOffset}, 50%, 50%, 1)`;
-	}
+	// function setItemColor(i, j) {
+    //     let offset = Math.random() * 5
+	// 	let currentFactor = (i+offset)*(j+offset);
+    //     console.log(`🚀 ~ file: index.svelte ~ line 44 ~ setItemColor ~ currentFactor`, currentFactor)
+	// 	return `hsla(${currentFactor * hueInterval + hueOffset}, 50%, 50%, 1)`;
+	// }
 </script>
 
 <!-- https://www.domestika.org/en/courses/2729-creative-coding-making-visuals-with-javascript/units/9668-fundamentals -->
@@ -52,6 +53,7 @@
 <svelte:window bind:innerHeight bind:innerWidth />
 <div class="flex flex-col content-center items-center w-full">
 	<h1 class="text-sky-300 w-full text-center text-3xl bold">Creative Coding</h1>
+    <!-- <img src="/20211110_125818_HDR.jpg" width="500" height="500" /> -->
 	<button class="btn btn-outline btn-primary mt-6" on:click={drawGrid}>Generate</button>
 	<div class="flex w-full items-center justify-center m-12">
 		<canvas bind:this={canvas} />

@@ -7,7 +7,9 @@ const config = {
 	kit: {
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte',
-
+		files: {
+			assets: 'static'
+		},
 		vite: {
 			css: {
 				preprocessorOptions: {
@@ -22,6 +24,7 @@ const config = {
 					'$utils': path.resolve('./src/lib/utils'),
 					'$lib': path.resolve('./src/lib'),
 					'$api': path.resolve('./src/routes/api'),
+					'$static': path.resolve('./static')
 				}
 			},
 			optimizeDeps: {
