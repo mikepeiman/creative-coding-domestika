@@ -36,13 +36,19 @@ const sketch = ({ context, width, height }) => {
       const agent = agents[i];
       for (let j = i + 1; j < agents.length; j++) {
         const other = agents[j];
+        const dist = agent.pos.getDistance(other.pos)
+        if (dist > 200) continue
+
+        pen.lineWidth = math.mapRange(dist, 0, 200, 12, 1)
         pen.beginPath()
         pen.moveTo(agent.pos.x, agent.pos.y)
         pen.lineTo(other.pos.x, other.pos.y)
         context.stroke()
-        
+
+
+
       }
-      
+
     }
 
     agents.forEach(agent => {
@@ -60,26 +66,31 @@ class Vector {
   constructor(x, y, radius) {
     this.x = x
     this.y = y
+  }
 
+  getDistance(v) {
+    const dx = this.x - v.x
+    const dy = this.y - v.y
+    return Math.sqrt(dx * dx + dy * dy)
   }
 }
 
 class Agent {
   constructor(x, y) {
     this.pos = new Vector(x, y)
-    this.vel = new Vector(random.range(-1,1), random.range(-1,1))
+    this.vel = new Vector(random.range(-1, 1), random.range(-1, 1))
     this.radius = random.range(4, 12)
   }
   update() {
-    this.pos.x += this.vel.x 
+    this.pos.x += this.vel.x
     this.pos.y += this.vel.y
   }
 
-  bounce(width, height){
-    if(this.pos.x <= 0 || this.pos.x >= width){
+  bounce(width, height) {
+    if (this.pos.x <= 0 || this.pos.x >= width) {
       this.vel.x *= -1
     }
-    if(this.pos.y <= 0 || this.pos.y >= height){
+    if (this.pos.y <= 0 || this.pos.y >= height) {
       this.vel.y *= -1
     }
   }
