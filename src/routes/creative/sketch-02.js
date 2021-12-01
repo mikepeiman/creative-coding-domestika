@@ -78,11 +78,10 @@ const sketch = ({ context, width, height }) => {
   // Main loop - animates
   // ===========================================================================
   return ({ context, width, height }) => {
-    context.clearRect(0, 0, width, height);
-    context.beginPath()
+    // context.clearRect(0, 0, width, height);
+    // context.beginPath()
     context.fillRect(0, 0, width, height)
     context.fillStyle = 'black'
-    console.log(backgrounds)
     const cx = width * 0.5;
     const cy = height * 0.5;
     let x, y
@@ -228,7 +227,8 @@ function drawBackgrounds(context, backgrounds, origin, width, height) {
     context.fillStyle = 'black'
     console.log(`🚀 ~ file: sketch-02.js ~ line 254 ~ backgrounds.forEach ~ i`, i)
     // context.save()
-    let grd = context.createRadialGradient(...bg.parameters)
+    let p = generateRadGradParams(width, height)
+    let grd = context.createRadialGradient(...p)
     bg['colors'].forEach(item => {
       grd.addColorStop(item.stop, item.color)
     })
@@ -264,14 +264,26 @@ function generateColors(s1 = 25, s2 = 75, l1 = 25, l2 = 75, a1 = 0, a2 = 1) {
   let hues = []
   for (let i = 0; i < 6; i++) {
     let hue = (random.range(i * 60, 60 + (i * 60))).toFixed(0)
-    console.log(`🚀 ~ file: sketch-02.js ~ line 61 ~ sketch ~ hue`, hue)
     hues.push(hue)
   }
-
   let colors = []
   hues.forEach(hue => {
     let color = `hsla(${hue}, ${(random.range(s1, s2)).toFixed(0)}%, ${(random.range(l1, l2)).toFixed(0)}%, ${(random.range(a1, a2)).toFixed(2)})`
     colors.push(color)
   })
   return colors
+}
+
+function generateRadGradParams(width, height, x0 = 0, y0 = 0, r0min = .25, r0max = .75, x1 = width, y1 =height, r1min = .25, r1max = .25) {
+  let params = []
+  let p1 = random.range(x0, width)
+  let p2 = random.range(y0, width)
+  let p3 = random.range(width * r0min, width * r0max)
+  let p4 = random.range(width * .25, width * .75)
+  let p5 = random.range(width * .25, width * .75)
+  let p6 =random.range(width * .25, width * .75)
+  params = [p1,p2,p3,p4,p5,p6]
+  return params
+  console.log(`🚀 ~ file: sketch-02.js ~ line 283 ~ generateRadGradParams ~ params`, params)
+    
 }
