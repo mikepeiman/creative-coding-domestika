@@ -47,7 +47,6 @@ const sketch = ({ context, width, height }) => {
       radius = width * random.range(0.325, .35)
       slice = math.degToRad(360 / num)
       angle = slice * i
-
       x = cx + radius * Math.sin(angle)
       y = cy + radius * Math.cos(angle)
       // x = cx + radius * Math.sin(random.range(angle * .05, angle * 1.5))
@@ -69,7 +68,9 @@ const sketch = ({ context, width, height }) => {
       // =======================================================================
       context.rotate(-angle)
       context.beginPath()
-      context.arc(0, 0, radius * random.range(1, .4), slice * random.range(.25, .21), slice * random.range(.05, .2))
+      let updatedSlice = updateSlice(slice)
+      context.arc(0, 0, radius * random.range(1, .4), updatedSlice, updatedSlice + updatedSlice)
+      // context.arc(0, 0, radius * random.range(1, .4), slice * random.range(.25, .21), slice * random.range(.05, .2))
       // context.arc(angle * 2, slice, radius * random.range(1, .3), slice * random.range(25, .1), slice * random.range(.05, .2))
       context.lineWidth = random.range(55, 250)
       let colors = generateVariedColors()
@@ -105,6 +106,10 @@ let transparent = `hsla(0,0%,0%,0)`
 };
 
 canvasSketch(sketch, settings);
+
+function updateSlice(slice) {
+  return slice * 1.1
+}
 
 function drawBackgrounds(context, width, height, num) {
   for (let i = 0; i < num; i++) {
@@ -179,6 +184,10 @@ function generateRadGradParams(width, height, x0 = 0, y0 = 0, r0min = .25, r0max
   params = [p1, p2, p3, p4, p5, p6]
   console.log(`🚀 ~ file: sketch-02.js ~ line 228 ~ generateRadGradParams ~ params`, params)
   return params
+}
+
+function drawFigure() {
+
 }
 
 
