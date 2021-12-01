@@ -18,68 +18,11 @@ const sketch = ({ context, width, height }) => {
   slice = math.degToRad(360 / 1)
   angle = slice * 1
 
-  // let color1 = `hsla(${random.range(0, 60)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-  // let color2 = `hsla(${random.range(60, 120)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-  // let color3 = `hsla(${random.range(120, 180)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-  // let color4 = `hsla(${random.range(180, 240)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-  // let color5 = `hsla(${random.range(240, 300)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-  // let color6 = `hsla(${random.range(300, 360)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-
-  let coords = []
-  let bgRectOrigin = width * .025
-  let backgrounds = []
-  let colors = []
-
-  for (let i = 0; i < 3; i++) {
-    let gradStartCoords = []
-    let gradEndCoords = []
-    let gradRadii = []
-    for (let j = 0; j < 2; j++) {
-      let startCoord = (random.range(0, width)).toFixed(3)
-      let endCoord = (random.range(width * .25, width * .75).toFixed(3))
-      let radius = (random.range(width * .25, width * .75).toFixed(3))
-      gradStartCoords.push(startCoord)
-      gradEndCoords.push(endCoord)
-      gradRadii.push(radius)
-    }
-    let parameters = [...gradStartCoords, ...gradEndCoords, ...gradRadii]
-    for (let j = 0; j < 6; j++) {
-      const color = `hsla(${random.range(j * 60, 60 + j * 60)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.1, 0.3)})`
-      colors.push({ color: color, stop: ((j) * 0.2).toFixed(1) })
-    }
-    let bg = {
-      parameters: parameters,
-      colors: colors,
-      coords: coords
-    }
-    backgrounds.push(bg)
-  }
-
-
-  // backgrounds.forEach((bg, i) => {
-  //   console.log(`🚀 ~ file: sketch-02.js ~ line 64 ~ sketch ~ i`, i)
-  //   context.save()
-  //   let grd = context.createRadialGradient(...bg.parameters)
-  //   bg['colors'].forEach(item => {
-  //   console.log(`🚀 ~ file: sketch-02.js ~ line 79 ~ backgrounds.forEach ~ item`, item)
-  //     grd.addColorStop(item.stop, item.color)
-  //   })
-  //   let rectOriginValue = bgRectOrigin *.25 * (i+1)
-  //   console.log(`🚀 ~ file: sketch-02.js ~ line 76 ~ backgrounds.forEach ~ rectOriginValue`, rectOriginValue)
-  //   context.fillStyle = grd
-  //   context.fillRect(rectOriginValue, rectOriginValue, width - rectOriginValue, height - rectOriginValue);
-  //   console.log(`🚀 ~ file: sketch-02.js ~ line 86 ~ backgrounds.forEach ~ grd`, grd)
-  //   context.shadowBlur = random.range(50, 200)
-  //   context.shadowColor = colors[random.rangeFloor(1, 6)]
-  //   context.restore()
-  // })
-  // ===========================================================================
   // ===========================================================================
   // Main loop - animates
   // ===========================================================================
   return ({ context, width, height }) => {
     // context.clearRect(0, 0, width, height);
-    // context.beginPath()
     context.fillRect(0, 0, width, height)
     context.fillStyle = 'black'
     const cx = width * 0.5;
@@ -88,14 +31,13 @@ const sketch = ({ context, width, height }) => {
     let w = width * 1;
     let h = height * .01;
     radius = width * .3
-    drawBackgrounds(context, backgrounds, bgRectOrigin, width, height)
+    drawBackgrounds(context, width, height, 3)
 
 
-    // =========================================================================
     // =============================================================================
     // The main interior loop counter
     // =============================================================================
-    const num = 15
+    const num = 27
     // =========================================================================
     // highlighting interior loop counter
     // =========================================================================
@@ -127,17 +69,11 @@ const sketch = ({ context, width, height }) => {
       context.rotate(-angle)
       context.beginPath()
       context.arc(0, 0, radius * random.range(1, .4), slice * random.range(.25, .21), slice * random.range(.05, .2))
-      context.shadowBlur = random.range(50, 200)
       context.lineWidth = random.range(5, 250)
-      // let color1 = `hsla(${random.range(0, 60)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-      // let color2 = `hsla(${random.range(240, 360)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-      // let color3 = `hsla(${random.range(0, 120)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-      // let color4 = `hsla(${random.range(120, 240)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-      // let color5 = `hsla(${random.range(0, 40)}, ${random.range(25, 75)}%, ${random.range(5, 45)}%, ${random.range(0.25, 0.85)})`
-      // let color6 = `hsla(${random.range(120, 240)}, ${random.range(45, 75)}%, ${random.range(25, 45)}%, ${random.range(0.55, 0.85)})`
-      // let color = `hsla(${random.range(0, 60)}, ${random.range(65, 85)}%, ${random.range(15, 85)}%, ${random.range(0.05, .95)})`
+      color = `hsla(${random.range(0, 60)}, ${random.range(65, 85)}%, ${random.range(15, 85)}%, ${random.range(0.05, .95)})`
       let colors = generateColors()
       context.shadowColor = colors[5]
+      context.shadowBlur = random.range(500, 200)
 
       let grd = context.createLinearGradient(random.range(0, 100), random.range(0, 2000), x + i, y - i)
       grd.addColorStop(random.range(0, 0.2), colors[4])
@@ -145,7 +81,6 @@ const sketch = ({ context, width, height }) => {
       grd.addColorStop(random.range(0.4, 0.6), colors[0])
       grd.addColorStop(random.range(0.6, .8), colors[5])
       grd.addColorStop(random.range(0.8, 1), colors[3])
-
       context.strokeStyle = grd
       context.stroke()
       context.restore()
@@ -173,7 +108,7 @@ canvasSketch(sketch, settings);
 
 //   draw(context) {
 //     pen.save()
-//     // pen.translate(this.pos.x, this.pos.y)
+// pen.translate(this.pos.x, this.pos.y)
 //     pen.beginPath()
 //     pen.arc(this.startX, this.startY, this.radius, 0, Math.PI * 2)
 //     pen.fill()
@@ -183,25 +118,25 @@ canvasSketch(sketch, settings);
 //   }
 // }
 
-class radialGradientBG {
-  constructor(parameters, coords, colors) {
-    this.parameters = parameters
-    this.coords = coords
-    this.colors = colors
-  }
+// class radialGradientBG {
+//   constructor(parameters, coords, colors) {
+//     this.parameters = parameters
+//     this.coords = coords
+//     this.colors = colors
+//   }
 
-  draw(context) {
-    context.save()
-    let grd = context.createRadialGradient(...this.parameters)
-    context.fillStyle = grd
-    context.fillRect(...this.coords);
-    context.shadowBlur = random.range(50, 200)
-    context.shadowColor = this.colors[random.rangeFloor(1, 6)]
-    context.fill()
-    console.log(this)
-    context.restore()
-  }
-}
+//   draw(context) {
+//     context.save()
+//     let grd = context.createRadialGradient(...this.parameters)
+//     context.fillStyle = grd
+//     context.fillRect(...this.coords);
+//     context.shadowBlur = random.range(50, 200)
+//     context.shadowColor = this.colors[random.rangeFloor(1, 6)]
+//     context.fill()
+//     console.log(this)
+//     context.restore()
+//   }
+// }
 
 // class radialRect {
 //   constructor(coords, gradient, colors) {
@@ -221,43 +156,44 @@ class radialGradientBG {
 //   }
 // }
 
-function drawBackgrounds(context, backgrounds, origin, width, height) {
-  backgrounds.forEach((bg, i) => {
-    context.fillRect(0, 0, width, height)
-    context.fillStyle = 'black'
+// function drawArcs(context, backgrounds, origin, width, height) {
+//   backgrounds.forEach((bg, i) => {
+//     context.fillRect(0, 0, width, height)
+//     context.fillStyle = 'black'
+//     console.log(`🚀 ~ file: sketch-02.js ~ line 254 ~ backgrounds.forEach ~ i`, i)
+//     // context.save()
+//     let grd = context.createRadialGradient(...bg.parameters)
+//     bg['colors'].forEach(item => {
+//       grd.addColorStop(item.stop, item.color)
+//     })
+//     let rectOriginValue = i * width * 0.025
+//     context.fillStyle = grd
+//     context.fillRect(rectOriginValue, rectOriginValue, width - 2 * rectOriginValue, height - 2 * rectOriginValue);
+//     context.shadowBlur = random.range(50, 200)
+//     context.shadowColor = bg.colors[random.rangeFloor(1, 6)]
+//     // context.restore()
+//   })
+// }
+
+function drawBackgrounds(context, width, height, num) {
+  for (let i = 0; i < num; i++) {
+    // context.fillRect(0, 0, width, height)
+    // context.fillStyle = 'black'
     console.log(`🚀 ~ file: sketch-02.js ~ line 254 ~ backgrounds.forEach ~ i`, i)
     // context.save()
     let p = generateRadGradParams(width, height)
     let grd = context.createRadialGradient(...p)
-    bg['colors'].forEach(item => {
-      grd.addColorStop(item.stop, item.color)
+    let colors = generateColors(25, 75, 25, 75, 0, .1)
+    colors.forEach(color => {
+      grd.addColorStop(random.range(0, 1), color)
     })
     let rectOriginValue = i * width * 0.025
     context.fillStyle = grd
     context.fillRect(rectOriginValue, rectOriginValue, width - 2 * rectOriginValue, height - 2 * rectOriginValue);
     context.shadowBlur = random.range(50, 200)
-    context.shadowColor = bg.colors[random.rangeFloor(1, 6)]
-    // context.restore()
-  })
-}
+    context.shadowColor = colors[random.rangeFloor(1, 6)]
+  }
 
-function drawArcs(context, backgrounds, origin, width, height) {
-  backgrounds.forEach((bg, i) => {
-    context.fillRect(0, 0, width, height)
-    context.fillStyle = 'black'
-    console.log(`🚀 ~ file: sketch-02.js ~ line 254 ~ backgrounds.forEach ~ i`, i)
-    // context.save()
-    let grd = context.createRadialGradient(...bg.parameters)
-    bg['colors'].forEach(item => {
-      grd.addColorStop(item.stop, item.color)
-    })
-    let rectOriginValue = i * width * 0.025
-    context.fillStyle = grd
-    context.fillRect(rectOriginValue, rectOriginValue, width - 2 * rectOriginValue, height - 2 * rectOriginValue);
-    context.shadowBlur = random.range(50, 200)
-    context.shadowColor = bg.colors[random.rangeFloor(1, 6)]
-    // context.restore()
-  })
 }
 
 function generateColors(s1 = 25, s2 = 75, l1 = 25, l2 = 75, a1 = 0, a2 = 1) {
@@ -274,16 +210,15 @@ function generateColors(s1 = 25, s2 = 75, l1 = 25, l2 = 75, a1 = 0, a2 = 1) {
   return colors
 }
 
-function generateRadGradParams(width, height, x0 = 0, y0 = 0, r0min = .25, r0max = .75, x1 = width, y1 =height, r1min = .25, r1max = .25) {
+function generateRadGradParams(width, height, x0 = 0, y0 = 0, r0min = .25, r0max = .75, x1 = width, y1 = height, r1min = .25, r1max = .75) {
   let params = []
-  let p1 = random.range(x0, width)
-  let p2 = random.range(y0, width)
-  let p3 = random.range(width * r0min, width * r0max)
-  let p4 = random.range(width * .25, width * .75)
-  let p5 = random.range(width * .25, width * .75)
-  let p6 =random.range(width * .25, width * .75)
-  params = [p1,p2,p3,p4,p5,p6]
+  let p1 = (random.range(x0, width)).toFixed(1)
+  let p2 = (random.range(y0, width)).toFixed(1)
+  let p3 = (random.range(width * r0min, width * r0max)).toFixed(1)
+  let p4 = (random.range(width * r0min, width * r0max)).toFixed(1)
+  let p5 = (random.range(width * r1min, width * r1max)).toFixed(1)
+  let p6 = (random.range(width * r1min, width * r1max)).toFixed(1)
+  params = [p1, p2, p3, p4, p5, p6]
+  console.log(`🚀 ~ file: sketch-02.js ~ line 228 ~ generateRadGradParams ~ params`, params)
   return params
-  console.log(`🚀 ~ file: sketch-02.js ~ line 283 ~ generateRadGradParams ~ params`, params)
-    
 }
