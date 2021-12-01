@@ -1,51 +1,51 @@
 const canvasSketch = require('canvas-sketch');
 const math = require('canvas-sketch-util/math')
 const random = require('canvas-sketch-util/random')
+const Color = require('canvas-sketch-util/color');
 
 const settings = {
   dimensions: [2048, 2048],
-  animate: true
+  // animate: true
 };
 
-// =============================================================================
-// basic animation example below; canvas-sketch 'animate' setting calls this on main return function
-// =============================================================================
-const animate = () => {
-  console.log(`Mike animate`)
-  requestAnimationFrame(animate)
-}
-// animate()
-// ============================================================================= 
 
 let radius, slice, angle
 const sketch = ({ context, width, height }) => {
-  radius = width * .4
+  radius = width * .3
   let arcs = []
-  // for (let i = 0; i < 5; i++) {
-  //   let x1 = random.range(radius * 1, radius * .4)
-  //   let y1 = random.range(radius * 1, radius * .4)
-  //   let x2 = random.range(radius * 1, radius * .4)
-  //   let y2 = random.range(radius * 1, radius * .4)
-
-  //   let arc = new Arc(x1, y1, x2, y2)
-  //   arcs = [...arcs, arc]
-  // }
   const cx = width * 0.5;
   const cy = height * 0.5;
   let x, y
-
   let colors = generateVariedColors()
-  let NUM_ARCS = 45
+  let NUM_ARCS = 27
   // arcs = []
   for (let i = 0; i < NUM_ARCS; i++) {
-    let arc = createArc(cx, cy, random.range(radius * .8, radius * 1.1), random.range(i, 12), i + 1, random.range(55, 250), colors)
+    let thisArcColors = []
+    for (let j = 0; j < 4; j++) {
+      const colorIdx = wrapIndex(colors, parseInt(random.range(0, colors.length)))
+      const color = colors[colorIdx]
+      console.log(`🚀 ~ file: sketch-02-animate.js ~ line 25 ~ sketch ~ color`, color)
+      thisArcColors.push(color)
+    }
+    // function createArc(xCenter, yCenter, radius, startAngle, endAngle, lineWidth, colors)
+    let arc = createArc(cx, 
+      cy, 
+      random.range(radius * .8, 
+        radius * 1.1), 
+        random.range(0, 7), 
+        random.range(0, 7), 
+        random.range(55, 250), 
+        thisArcColors)
     arcs.push(arc)
   }
   console.log(arcs)
-  let transparent = `hsla(0,0%,0%,0)`
+
+
+
+
   return ({ context, width, height }) => {
     const pen = context
-    pen.fillStyle = 'white';
+    pen.fillStyle = 'black';
     pen.fillRect(0, 0, width, height);
     let num = arcs.length
     for (let i = 0; i < arcs.length; i++) {
@@ -61,13 +61,12 @@ const sketch = ({ context, width, height }) => {
         pen.beginPath()
         pen.arc(arc.center.x, arc.center.y, arc.radius, arc.angle.start, arc.angle.end)
         let grd = pen.createLinearGradient(cx, cy, x, y)
+        grd = addColorStops(pen, arc, grd, i) 
         // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 65 ~ return ~ grd`, grd)
         // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 65 ~ return ~ cx,cy,x,y`, cx,cy,x,y)
-        grd.addColorStop(0, `${arc.colors[wrapIndex(colors, i)]}`)
-        grd.addColorStop(.3, `${arc.colors[wrapIndex(colors, i+2)]}`)
-        grd.addColorStop(.6, `${arc.colors [wrapIndex(colors, i+4)]}`)
-        grd.addColorStop(.9, `${arc.colors [wrapIndex(colors, i+7)]}`)
+
         pen.strokeStyle = grd
+        // pen.lineCap = "round"
         pen.lineWidth = arc.lineWidth
         // pen.moveTo(arc.startPos.x, arc.startPos.y)
         // pen.lineTo(other.startPos.x, other.startPos.y)
@@ -86,7 +85,7 @@ const sketch = ({ context, width, height }) => {
 
 canvasSketch(sketch, settings);
 
-function generateVariedColors(s1 = 25, s2 = 75, l1 = 25, l2 = 75, a1 = 0, a2 = 1) {
+function generateVariedColors(s1 = 25, s2 = 75, l1 = 25, l2 = 75, a1 = 0.01, a2 = .05) {
   let variedHues = []
   for (let i = 0; i < 12; i++) {
     let hue = (random.range(i * 30, 120 + (i * 30))).toFixed(0)
@@ -108,25 +107,34 @@ function createArc(x, y, r, s, e, lineWidth, colors) {
     lineWidth: lineWidth,
     colors: colors,
     vel: {
-      radius: (random.range(5, 2.5)),
-      rotation: (random.range(0.25, .001)),
-      hueChange: (random.range(0.001, 5))
+      radius: (random.range(.5, 2.5)),
+      rotation: (random.range(0.025, .001)),
+      hueChange: (random.range(0.001, 5)),
+      lineWidth: (random.range(1, .25))
     }
   }
   return arc
 }
 
-function updateArcColor() {
-
+const addColorStops = (pen, arc, grd, i) => {
+  grd.addColorStop(0, `${arc.colors[wrapIndex(arc.colors, i)]}`)
+  grd.addColorStop(.3, `${arc.colors[wrapIndex(arc.colors, i+1)]}`)
+  grd.addColorStop(.6, `${arc.colors [wrapIndex(arc.colors, i+2)]}`)
+  grd.addColorStop(.9, `${arc.colors [wrapIndex(arc.colors, i+3)]}`)
+  return grd
 }
 
 function bounce(arc, width) {
   let r = arc.radius
+  let lw = arc.lineWidth
   let minRadius = width * .1
   let maxRadius = width * .5
   if (r <= minRadius || r >= maxRadius) {
     arc.vel.radius *= -1
-    arc.vel.rotation = (random.range(0.25, .001))
+    arc.vel.rotation = (random.range(0.025, .001))
+  }
+  if(lw < 10 || lw > 250) {
+    arc.vel.lineWidth *= -1 
   }
 }
 
@@ -134,6 +142,19 @@ function updateArc(arc) {
   arc.angle.start += parseFloat(arc.vel.rotation)
   arc.angle.end += parseFloat(arc.vel.rotation)
   arc.radius += parseFloat(arc.vel.radius)
+  arc.lineWidth += parseFloat(arc.vel.lineWidth)
+  updateColors(arc)
+}
+const updateColors = (arc) => {
+  let colors = arc.colors
+  colors.forEach(color => {
+    let result = Color.parse(color)
+    console.log(`🚀 ~ file: sketch-02-animate.js ~ line 152 ~ updateColors ~ result`, result)
+    let hsla = result.hsla
+    console.log(`🚀 ~ file: sketch-02-animate.js ~ line 154 ~ updateColors ~ hsla`, hsla)
+    let hue = hsla[0]
+    console.log(`🚀 ~ file: sketch-02-animate.js ~ line 156 ~ updateColors ~ hue`, hue)
+  })
 }
 
 const wrapIndex = (arr, index) => {
