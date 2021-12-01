@@ -64,7 +64,7 @@ canvasSketch(sketch, settings);
 
 
 class Vector {
-  constructor(x, y, radius) {
+  constructor(x, y) {
     this.x = x
     this.y = y
   }
