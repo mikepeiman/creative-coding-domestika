@@ -17,7 +17,7 @@ const sketch = ({ context, width, height }) => {
   const cy = height * 0.5;
   let x, y
   let colors = generateVariedColors()
-  let NUM_ARCS = 30
+  let NUM_ARCS = 20
   // arcs = []
   for (let i = 0; i < NUM_ARCS; i++) {
     let thisArcColors = []
@@ -29,8 +29,8 @@ const sketch = ({ context, width, height }) => {
     // function createArc(xCenter, yCenter, radius, startAngle, endAngle, lineWidth, colors)
     let arc = createArc(cx, 
       cy, 
-      random.range(radius * .8, 
-        radius * 1.1), 
+      random.range(radius * .25, 
+        radius), 
         random.range(0, 7), 
         random.range(0, 7), 
         random.range(55, 250), 
@@ -117,18 +117,21 @@ function createArc(x, y, r, s, e, lineWidth, colors) {
 }
 
 const addColorStops = (pen, arc, grd, i) => {
-  grd.addColorStop(0, `${arc.colors[wrapIndex(arc.colors, i)]}`)
-  grd.addColorStop(.3, `${arc.colors[wrapIndex(arc.colors, i+1)]}`)
-  grd.addColorStop(.6, `${arc.colors [wrapIndex(arc.colors, i+2)]}`)
+  // grd.addColorStop(0, `${arc.colors[wrapIndex(arc.colors, i)]}`)
+  // grd.addColorStop(.3, `${arc.colors[wrapIndex(arc.colors, i+1)]}`)
+  // grd.addColorStop(.6, `${arc.colors [wrapIndex(arc.colors, i+2)]}`)
   grd.addColorStop(.9, `${arc.colors [wrapIndex(arc.colors, i+3)]}`)
+  // lags too much with shadow blur
+  // pen.shadowBlur = random.range(50, 200)
+  // pen.shadowColor = arc.colors[0]
   return grd
 }
 
 function bounce(arc, width) {
   let r = arc.radius
   let lw = arc.lineWidth
-  let minRadius = width * .1
-  let maxRadius = width * .5
+  let minRadius = width * .075
+  let maxRadius = width * .3
   if (r <= minRadius || r >= maxRadius) {
     arc.vel.radius *= -1
     arc.vel.rotation = (random.range(0.025, .001))
