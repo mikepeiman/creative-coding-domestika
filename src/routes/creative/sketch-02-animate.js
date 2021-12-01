@@ -4,8 +4,8 @@ const random = require('canvas-sketch-util/random')
 const Color = require('canvas-sketch-util/color');
 
 const settings = {
-  dimensions: [2048, 2048],
-  // animate: true
+  dimensions: [1080, 1080],
+  animate: true
 };
 
 
@@ -17,14 +17,13 @@ const sketch = ({ context, width, height }) => {
   const cy = height * 0.5;
   let x, y
   let colors = generateVariedColors()
-  let NUM_ARCS = 27
+  let NUM_ARCS = 30
   // arcs = []
   for (let i = 0; i < NUM_ARCS; i++) {
     let thisArcColors = []
     for (let j = 0; j < 4; j++) {
       const colorIdx = wrapIndex(colors, parseInt(random.range(0, colors.length)))
       const color = colors[colorIdx]
-      console.log(`🚀 ~ file: sketch-02-animate.js ~ line 25 ~ sketch ~ color`, color)
       thisArcColors.push(color)
     }
     // function createArc(xCenter, yCenter, radius, startAngle, endAngle, lineWidth, colors)
@@ -85,7 +84,7 @@ const sketch = ({ context, width, height }) => {
 
 canvasSketch(sketch, settings);
 
-function generateVariedColors(s1 = 25, s2 = 75, l1 = 25, l2 = 75, a1 = 0.01, a2 = .05) {
+function generateVariedColors(s1 = 25, s2 = 75, l1 = 25, l2 = 75, a1 = 0.1, a2 = .05) {
   let variedHues = []
   for (let i = 0; i < 12; i++) {
     let hue = (random.range(i * 30, 120 + (i * 30))).toFixed(0)
@@ -110,7 +109,8 @@ function createArc(x, y, r, s, e, lineWidth, colors) {
       radius: (random.range(.5, 2.5)),
       rotation: (random.range(0.025, .001)),
       hueChange: (random.range(0.001, 5)),
-      lineWidth: (random.range(1, .25))
+      lineWidth: (random.range(1, .25)),
+      hue: (random.range(1, 2.5))
     }
   }
   return arc
@@ -147,13 +147,20 @@ function updateArc(arc) {
 }
 const updateColors = (arc) => {
   let colors = arc.colors
-  colors.forEach(color => {
-    let result = Color.parse(color)
+  colors.forEach((color, i) => {
+  console.log(`🚀 ~ file: sketch-02-animate.js ~ line 152 ~ updateColors ~ color, i`, color, i)
+    result = Color.parse(color)
+    console.log(`🚀 ~ file: sketch-02-animate.js ~ line 153 ~ colors.forEach ~ result`, result)
+    // colors[i] = result.hsl
     console.log(`🚀 ~ file: sketch-02-animate.js ~ line 152 ~ updateColors ~ result`, result)
     let hsla = result.hsla
     console.log(`🚀 ~ file: sketch-02-animate.js ~ line 154 ~ updateColors ~ hsla`, hsla)
     let hue = hsla[0]
     console.log(`🚀 ~ file: sketch-02-animate.js ~ line 156 ~ updateColors ~ hue`, hue)
+    hsla[0] += parseFloat(arc.vel.hue, 1)
+    let final = `hsla(${hsla[0]}, ${hsla[1]}%, ${hsla[2]}%, ${hsla[3]})`
+    console.log(`🚀 ~ file: sketch-02-animate.js ~ line 162 ~ colors.forEach ~ final`, final)
+    colors[i] = final
   })
 }
 
