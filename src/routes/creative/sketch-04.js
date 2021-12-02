@@ -6,12 +6,14 @@ const Tweakpane = require('tweakpane')
 
 const settings = {
   dimensions: [2048, 2048],
-  animate: true
+  // animate: true
 };
 
+// try using noise as color variable in hue and rgb
+
 const panelParams = {
-  rows: 25,
-  cols: 2,
+  rows: 100,
+  cols: 100,
   scaleMin: 1,
   scaleMax: 50,
   freq: 0.001,
@@ -28,6 +30,19 @@ const colorsParams = {
   c3: { r: 88, g: 133, b: 155, a: .75 },
   c4: { r: 133, g: 255, b: 55, a: .75 },
   c5: { r: 255, g: 55, b: 133, a: .75 },
+}
+
+const monitorParams = {
+  cellw: 0,
+  cellh: 0,
+  x: 0,
+  y: 0,
+  posMoveToX: 0,
+  posMoveToY: 0,
+  posLineToX: 0,
+  posLineToY: 0,
+  cellcenterx: 0,
+  cellcentery: 0,
 }
 
 const createPane = () => {
@@ -64,8 +79,8 @@ const createPane = () => {
   folder = pane.addFolder({ title: 'Noise' })
   folder.addInput(panelParams, 'freq', {
     min: 0,
-    max: 0.01,
-    step: 0.0001
+    max: 0.1,
+    step: 0.001
   })
   folder.addInput(panelParams, 'amp', {
     min: 0,
@@ -91,6 +106,32 @@ const createPane = () => {
     min: -1,
     max: +1,
   });
+  pane.addMonitor(monitorParams, 'cellw', {
+    // view: 'graph',
+  });
+  pane.addMonitor(monitorParams, 'cellh', {
+    // view: 'graph',
+  });
+  pane.addMonitor(monitorParams, 'cellcenterx', {
+    // view: 'graph',
+  });
+  pane.addMonitor(monitorParams, 'cellcentery', {
+    // view: 'graph',
+  });
+
+  pane.addMonitor(monitorParams, 'posMoveToX', {
+    multiline: true,
+    linecount: 5
+  });
+  pane.addMonitor(monitorParams, 'posMoveToY', {
+    // view: 'graph',
+  });
+  pane.addMonitor(monitorParams, 'posLineToX', {
+    // view: 'graph',
+  });
+  pane.addMonitor(monitorParams, 'posLineToY', {
+    // view: 'graph',
+  });
 }
 // generateNewColorRGBA()
 // const colors = generateVariedColors((panelParams.rows * panelParams.cols))
@@ -107,8 +148,8 @@ const sketch = () => {
     const numCells = cols * rows
     const gridw = width * .8
     const gridh = height * .8
-    const cellw = gridw / cols
-    const cellh = gridh / rows
+    const cellw = monitorParams.cellw = gridw / cols
+    const cellh = monitorParams.cellh = gridh / rows
     const margx = (width - gridw) / 2
     const margy = (width - gridh) / 2
 
@@ -131,14 +172,26 @@ const sketch = () => {
 
       let cellcenterx = x + margx + cellw / 2
       let cellcentery = y + margy + cellh / 2
-
+      monitorParams.cellcenterx = cellcenterx
+      monitorParams.cellcentery = cellcentery
       pen.save()
       pen.translate(cellcenterx, cellcentery)
       pen.rotate(panelParams.angle)
       pen.lineCap = panelParams.lineCap
       pen.beginPath()
-      pen.moveTo(w * -0.5, 0)
-      pen.lineTo(w * 0.5, 0)
+      let posMoveToX = w * -0.5
+      let posMoveToY = 0
+      monitorParams.posMoveTo = { x: w * -0.5, y: 0 }
+      monitorParams.posMoveTo.x = w * -0.5
+      monitorParams.posMoveTo.y = 0
+      let posLineToX = w * 0.5
+      let posLineToY = 0
+      monitorParams.posMoveToX = posMoveToX
+      monitorParams.posMoveToY = posMoveToY
+      monitorParams.posLineToX = posLineToX
+      monitorParams.posLineToY = posLineToY
+      pen.moveTo(posMoveToX, posMoveToY)
+      pen.lineTo(posLineToX, posLineToY)
       pen.restore()
       draw(pen, cellcenterx, cellcentery, w, h, gridw, gridh, scale)
     }
@@ -150,11 +203,10 @@ createPane()
 canvasSketch(sketch, settings);
 
 function draw(pen, cellcenterx, cellcentery, w, h, gridw, gridh, scale) {
-  pen.save()
-
-
+  // pen.save()
   pen.lineWidth = scale
-  let grd = pen.createLinearGradient(cellcenterx, cellcentery, gridw, gridh)
+  // let grd = pen.createLinearGradient(cellcenterx, cellcentery, gridw, gridh)
+  let grd = pen.createLinearGradient(gridw, gridh, cellcenterx, 700)
   grd = addColorStops(pen, grd)
   pen.strokeStyle = grd
   pen.stroke()
@@ -179,15 +231,15 @@ function generateNewColorRGBA() {
 const addColorStops = (pen, grd) => {
   let p
   p = colorsParams.c1
-  let c1 = Color.parse([p.r,p.g,p.b,p.a])
+  let c1 = Color.parse([p.r, p.g, p.b, p.a])
   p = colorsParams.c2
-  let c2 = Color.parse([p.r,p.g,p.b,p.a])
+  let c2 = Color.parse([p.r, p.g, p.b, p.a])
   p = colorsParams.c3
-  let c3 = Color.parse([p.r,p.g,p.b,p.a])
+  let c3 = Color.parse([p.r, p.g, p.b, p.a])
   p = colorsParams.c4
-  let c4 = Color.parse([p.r,p.g,p.b,p.a])
+  let c4 = Color.parse([p.r, p.g, p.b, p.a])
   p = colorsParams.c5
-  let c5 = Color.parse([p.r,p.g,p.b,p.a])
+  let c5 = Color.parse([p.r, p.g, p.b, p.a])
   grd.addColorStop(.2, c1.hex)
   grd.addColorStop(.4, c2.hex)
   grd.addColorStop(.6, c3.hex)
@@ -195,14 +247,13 @@ const addColorStops = (pen, grd) => {
   grd.addColorStop(1, c5.hex)
   return grd
 }
-// const addColorStops = (pen, grd) => {
-//   grd.addColorStop(.2, generateNewColorRGBA())
-//   grd.addColorStop(.4, generateNewColorRGBA())
-//   grd.addColorStop(.6, generateNewColorRGBA())
-//   grd.addColorStop(.8, generateNewColorRGBA())
-//   grd.addColorStop(1, generateNewColorRGBA())
-//   return grd
-// }
+
+class Point {
+  constructor(x, y) {
+    this.x = x
+    this.y = y
+  }
+}
 
 const wrapIndex = (arr, index) => {
   return index % arr.length
