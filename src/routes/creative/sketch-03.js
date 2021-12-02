@@ -102,6 +102,13 @@ class Agent {
     if (this.pos.y > height) this.pos.y = 0 
     if (this.pos.y < 0) this.pos.y = height
   }
+  // more succinct example taken from student celeph @ https://www.domestika.org/en/courses/2729-creative-coding-making-visuals-with-javascript/community/forum/topics/188605-wrap#topic_188605_new_post
+  // ===========================================================================
+  // wrap(width, height) {
+  //   this.pos.x = (this.pos.x + width) % width;
+  //   this.pos.y = (this.pos.y + height) % height;
+  //   }
+  // ===========================================================================
 
   draw(pen) {
     pen.save()
