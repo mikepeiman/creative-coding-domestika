@@ -10,25 +10,28 @@ const settings = {
 };
 
 const panelParams = {
-  rows: 12,
-  cols: 12,
+  rows: 5,
+  cols: 100,
   scaleMin: 1,
-  scaleMax: 30,
+  scaleMax: 250,
   freq: 0.001,
-  amp: .5
+  amp: .25,
+  frame: 0,
+  animate: true,
+  lineCap: 'butt'
 }
 
 const createPane = () => {
   const pane = new Tweakpane.Pane()
-  let folder = pane.addFolder({ title: 'Grid'})
+  let folder = pane.addFolder({ title: 'Grid' })
   folder.addInput(panelParams, 'rows', {
     min: 2,
-    max: 100,
+    max: 300,
     step: 1
   })
   folder.addInput(panelParams, 'cols', {
     min: 2,
-    max: 100,
+    max: 300,
     step: 1
   })
   folder.addInput(panelParams, 'scaleMin', {
@@ -36,15 +39,30 @@ const createPane = () => {
     max: 1000,
     step: 1
   })
-  folder.addInput(panelParams, 'scaleMin', {
+  folder.addInput(panelParams, 'scaleMax', {
     min: 1,
     max: 1000,
     step: 1
+  })
+  folder.addInput(panelParams, 'lineCap', { options: {
+    butt: 'butt',
+    round: 'round',
+    square: 'square'
+  }
   })
 
-  folder = pane.addFolder({ title: 'Noise'})
-  folder.addInput(panelParams, 'freq',{ min: -0.01, max: 0.01 })
-  folder.addInput(panelParams, 'amp',{ min: 0, max: 1 })
+  folder = pane.addFolder({ title: 'Noise' })
+  folder.addInput(panelParams, 'freq', { 
+    min: -0.01, 
+    max: 0.01 })
+  folder.addInput(panelParams, 'amp', { 
+    min: 0, 
+    max: 1 })
+    folder = pane.addFolder({ title: 'Controls'})
+  folder.addInput(panelParams, 'animate')
+  folder.addInput(panelParams, 'frame', { 
+    min: 0, 
+    max: 999 })
 }
 
 const sketch = () => {
@@ -74,8 +92,9 @@ const sketch = () => {
       const y = row * cellh
       const w = cellw * .8
       const h = cellh * .8
-
-      const n = random.noise2D(x + frame * 10, y, panelParams.freq)
+      let f = panelParams.animate ? frame : panelParams.frame
+      // const n = random.noise2D(x + frame * 10, y, panelParams.freq)
+      const n = random.noise3D(x, y, f * 10, panelParams.freq)
       const angle = n * Math.PI * panelParams.amp
       // const scale  = (n + 1) / 2 * 30
       const scale = math.mapRange(n, -1, 1, panelParams.scaleMin, panelParams.scaleMax)
@@ -89,6 +108,7 @@ const sketch = () => {
       // pen.translate(cellw/2, cellh/2)
       pen.translate(cellcenterx, cellcentery)
       pen.rotate(angle)
+      pen.lineCap =panelParams.lineCap 
 
       pen.beginPath()
       pen.moveTo(w * -0.5, 0)
