@@ -6,13 +6,13 @@ const Tweakpane = require('tweakpane')
 
 const settings = {
   dimensions: [2048, 2048],
-  // animate: true
+  animate: true
 };
 
 // try using noise as color variable in hue and rgb
 
 const panelParams = {
-  rows: 100,
+  rows: 25,
   cols: 100,
   scaleMin: 1,
   scaleMax: 50,
@@ -20,7 +20,7 @@ const panelParams = {
   amp: 0.01,
   frame: 0,
   animate: true,
-  lineCap: 'round',
+  lineCap: 'butt',
   angle: 1,
 }
 
@@ -177,7 +177,7 @@ const sketch = () => {
       pen.save()
       pen.translate(cellcenterx, cellcentery)
       pen.rotate(panelParams.angle)
-      pen.lineCap = panelParams.lineCap
+      // pen.lineCap = panelParams.lineCap
       pen.beginPath()
       let posMoveToX = w * -0.5
       let posMoveToY = 0
@@ -193,6 +193,7 @@ const sketch = () => {
       pen.moveTo(posMoveToX, posMoveToY)
       pen.lineTo(posLineToX, posLineToY)
       pen.restore()
+      pen.lineCap = "round"
       draw(pen, cellcenterx, cellcentery, w, h, gridw, gridh, scale)
     }
   };
@@ -224,7 +225,7 @@ function generateNewColorRGBA() {
   a = (random.range(0, 1)).toFixed(2)
 
   color = `rgba(${r},${g},${b},${a})`
-  console.log(`🚀 ~ file: sketch-04.js ~ line 193 ~ generateNewColorRGBA ~ color`, color)
+  // console.log(`🚀 ~ file: sketch-04.js ~ line 193 ~ generateNewColorRGBA ~ color`, color)
   return color
 }
 
@@ -242,11 +243,30 @@ const addColorStops = (pen, grd) => {
   let c5 = Color.parse([p.r, p.g, p.b, p.a])
   grd.addColorStop(.2, c1.hex)
   grd.addColorStop(.4, c2.hex)
-  grd.addColorStop(.6, c3.hex)
+  grd.addColorStop(.6, generateNewColorRGBA())
   grd.addColorStop(.8, c4.hex)
   grd.addColorStop(1, c5.hex)
   return grd
 }
+// const addColorStops = (pen, grd) => {
+//   let p
+//   p = colorsParams.c1
+//   let c1 = Color.parse([p.r, p.g, p.b, p.a])
+//   p = colorsParams.c2
+//   let c2 = Color.parse([p.r, p.g, p.b, p.a])
+//   p = colorsParams.c3
+//   let c3 = Color.parse([p.r, p.g, p.b, p.a])
+//   p = colorsParams.c4
+//   let c4 = Color.parse([p.r, p.g, p.b, p.a])
+//   p = colorsParams.c5
+//   let c5 = Color.parse([p.r, p.g, p.b, p.a])
+//   grd.addColorStop(.2, c1.hex)
+//   grd.addColorStop(.4, c2.hex)
+//   grd.addColorStop(.6, c3.hex)
+//   grd.addColorStop(.8, c4.hex)
+//   grd.addColorStop(1, c5.hex)
+//   return grd
+// }
 
 class Point {
   constructor(x, y) {
