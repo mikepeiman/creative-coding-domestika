@@ -2,7 +2,8 @@ const canvasSketch = require('canvas-sketch');
 const math = require('canvas-sketch-util/math')
 const random = require('canvas-sketch-util/random')
 const Color = require('canvas-sketch-util/color');
-const Tweakpane = require('tweakpane')
+const Tweakpane = require('tweakpane');
+const { value } = require('canvas-sketch-util/random');
 
 const settings = {
   dimensions: [2048, 2048],
@@ -12,12 +13,12 @@ const settings = {
 // try using noise as color variable in hue and rgb
 
 const panelParams = {
-  rows: 25,
-  cols: 100,
+  rows: 100,
+  cols: 1,
   scaleMin: 1,
-  scaleMax: 50,
+  scaleMax: 4,
   freq: 0.001,
-  amp: 0.01,
+  amp: 0.43,
   frame: 0,
   animate: true,
   lineCap: 'butt',
@@ -31,6 +32,30 @@ const colorsParams = {
   c4: { r: 133, g: 255, b: 55, a: .75 },
   c5: { r: 255, g: 55, b: 133, a: .75 },
 }
+
+const colors = {
+  red: {
+    currentValue: 100,
+    varianceAmplitude: 5,
+    movementSpeed: 1
+  },
+ green: {
+    currentValue: 100,
+    varianceAmplitude: 5,
+    movementSpeed: 1
+  },
+ blue: {
+    currentValue: 100,
+    varianceAmplitude: 5,
+    movementSpeed: 1
+  },
+ alpha: {
+    currentValue: 1,
+    varianceAmplitude: .05,
+    movementSpeed: .01
+  }
+}
+
 
 const monitorParams = {
   cellw: 0,
@@ -50,12 +75,12 @@ const createPane = () => {
   let folder = pane.addFolder({ title: 'Grid' })
   folder.addInput(panelParams, 'rows', {
     min: 1,
-    max: 300,
+    max: 1000,
     step: 1
   })
   folder.addInput(panelParams, 'cols', {
     min: 1,
-    max: 300,
+    max: 1000,
     step: 1
   })
   folder.addInput(panelParams, 'scaleMin', {
@@ -65,7 +90,7 @@ const createPane = () => {
   })
   folder.addInput(panelParams, 'scaleMax', {
     min: 1,
-    max: 1000,
+    max: 100,
     step: 1
   })
   folder.addInput(panelParams, 'lineCap', {
@@ -95,11 +120,26 @@ const createPane = () => {
   })
 
   folder = pane.addFolder({ title: 'Color' })
-  folder.addInput(colorsParams, 'c1')
-  folder.addInput(colorsParams, 'c2')
-  folder.addInput(colorsParams, 'c3')
-  folder.addInput(colorsParams, 'c4')
-  folder.addInput(colorsParams, 'c5')
+  folder.addInput(colors.red, 'movementSpeed', {
+    min: 0,
+    max: 10,
+    step: 1
+  })
+  folder.addInput(colors.green, 'movementSpeed', {
+    min: 0,
+    max: 10,
+    step: 1
+  })
+  folder.addInput(colors.blue, 'movementSpeed', {
+    min: 0,
+    max: 10,
+    step: 1
+  })
+  folder.addInput(colors.alpha, 'movementSpeed', {
+    min: 0,
+    max: 1,
+    step: .01
+  })
 
   pane.addMonitor(panelParams, 'angle', {
     view: 'graph',
@@ -136,6 +176,25 @@ const createPane = () => {
 // generateNewColorRGBA()
 // const colors = generateVariedColors((panelParams.rows * panelParams.cols))
 
+// =============================================================================
+// Timer
+// =============================================================================
+const timestamp = Math.round(Date.now() / 1000);
+const date = new Date()
+let seconds = date.getSeconds()
+console.log(`🚀 ~ file: sketch-04.js ~ line 141 ~ seconds`, seconds)
+const timer = setTimeout(varyColors, 1000)
+function varyColors() {
+  console.log(`varyColors timer running`)
+  adjustColorParams(colors.red, colors.green, colors.blue, colors.alpha)
+  if (settings.animate) {
+    setTimeout(varyColors, 10)
+  }
+}
+
+// =============================================================================
+//  / timer
+// =============================================================================
 
 const sketch = () => {
   return ({ context, width, height, frame }) => {
@@ -177,7 +236,6 @@ const sketch = () => {
       pen.save()
       pen.translate(cellcenterx, cellcentery)
       pen.rotate(panelParams.angle)
-      // pen.lineCap = panelParams.lineCap
       pen.beginPath()
       let posMoveToX = w * -0.5
       let posMoveToY = 0
@@ -193,7 +251,7 @@ const sketch = () => {
       pen.moveTo(posMoveToX, posMoveToY)
       pen.lineTo(posLineToX, posLineToY)
       pen.restore()
-      pen.lineCap = "round"
+      pen.lineCap = panelParams.lineCap
       draw(pen, cellcenterx, cellcentery, w, h, gridw, gridh, scale)
     }
   };
@@ -217,7 +275,7 @@ function draw(pen, cellcenterx, cellcentery, w, h, gridw, gridh, scale) {
 
 
 
-function generateNewColorRGBA() {
+function generateNewColorRGBA(red, green, blue, alpha) {
   let r, g, b, a, color
   r = (random.range(0, 255)).toFixed(0)
   g = (random.range(0, 255)).toFixed(0)
@@ -227,6 +285,86 @@ function generateNewColorRGBA() {
   color = `rgba(${r},${g},${b},${a})`
   // console.log(`🚀 ~ file: sketch-04.js ~ line 193 ~ generateNewColorRGBA ~ color`, color)
   return color
+}
+
+
+
+// adjustColorParams(red, green, blue, alpha)
+
+function adjustColorParams(red, green, blue, alpha) {
+  let r, g, b, a
+  let current, amp, movement
+  current = red.currentValue
+  amp = red.varianceAmplitude
+  movement = red.movementSpeed
+  let colorParamsKeys = Object.keys(colorsParams)
+  colorParamsKeys.forEach(key => {
+    console.log(`🚀 ~ file: sketch-04.js ~ line 283 ~ adjustColorParams ~ key`, key)
+    let value = colorsParams[key]
+    console.log(`🚀 ~ file: sketch-04.js ~ line 285 ~ adjustColorParams ~ value `, value)
+    r = value.r
+    r = parseInt(random.range(r + amp, r - amp) + movement)
+    r = checkRGBwithinRange(r, "red")
+    colorsParams[key].r = r
+    g = value.g
+    g = parseInt(random.range(g + amp, g - amp) + movement)
+    g = checkRGBwithinRange(g, "green")
+    colorsParams[key].g = g
+    b = value.b
+    b = parseInt(random.range(b + amp, b - amp) + movement)
+    b = checkRGBwithinRange(b, "blue")
+    colorsParams[key].b = b
+    // a = value.a
+    // a = parseInt(random.range(a + amp, a - amp) + movement)
+    // a = checkAlphaWithinRange(a, "alpha")
+    // colorsParams[key].a = a
+
+    console.log(`🚀 ~ file: sketch-04.js ~ line 285 ~ adjustColorParams ~ value `, value)
+  })
+}
+
+function checkRGBwithinRange(value, colorName) {
+  if (value > 255) {
+    value = 255
+    reverseColorMovement(colorName)
+  }
+  if (value < 1) {
+    value = 0
+    reverseColorMovement(colorName)
+  }
+  return value
+}
+
+function reverseColorMovement(colorName) {
+  let c = colors[`${colorName}`].movementSpeed *= -1
+  console.log(`🚀 ~ file: sketch-04.js ~ line 323 ~ reverseColorMovement ~ c`, c)
+}
+
+function checkAlphaWithinRange(value) {
+  if (value > .99) {
+    value = 1
+  }
+  if (value < .8) {
+    value = .8
+  }
+  return value
+}
+
+function createRGBAcolor(red, green, blue, alpha) {
+  let current, amp
+  current = red.currentValue
+  amp = red.varianceAmplitude
+  let r = parseInt(random.range(current + amp, current - amp))
+  current = green.currentValue
+  amp = green.varianceAmplitude
+  let g = parseInt(random.range(current + amp, current - amp))
+  current = blue.currentValue
+  amp = blue.varianceAmplitude
+  let b = parseInt(random.range(current + amp, current - amp))
+  current = alpha.currentValue
+  amp = alpha.varianceAmplitude
+  let a = parseFloat(random.range(current + amp, current - amp).toFixed(2))
+  let color = { r: r, g: g, b: b, a: a }
 }
 
 const addColorStops = (pen, grd) => {
@@ -241,11 +379,11 @@ const addColorStops = (pen, grd) => {
   let c4 = Color.parse([p.r, p.g, p.b, p.a])
   p = colorsParams.c5
   let c5 = Color.parse([p.r, p.g, p.b, p.a])
-  grd.addColorStop(.2, c1.hex)
-  grd.addColorStop(.4, c2.hex)
-  grd.addColorStop(.6, generateNewColorRGBA())
-  grd.addColorStop(.8, c4.hex)
-  grd.addColorStop(1, c5.hex)
+  grd.addColorStop(.2, `rgba(${c1.rgba})`)
+  grd.addColorStop(.4, `rgba(${c2.rgba})`)
+  grd.addColorStop(.6, `rgba(${c3.rgba})`)
+  grd.addColorStop(.8, `rgba(${c4.rgba})`)
+  grd.addColorStop(1, `rgba(${c5.rgba})`)
   return grd
 }
 // const addColorStops = (pen, grd) => {
@@ -278,6 +416,12 @@ class Point {
 const wrapIndex = (arr, index) => {
   return index % arr.length
 }
+const checkRemainder = (num1, num2) => {
+  return num1 % num2
+}
+let rgb = 255
+let cent = 100
+console.log(`CheckRemainder rgb, cent : ${checkRemainder(rgb, cent)}`)
 
 
 
