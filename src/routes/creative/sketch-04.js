@@ -5,19 +5,22 @@ const Color = require('canvas-sketch-util/color');
 const Tweakpane = require('tweakpane');
 const { value } = require('canvas-sketch-util/random');
 
+
+width = 2048
+height = 2048
+
 const settings = {
-  dimensions: [2048, 2048],
+  dimensions: [width, height],
   animate: true
 };
-
 // try using noise as color variable in hue and rgb
 
 const panelParams = {
-  rows: 100,
+  rows: 200,
   cols: 1,
   scaleMin: 1,
   scaleMax: 4,
-  freq: 0.001,
+  freq: 0.00125,
   amp: 0.43,
   frame: 0,
   animate: true,
@@ -26,28 +29,28 @@ const panelParams = {
 }
 
 const colorsParams = {
-  c1: { r: 22, g: 55, b: 255, a: .75 },
-  c2: { r: 55, g: 99, b: 155, a: .75 },
-  c3: { r: 88, g: 133, b: 155, a: .75 },
-  c4: { r: 133, g: 255, b: 55, a: .75 },
-  c5: { r: 255, g: 55, b: 133, a: .75 },
+  c1: { r: 22, g: 55, b: 255, a: 1 },
+  c2: { r: 55, g: 99, b: 155, a: 1 },
+  c3: { r: 88, g: 133, b: 155, a: 1 },
+  c4: { r: 133, g: 255, b: 55, a: 1 },
+  c5: { r: 255, g: 55, b: 133, a: 1 },
 }
 
 const colors = {
   red: {
-    currentValue: 100,
+    currentValue: 150,
     varianceAmplitude: 5,
-    movementSpeed: 1
+    movementSpeed: 2
   },
  green: {
-    currentValue: 100,
+    currentValue: 25,
     varianceAmplitude: 5,
-    movementSpeed: 1
+    movementSpeed: 3
   },
  blue: {
-    currentValue: 100,
+    currentValue: 255,
     varianceAmplitude: 5,
-    movementSpeed: 1
+    movementSpeed: 4
   },
  alpha: {
     currentValue: 1,
@@ -56,6 +59,15 @@ const colors = {
   }
 }
 
+
+const gradientParams = {
+  x0: 0,
+  y0: 0,
+  x1: width,
+  y1: height,
+  xMove: .01,
+  yMove: -.01
+}
 
 const monitorParams = {
   cellw: 0,
@@ -68,6 +80,10 @@ const monitorParams = {
   posLineToY: 0,
   cellcenterx: 0,
   cellcentery: 0,
+  gradx0: 0,
+  grady0: 0,
+  gradx1: 0,
+  grady1: 0
 }
 
 const createPane = () => {
@@ -105,7 +121,7 @@ const createPane = () => {
   folder.addInput(panelParams, 'freq', {
     min: 0,
     max: 0.1,
-    step: 0.001
+    step: 0.00025
   })
   folder.addInput(panelParams, 'amp', {
     min: 0,
@@ -172,6 +188,27 @@ const createPane = () => {
   pane.addMonitor(monitorParams, 'posLineToY', {
     // view: 'graph',
   });
+
+  pane.addMonitor(gradientParams, 'x0', {
+    // view: 'graph',
+    multiline: true,
+    linecount: 5
+  });
+  pane.addMonitor(gradientParams, 'y0', {
+    // view: 'graph',
+    multiline: true,
+    linecount: 5
+  });
+  pane.addMonitor(gradientParams, 'x1', {
+    // view: 'graph',
+    multiline: true,
+    linecount: 5
+  });
+  pane.addMonitor(gradientParams, 'y1', {
+    // view: 'graph',
+    multiline: true,
+    linecount: 5
+  });
 }
 // generateNewColorRGBA()
 // const colors = generateVariedColors((panelParams.rows * panelParams.cols))
@@ -186,9 +223,9 @@ console.log(`🚀 ~ file: sketch-04.js ~ line 141 ~ seconds`, seconds)
 const timer = setTimeout(varyColors, 1000)
 function varyColors() {
   console.log(`varyColors timer running`)
-  adjustColorParams(colors.red, colors.green, colors.blue, colors.alpha)
+  // adjustColorParams(colors.red, colors.green, colors.blue, colors.alpha)
   if (settings.animate) {
-    setTimeout(varyColors, 10)
+    setTimeout(varyColors, 33)
   }
 }
 
@@ -252,7 +289,7 @@ const sketch = () => {
       pen.lineTo(posLineToX, posLineToY)
       pen.restore()
       pen.lineCap = panelParams.lineCap
-      draw(pen, cellcenterx, cellcentery, w, h, gridw, gridh, scale)
+      draw(pen, width, height, cellcenterx, cellcentery, w, h, gridw, gridh, scale)
     }
   };
 };
@@ -261,35 +298,18 @@ const sketch = () => {
 createPane()
 canvasSketch(sketch, settings);
 
-function draw(pen, cellcenterx, cellcentery, w, h, gridw, gridh, scale) {
+function draw(pen, width, height, cellcenterx, cellcentery, w, h, gridw, gridh, scale) {
   // pen.save()
   pen.lineWidth = scale
   // let grd = pen.createLinearGradient(cellcenterx, cellcentery, gridw, gridh)
-  let grd = pen.createLinearGradient(gridw, gridh, cellcenterx, 700)
+  // let grd = pen.createLinearGradient(gridw, gridh, cellcenterx, 700)
+  let grd = varyGradAngle(pen, width, height)
   grd = addColorStops(pen, grd)
   pen.strokeStyle = grd
   pen.stroke()
   pen.restore()
 
 }
-
-
-
-function generateNewColorRGBA(red, green, blue, alpha) {
-  let r, g, b, a, color
-  r = (random.range(0, 255)).toFixed(0)
-  g = (random.range(0, 255)).toFixed(0)
-  b = (random.range(0, 255)).toFixed(0)
-  a = (random.range(0, 1)).toFixed(2)
-
-  color = `rgba(${r},${g},${b},${a})`
-  // console.log(`🚀 ~ file: sketch-04.js ~ line 193 ~ generateNewColorRGBA ~ color`, color)
-  return color
-}
-
-
-
-// adjustColorParams(red, green, blue, alpha)
 
 function adjustColorParams(red, green, blue, alpha) {
   let r, g, b, a
@@ -317,7 +337,7 @@ function adjustColorParams(red, green, blue, alpha) {
     // a = value.a
     // a = parseInt(random.range(a + amp, a - amp) + movement)
     // a = checkAlphaWithinRange(a, "alpha")
-    // colorsParams[key].a = a
+    colorsParams[key].a = 1
 
     console.log(`🚀 ~ file: sketch-04.js ~ line 285 ~ adjustColorParams ~ value `, value)
   })
@@ -348,6 +368,44 @@ function checkAlphaWithinRange(value) {
     value = .8
   }
   return value
+}
+
+function varyGradAngle(pen, width, height) {
+  // let x0 = gradientParams.x0 + gradientParams.xMove
+  let x0 = gradientParams.x0
+  // console.log(`🚀 ~ file: sketch-04.js ~ line 366 ~ varyGradAngle ~ x0`, x0)
+  // console.log(`🚀 ~ file: sketch-04.js ~ line 366 ~ varyGradAngle ~ gradientParams.x0\n\n`, gradientParams.x0)
+  checkGradParamsBounce("x", x0, width, height)
+  gradientParams.x0 = x0
+  let y0 = gradientParams.y0
+  let x1 = gradientParams.x1 + gradientParams.xMove
+  checkGradParamsBounce("x", x1, width, height)
+  // console.log(`🚀 ~ file: sketch-04.js ~ line 381 ~ varyGradAngle ~ x1 `, x1 )
+  // console.log(`🚀 ~ file: sketch-04.js ~ line 381 ~ varyGradAngle ~ gradientParams.x1\n\n`, gradientParams.x1)
+  let y1 = gradientParams.y1 + gradientParams.yMove
+  // console.log(`🚀 ~ file: sketch-04.js ~ line 374 ~ varyGradAngle ~ gradientParams.y1\n\n`, gradientParams.y1)
+  // console.log(`🚀 ~ file: sketch-04.js ~ line 374 ~ varyGradAngle ~ y1`, y1)
+  checkGradParamsBounce("y", y1, width, height)
+  gradientParams.y1 = y1
+
+  let grd = pen.createLinearGradient(x0, y0, x1, y1)
+  return grd
+}
+
+function checkGradParamsBounce(axis, value, width, height) {
+  // console.log(`\n\n🚀 ~ file: sketch-04.js ~ line 394 ~ checkGradParamsBounce ~ value\n`, value)
+  // console.log(`🚀 ~ file: sketch-04.js ~ line 394 ~ checkGradParamsBounce ~ axis`, axis, `\n\n`)
+  if(axis == "x"){
+    if(value < 0 || value > width){
+      // console.log(`🚀 ~ file: sketch-04.js ~ line 398 ~ checkGradParamsBounce ~ value > (width - gradientParams.xMove`, (value > (width - gradientParams.xMove)))
+      gradientParams.xMove *= -1
+    }
+  }
+  if(axis == "y") {
+    if(value < 0 || value > height){
+      gradientParams.yMove *= -1
+    }
+  }
 }
 
 function createRGBAcolor(red, green, blue, alpha) {
@@ -406,12 +464,12 @@ const addColorStops = (pen, grd) => {
 //   return grd
 // }
 
-class Point {
-  constructor(x, y) {
-    this.x = x
-    this.y = y
-  }
-}
+// class Point {
+//   constructor(x, y) {
+//     this.x = x
+//     this.y = y
+//   }
+// }
 
 const wrapIndex = (arr, index) => {
   return index % arr.length
@@ -419,11 +477,22 @@ const wrapIndex = (arr, index) => {
 const checkRemainder = (num1, num2) => {
   return num1 % num2
 }
-let rgb = 255
-let cent = 100
-console.log(`CheckRemainder rgb, cent : ${checkRemainder(rgb, cent)}`)
+// let rgb = 255
+// let cent = 100
+// console.log(`CheckRemainder rgb, cent : ${checkRemainder(rgb, cent)}`)
 
 
+// function generateNewColorRGBA(red, green, blue, alpha) {
+//   let r, g, b, a, color
+//   r = (random.range(0, 255)).toFixed(0)
+//   g = (random.range(0, 255)).toFixed(0)
+//   b = (random.range(0, 255)).toFixed(0)
+//   a = (random.range(0, 1)).toFixed(2)
+
+//   color = `rgba(${r},${g},${b},${a})`
+//   // console.log(`🚀 ~ file: sketch-04.js ~ line 193 ~ generateNewColorRGBA ~ color`, color)
+//   return color
+// }
 
 // function generateVariedColors(numCells, s1 = 25, s2 = 75, l1 = 25, l2 = 75, a1 = 0.5, a2 = .95) {
 //   let variedHues = []

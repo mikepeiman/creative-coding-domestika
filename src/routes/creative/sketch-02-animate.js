@@ -5,7 +5,7 @@ const Color = require('canvas-sketch-util/color');
 
 const settings = {
   dimensions: [1080, 1080],
-  // animate: true
+  animate: true
 };
 
 
