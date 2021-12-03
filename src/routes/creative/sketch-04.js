@@ -62,11 +62,13 @@ const colors = {
 
 const gradientParams = {
   x0: 0,
-  y0: 0,
-  x1: width,
-  y1: height,
-  xMove: .01,
-  yMove: -.01
+  y0: height,
+  x1: width / 2,
+  y1: height / 8,
+  x0Move: .01,
+  y0Move: .01,
+  x1Move: .01,
+  y1Move: .01
 }
 
 const monitorParams = {
@@ -191,23 +193,23 @@ const createPane = () => {
 
   pane.addMonitor(gradientParams, 'x0', {
     // view: 'graph',
-    multiline: true,
-    linecount: 5
+    // multiline: true,
+    // linecount: 5
   });
   pane.addMonitor(gradientParams, 'y0', {
     // view: 'graph',
-    multiline: true,
-    linecount: 5
+    // multiline: true,
+    // linecount: 5
   });
   pane.addMonitor(gradientParams, 'x1', {
     // view: 'graph',
-    multiline: true,
-    linecount: 5
+    // multiline: true,
+    // linecount: 5
   });
   pane.addMonitor(gradientParams, 'y1', {
     // view: 'graph',
-    multiline: true,
-    linecount: 5
+    // multiline: true,
+    // linecount: 5
   });
 }
 // generateNewColorRGBA()
@@ -371,39 +373,48 @@ function checkAlphaWithinRange(value) {
 }
 
 function varyGradAngle(pen, width, height) {
-  // let x0 = gradientParams.x0 + gradientParams.xMove
-  let x0 = gradientParams.x0
-  // console.log(`🚀 ~ file: sketch-04.js ~ line 366 ~ varyGradAngle ~ x0`, x0)
-  // console.log(`🚀 ~ file: sketch-04.js ~ line 366 ~ varyGradAngle ~ gradientParams.x0\n\n`, gradientParams.x0)
-  checkGradParamsBounce("x", x0, width, height)
+  let x0 = gradientParams.x0 + gradientParams.x0Move
+  checkGradParamsBounce("x0", x0, width, height)
   gradientParams.x0 = x0
-  let y0 = gradientParams.y0
-  let x1 = gradientParams.x1 + gradientParams.xMove
-  checkGradParamsBounce("x", x1, width, height)
-  // console.log(`🚀 ~ file: sketch-04.js ~ line 381 ~ varyGradAngle ~ x1 `, x1 )
-  // console.log(`🚀 ~ file: sketch-04.js ~ line 381 ~ varyGradAngle ~ gradientParams.x1\n\n`, gradientParams.x1)
-  let y1 = gradientParams.y1 + gradientParams.yMove
-  // console.log(`🚀 ~ file: sketch-04.js ~ line 374 ~ varyGradAngle ~ gradientParams.y1\n\n`, gradientParams.y1)
-  // console.log(`🚀 ~ file: sketch-04.js ~ line 374 ~ varyGradAngle ~ y1`, y1)
-  checkGradParamsBounce("y", y1, width, height)
+
+  let x1 = gradientParams.x1 + gradientParams.x1Move
+  checkGradParamsBounce("x1", x1, width, height)
+  gradientParams.x1 = x1
+
+  let y0 = gradientParams.y0 + gradientParams.y0Move
+  checkGradParamsBounce("y0", y0, width, height)
+  gradientParams.y0 = y0
+
+  let y1 = gradientParams.y1 + gradientParams.y1Move
+  checkGradParamsBounce("y1", y1, width, height)
   gradientParams.y1 = y1
 
   let grd = pen.createLinearGradient(x0, y0, x1, y1)
   return grd
 }
 
-function checkGradParamsBounce(axis, value, width, height) {
+function checkGradParamsBounce(param, value, width, height) {
   // console.log(`\n\n🚀 ~ file: sketch-04.js ~ line 394 ~ checkGradParamsBounce ~ value\n`, value)
   // console.log(`🚀 ~ file: sketch-04.js ~ line 394 ~ checkGradParamsBounce ~ axis`, axis, `\n\n`)
-  if(axis == "x"){
-    if(value < 0 || value > width){
-      // console.log(`🚀 ~ file: sketch-04.js ~ line 398 ~ checkGradParamsBounce ~ value > (width - gradientParams.xMove`, (value > (width - gradientParams.xMove)))
-      gradientParams.xMove *= -1
+
+  if(param == "x0"){
+    if(value <= 0 || value > width){
+      gradientParams.x0Move *= -1
     }
   }
-  if(axis == "y") {
-    if(value < 0 || value > height){
-      gradientParams.yMove *= -1
+  if(param == "y0") {
+    if(value <= 0 || value > height){
+      gradientParams.y0Move *= -1
+    }
+  }
+  if(param == "x1"){
+    if(value <= 0 || value > width){
+      gradientParams.x1Move *= -1
+    }
+  }
+  if(param == "y1") {
+    if(value <= 0 || value > height){
+      gradientParams.y1Move *= -1
     }
   }
 }
