@@ -40,19 +40,19 @@ const colors = {
   red: {
     currentValue: 150,
     varianceAmplitude: 5,
-    movementSpeed: 2
+    movementSpeed: .75
   },
- green: {
+  green: {
     currentValue: 25,
     varianceAmplitude: 5,
-    movementSpeed: 3
+    movementSpeed: .4
   },
- blue: {
+  blue: {
     currentValue: 255,
     varianceAmplitude: 5,
-    movementSpeed: 4
+    movementSpeed: 1
   },
- alpha: {
+  alpha: {
     currentValue: 1,
     varianceAmplitude: .05,
     movementSpeed: .01
@@ -65,10 +65,10 @@ const gradientParams = {
   y0: height,
   x1: width / 2,
   y1: height / 8,
-  x0Move: .01,
-  y0Move: .01,
-  x1Move: .01,
-  y1Move: .01
+  x0Move: .0005,
+  y0Move: .0008,
+  x1Move: .0009,
+  y1Move: .0006
 }
 
 const monitorParams = {
@@ -221,11 +221,10 @@ const createPane = () => {
 const timestamp = Math.round(Date.now() / 1000);
 const date = new Date()
 let seconds = date.getSeconds()
-console.log(`🚀 ~ file: sketch-04.js ~ line 141 ~ seconds`, seconds)
 const timer = setTimeout(varyColors, 1000)
 function varyColors() {
   console.log(`varyColors timer running`)
-  // adjustColorParams(colors.red, colors.green, colors.blue, colors.alpha)
+  adjustColorParams(colors.red, colors.green, colors.blue, colors.alpha)
   if (settings.animate) {
     setTimeout(varyColors, 33)
   }
@@ -305,12 +304,61 @@ function draw(pen, width, height, cellcenterx, cellcentery, w, h, gridw, gridh, 
   pen.lineWidth = scale
   // let grd = pen.createLinearGradient(cellcenterx, cellcentery, gridw, gridh)
   // let grd = pen.createLinearGradient(gridw, gridh, cellcenterx, 700)
-  let grd = varyGradAngle(pen, width, height)
-  grd = addColorStops(pen, grd)
-  pen.strokeStyle = grd
+  // pen.save()
+  let grd1 = varyGradAngle(pen, width, height, 1)
+  grd1 = addColorStops(pen, grd1)
+  pen.strokeStyle = grd1
+  // pen.stroke()
+  // pen.restore()
+  // pen.save()
+  // let grd2 = varyGradAngle(pen, width, height, 3)
+  // grd2 = addColorStops(pen, grd2)
+  // pen.strokeStyle = grd2
   pen.stroke()
   pen.restore()
+}
 
+function varyGradAngle(pen, width, height, rndvar) {
+  let x0, y0, x1, y1
+  if (rndvar > 1) {
+    // default params:
+    // x0: 0,
+    // y0: height,
+    // x1: width / 2,
+    // y1: height / 8
+    gradientParams.x0 = height
+    x0 = (gradientParams.x0 / rndvar) + gradientParams.x0Move
+    checkGradParamsBounce("x0", x0, width, height)
+    gradientParams.x0 = x0
+    gradientParams.x1 = width
+    x1 = gradientParams.x1 + gradientParams.x1Move
+    checkGradParamsBounce("x1", x1, width, height)
+    gradientParams.x1 = x1
+    gradientParams.y0 = 0
+    y0 = (gradientParams.y0 / rndvar) + gradientParams.y0Move
+    checkGradParamsBounce("y0", y0, width, height)
+    gradientParams.y0 = y0
+    gradientParams.y1 = 0
+    y1 = gradientParams.y1 + gradientParams.y1Move
+    checkGradParamsBounce("y1", y1, width, height)
+    gradientParams.y1 = y1
+  } else {
+    x0 = (gradientParams.x0 / rndvar) + gradientParams.x0Move
+    checkGradParamsBounce("x0", x0, width, height)
+    gradientParams.x0 = x0
+    x1 = gradientParams.x1 + gradientParams.x1Move
+    checkGradParamsBounce("x1", x1, width, height)
+    gradientParams.x1 = x1
+    y0 = (gradientParams.y0 / rndvar) + gradientParams.y0Move
+    checkGradParamsBounce("y0", y0, width, height)
+    gradientParams.y0 = y0
+    y1 = gradientParams.y1 + gradientParams.y1Move
+    checkGradParamsBounce("y1", y1, width, height)
+    gradientParams.y1 = y1
+  }
+
+  let grd = pen.createLinearGradient(x0, y0, x1, y1)
+  return grd
 }
 
 function adjustColorParams(red, green, blue, alpha) {
@@ -321,9 +369,7 @@ function adjustColorParams(red, green, blue, alpha) {
   movement = red.movementSpeed
   let colorParamsKeys = Object.keys(colorsParams)
   colorParamsKeys.forEach(key => {
-    console.log(`🚀 ~ file: sketch-04.js ~ line 283 ~ adjustColorParams ~ key`, key)
     let value = colorsParams[key]
-    console.log(`🚀 ~ file: sketch-04.js ~ line 285 ~ adjustColorParams ~ value `, value)
     r = value.r
     r = parseInt(random.range(r + amp, r - amp) + movement)
     r = checkRGBwithinRange(r, "red")
@@ -341,7 +387,6 @@ function adjustColorParams(red, green, blue, alpha) {
     // a = checkAlphaWithinRange(a, "alpha")
     colorsParams[key].a = 1
 
-    console.log(`🚀 ~ file: sketch-04.js ~ line 285 ~ adjustColorParams ~ value `, value)
   })
 }
 
@@ -359,7 +404,6 @@ function checkRGBwithinRange(value, colorName) {
 
 function reverseColorMovement(colorName) {
   let c = colors[`${colorName}`].movementSpeed *= -1
-  console.log(`🚀 ~ file: sketch-04.js ~ line 323 ~ reverseColorMovement ~ c`, c)
 }
 
 function checkAlphaWithinRange(value) {
@@ -372,48 +416,49 @@ function checkAlphaWithinRange(value) {
   return value
 }
 
-function varyGradAngle(pen, width, height) {
-  let x0 = gradientParams.x0 + gradientParams.x0Move
-  checkGradParamsBounce("x0", x0, width, height)
-  gradientParams.x0 = x0
 
-  let x1 = gradientParams.x1 + gradientParams.x1Move
-  checkGradParamsBounce("x1", x1, width, height)
-  gradientParams.x1 = x1
+// function varyGradAngle(pen, width, height, rndvar) {
+//   let x0 = (gradientParams.x0 / rndvar) + gradientParams.x0Move
+//   checkGradParamsBounce("x0", x0, width, height)
+//   gradientParams.x0 = x0
 
-  let y0 = gradientParams.y0 + gradientParams.y0Move
-  checkGradParamsBounce("y0", y0, width, height)
-  gradientParams.y0 = y0
+//   let x1 = gradientParams.x1 + gradientParams.x1Move
+//   checkGradParamsBounce("x1", x1, width, height)
+//   gradientParams.x1 = x1
 
-  let y1 = gradientParams.y1 + gradientParams.y1Move
-  checkGradParamsBounce("y1", y1, width, height)
-  gradientParams.y1 = y1
+//   let y0 = (gradientParams.y0 / rndvar) + gradientParams.y0Move
+//   checkGradParamsBounce("y0", y0, width, height)
+//   gradientParams.y0 = y0
 
-  let grd = pen.createLinearGradient(x0, y0, x1, y1)
-  return grd
-}
+//   let y1 = gradientParams.y1 + gradientParams.y1Move
+//   checkGradParamsBounce("y1", y1, width, height)
+//   gradientParams.y1 = y1
+
+//   let grd = pen.createLinearGradient(x0, y0, x1, y1)
+//   return grd
+// }
 
 function checkGradParamsBounce(param, value, width, height) {
   // console.log(`\n\n🚀 ~ file: sketch-04.js ~ line 394 ~ checkGradParamsBounce ~ value\n`, value)
   // console.log(`🚀 ~ file: sketch-04.js ~ line 394 ~ checkGradParamsBounce ~ axis`, axis, `\n\n`)
 
-  if(param == "x0"){
-    if(value <= 0 || value > width){
+  if (param == "x0") {
+    if (value <= 0 || value > width) {
       gradientParams.x0Move *= -1
     }
   }
-  if(param == "y0") {
-    if(value <= 0 || value > height){
+  if (param == "y0") {
+    if (value <= 0 || value > height) {
       gradientParams.y0Move *= -1
     }
   }
-  if(param == "x1"){
-    if(value <= 0 || value > width){
+  if (param == "x1") {
+    if (value <= 0 || value > width) {
       gradientParams.x1Move *= -1
     }
   }
-  if(param == "y1") {
-    if(value <= 0 || value > height){
+  if (param == "y1") {
+    if (value <= 0 || value > height) {
       gradientParams.y1Move *= -1
     }
   }
@@ -436,6 +481,25 @@ function createRGBAcolor(red, green, blue, alpha) {
   let color = { r: r, g: g, b: b, a: a }
 }
 
+// const varColorStops = (pen, grd) => {
+//   let p
+//   p = colorsParams.c1
+//   let c1 = Color.parse([p.r, p.g, p.b, p.a])
+//   p = colorsParams.c2
+//   let c2 = Color.parse([p.r, p.g, p.b, p.a])
+//   p = colorsParams.c3
+//   let c3 = Color.parse([p.r, p.g, p.b, p.a])
+//   p = colorsParams.c4
+//   let c4 = Color.parse([p.r, p.g, p.b, p.a])
+//   p = colorsParams.c5
+//   let c5 = Color.parse([p.r, p.g, p.b, p.a])
+//   grd.addColorStop(random.range(0.15, 0.2), `rgba(${c1.rgba})`)
+//   grd.addColorStop(random.range(0.35, 0.4), `rgba(${c2.rgba})`)
+//   grd.addColorStop(random.range(0.55, 0.6), `rgba(${c3.rgba})`)
+//   grd.addColorStop(random.range(0.75, 0.8), `rgba(${c4.rgba})`)
+//   grd.addColorStop(1, `rgba(${c5.rgba})`)
+//   return grd
+// }
 const addColorStops = (pen, grd) => {
   let p
   p = colorsParams.c1
@@ -448,32 +512,13 @@ const addColorStops = (pen, grd) => {
   let c4 = Color.parse([p.r, p.g, p.b, p.a])
   p = colorsParams.c5
   let c5 = Color.parse([p.r, p.g, p.b, p.a])
-  grd.addColorStop(.2, `rgba(${c1.rgba})`)
-  grd.addColorStop(.4, `rgba(${c2.rgba})`)
-  grd.addColorStop(.6, `rgba(${c3.rgba})`)
-  grd.addColorStop(.8, `rgba(${c4.rgba})`)
-  grd.addColorStop(1, `rgba(${c5.rgba})`)
+  grd.addColorStop(0, c1.hex)
+  grd.addColorStop(.25, c2.hex)
+  grd.addColorStop(.5, c3.hex)
+  grd.addColorStop(.75, c4.hex)
+  grd.addColorStop(1, c5.hex)
   return grd
 }
-// const addColorStops = (pen, grd) => {
-//   let p
-//   p = colorsParams.c1
-//   let c1 = Color.parse([p.r, p.g, p.b, p.a])
-//   p = colorsParams.c2
-//   let c2 = Color.parse([p.r, p.g, p.b, p.a])
-//   p = colorsParams.c3
-//   let c3 = Color.parse([p.r, p.g, p.b, p.a])
-//   p = colorsParams.c4
-//   let c4 = Color.parse([p.r, p.g, p.b, p.a])
-//   p = colorsParams.c5
-//   let c5 = Color.parse([p.r, p.g, p.b, p.a])
-//   grd.addColorStop(.2, c1.hex)
-//   grd.addColorStop(.4, c2.hex)
-//   grd.addColorStop(.6, c3.hex)
-//   grd.addColorStop(.8, c4.hex)
-//   grd.addColorStop(1, c5.hex)
-//   return grd
-// }
 
 // class Point {
 //   constructor(x, y) {
