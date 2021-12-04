@@ -2,47 +2,88 @@ const canvasSketch = require('canvas-sketch');
 const math = require('canvas-sketch-util/math')
 const random = require('canvas-sketch-util/random')
 const Color = require('canvas-sketch-util/color');
+const Tweakpane = require('tweakpane');
 
 const settings = {
   dimensions: [1080, 1080],
   animate: true
 };
 
-
 let radius, slice, angle
+
+const structureParams = {
+  numberOfArcs: 3
+}
+
+const createPane = () => {
+  const pane = new Tweakpane.Pane()
+  let folder = pane.addFolder({ title: 'Structure' })
+  folder.addInput(structureParams, 'numberOfArcs', {
+    min: 1,
+    max: 30,
+    step: 1
+  })
+}
+
 const sketch = ({ context, width, height }) => {
   radius = width * .3
-  let arcs = []
+
   const cx = width * 0.5;
   const cy = height * 0.5;
   let x, y
   let colors = generateVariedColors()
-  let NUM_ARCS = 20
-  // arcs = []
-  for (let i = 0; i < NUM_ARCS; i++) {
+  const numberOfArcs = structureParams.numberOfArcs
+  let arcs = []
+  console.log(`🚀 ~ file: sketch-02-animate.js ~ line 36 ~ sketch ~ arcs`, arcs.length)
+  
+const date = new Date()
+let seconds = date.getSeconds()
+const timer = setTimeout(runTimer, 1000)
+
+  function runTimer() {
+    // console.log(`runTimer timer running`)
+    generateArcs(structureParams.numberOfArcs)
+    if (settings.animate) {
+      setTimeout(runTimer, 100)
+    }
+  }
+  function generateArcs(numberOfArcs) {
+    if (numberOfArcs < arcs?.length) {
+      let len = arcs.length
+      console.log(`🚀 ~ file: sketch-02-animate.js ~ line 40 ~ generateArcs ~ arcs?.length`, arcs?.length)
+      arcs = arcs.slice(0, len - numberOfArcs)
+    }
+    for (let i = arcs?.length; i < numberOfArcs; i++) {
+
+      // function createArc(xCenter, yCenter, radius, startAngle, endAngle, lineWidth, colors)
+      let arc = buildArc()
+      arcs.push(arc)
+    }
+  }
+
+  function buildArc() {
     let thisArcColors = []
     for (let j = 0; j < 4; j++) {
       const colorIdx = wrapIndex(colors, parseInt(random.range(0, colors.length)))
       const color = colors[colorIdx]
       thisArcColors.push(color)
     }
-    // function createArc(xCenter, yCenter, radius, startAngle, endAngle, lineWidth, colors)
-    let arc = createArc(cx, 
-      cy, 
-      random.range(radius * .25, 
-        radius), 
-        random.range(0, 7), 
-        random.range(0, 7), 
-        random.range(55, 250), 
-        thisArcColors)
-    arcs.push(arc)
+    let arc = createArc(cx,
+      cy,
+      random.range(radius * .25,
+        radius),
+      random.range(0, 7),
+      random.range(0, 7),
+      random.range(55, 250),
+      thisArcColors)
+      return arc
   }
+runTimer()
   console.log(arcs)
-
-
-
-
+  // generateArcs(structureParams.numberOfArcs)
   return ({ context, width, height }) => {
+    // generateArcs(structureParams.numberOfArcs)
+    runTimer()
     const pen = context
     pen.fillStyle = 'black';
     pen.fillRect(0, 0, width, height);
@@ -60,7 +101,7 @@ const sketch = ({ context, width, height }) => {
         pen.beginPath()
         pen.arc(arc.center.x, arc.center.y, arc.radius, arc.angle.start, arc.angle.end)
         let grd = pen.createLinearGradient(cx, cy, x, y)
-        grd = addColorStops(pen, arc, grd, i) 
+        grd = addColorStops(pen, arc, grd, i)
         // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 65 ~ return ~ grd`, grd)
         // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 65 ~ return ~ cx,cy,x,y`, cx,cy,x,y)
 
@@ -82,6 +123,7 @@ const sketch = ({ context, width, height }) => {
   };
 };
 
+createPane()
 canvasSketch(sketch, settings);
 
 function generateVariedColors(s1 = 25, s2 = 75, l1 = 25, l2 = 75, a1 = 0.1, a2 = .05) {
@@ -120,7 +162,7 @@ const addColorStops = (pen, arc, grd, i) => {
   // grd.addColorStop(0, `${arc.colors[wrapIndex(arc.colors, i)]}`)
   // grd.addColorStop(.3, `${arc.colors[wrapIndex(arc.colors, i+1)]}`)
   // grd.addColorStop(.6, `${arc.colors [wrapIndex(arc.colors, i+2)]}`)
-  grd.addColorStop(.9, `${arc.colors [wrapIndex(arc.colors, i+3)]}`)
+  grd.addColorStop(.9, `${arc.colors[wrapIndex(arc.colors, i + 3)]}`)
   // lags too much with shadow blur
   // pen.shadowBlur = random.range(50, 200)
   // pen.shadowColor = arc.colors[0]
@@ -136,8 +178,8 @@ function bounce(arc, width) {
     arc.vel.radius *= -1
     arc.vel.rotation = (random.range(0.025, .001))
   }
-  if(lw < 10 || lw > 250) {
-    arc.vel.lineWidth *= -1 
+  if (lw < 10 || lw > 250) {
+    arc.vel.lineWidth *= -1
   }
 }
 
@@ -151,18 +193,18 @@ function updateArc(arc) {
 const updateColors = (arc) => {
   let colors = arc.colors
   colors.forEach((color, i) => {
-  console.log(`🚀 ~ file: sketch-02-animate.js ~ line 152 ~ updateColors ~ color, i`, color, i)
+    // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 152 ~ updateColors ~ color, i`, color, i)
     result = Color.parse(color)
-    console.log(`🚀 ~ file: sketch-02-animate.js ~ line 153 ~ colors.forEach ~ result`, result)
+    // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 153 ~ colors.forEach ~ result`, result)
     // colors[i] = result.hsl
-    console.log(`🚀 ~ file: sketch-02-animate.js ~ line 152 ~ updateColors ~ result`, result)
+    // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 152 ~ updateColors ~ result`, result)
     let hsla = result.hsla
-    console.log(`🚀 ~ file: sketch-02-animate.js ~ line 154 ~ updateColors ~ hsla`, hsla)
+    // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 154 ~ updateColors ~ hsla`, hsla)
     let hue = hsla[0]
-    console.log(`🚀 ~ file: sketch-02-animate.js ~ line 156 ~ updateColors ~ hue`, hue)
+    // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 156 ~ updateColors ~ hue`, hue)
     hsla[0] += parseFloat(arc.vel.hue, 1)
     let final = `hsla(${hsla[0]}, ${hsla[1]}%, ${hsla[2]}%, ${hsla[3]})`
-    console.log(`🚀 ~ file: sketch-02-animate.js ~ line 162 ~ colors.forEach ~ final`, final)
+    // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 162 ~ colors.forEach ~ final`, final)
     colors[i] = final
   })
 }

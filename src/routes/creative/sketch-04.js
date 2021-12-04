@@ -3,8 +3,6 @@ const math = require('canvas-sketch-util/math')
 const random = require('canvas-sketch-util/random')
 const Color = require('canvas-sketch-util/color');
 const Tweakpane = require('tweakpane');
-const { value } = require('canvas-sketch-util/random');
-
 
 width = 2048
 height = 2048
