@@ -5,6 +5,8 @@ const Color = require('canvas-sketch-util/color');
 const Tweakpane = require('tweakpane');
 const colorNames = require('daisyui/colors/colorNames');
 
+
+
 const settings = {
   dimensions: [1080, 1080],
   animate: true
@@ -13,7 +15,8 @@ const settings = {
 let radius, slice, angle
 
 const structureParams = {
-  numberOfArcs: 12
+  numberOfArcs: 12,
+  lineCap: 'butt'
 }
 
 const colorParams = {
@@ -31,60 +34,56 @@ const setColorsParams = {
 
 const arcParams = {
   vel: {
-    hue: 1
+    hue: 1,
+    radius: (random.range(0.0005, .025)),
+    rotation: 1,
+    lineWidth: 2
   },
-  hue: 1
 }
-
+// =============================================================================
+// TWEAKPANE ===================================================================
+// =============================================================================
 const createPane = () => {
   const pane = new Tweakpane.Pane()
-  let folder = pane.addFolder({ title: 'Structure' })
+  let folder
+  // ===========================================================================
+  folder = pane.addFolder({ title: 'Structure' })
   folder.addInput(structureParams, 'numberOfArcs', {
     min: 1,
     max: 30,
     step: 1
   })
+  folder.addInput(structureParams, 'lineCap', {
+    options: {
+      butt: 'butt',
+      round: 'round',
+      square: 'square'
+    }
+  })
+// =============================================================================
+  folder = pane.addFolder({ title: 'Velocity' })
+  folder.addInput(arcParams.vel, 'hue', {
+    min: 1,
+    max: 30,
+    step: 1
+  })
+  folder.addInput(arcParams.vel, 'radius', {
+    min: .0001,
+    max: .025,
+    step: .0025
+  })
+  folder.addInput(arcParams.vel, 'rotation', {
+    min: 1,
+    max: 30,
+    step: 1
+  })
+  folder.addInput(arcParams.vel, 'lineWidth', {
+    min: 10,
+    max: 250,
+    step: 10
+  })
+// =============================================================================
   folder = pane.addFolder({ title: 'Color' })
-  // folder.addInput(colorParams, 'h1', {
-  //   min: 0,
-  //   max: 360,
-  //   step: 1
-  // })
-  // folder.addInput(colorParams, 'h2', {
-  //   min: 0,
-  //   max: 360,
-  //   step: 1
-  // })
-  // folder.addInput(colorParams, 's1', {
-  //   min: 0,
-  //   max: 100,
-  //   step: 1
-  // })
-  // folder.addInput(colorParams, 's2', {
-  //   min: 0,
-  //   max: 100,
-  //   step: 1
-  // })
-  // folder.addInput(colorParams, 'l1', {
-  //   min: 0,
-  //   max: 100,
-  //   step: 1
-  // })
-  // folder.addInput(colorParams, 'l2', {
-  //   min: 0,
-  //   max: 100,
-  //   step: 1
-  // })
-  // folder.addInput(colorParams, 'a1', {
-  //   min: 0,
-  //   max: 100,
-  //   step: 1
-  // })
-  // folder.addInput(colorParams, 'a2', {
-  //   min: 0,
-  //   max: 1,
-  //   step: .01
-  // })
   folder.addInput(setColorsParams, 'c1', {
     picker: 'inline',
     expanded: true
@@ -110,14 +109,25 @@ const createPane = () => {
     expanded: true
   })
 }
+// =============================================================================
+// 
+// =============================================================================
 
 const sketch = ({ context, width, height }) => {
+  // ===========================================================================
+  // this work to modify Tweakpane element, but there is too much baked-in styling to bother customizing for now
+  // ===========================================================================
+  // if(document.body) {
+  //   const tweakDOM = document.getElementsByClassName('tp-dfwv')
+  //   console.log(`🚀 ~ file: sketch-02-animate.js ~ line 9 ~ tweakDOM`, tweakDOM)
+  //   tweakDOM[0].style.width = '500px'  
+  // }
   radius = width * .3
 
   const cx = width * 0.5;
   const cy = height * 0.5;
   let x, y
-  let colors = generateVariedColors()
+  // let colors = generateVariedColors()
   const numberOfArcs = structureParams.numberOfArcs
   let arcs = []
   console.log(`🚀 ~ file: sketch-02-animate.js ~ line 36 ~ sketch ~ arcs`, arcs.length)
@@ -144,14 +154,6 @@ const sketch = ({ context, width, height }) => {
   }
 
   function buildArc() {
-    let thisArcColors = []
-    for (let j = 0; j < 4; j++) {
-      const colorIdx = wrapIndex(colors, parseInt(random.range(0, colors.length)))
-      const color = colors[colorIdx]
-      thisArcColors.push(color)
-    }
-
-    
     let arc = createArc(cx,
       cy,
       random.range(radius * .25,
@@ -159,7 +161,7 @@ const sketch = ({ context, width, height }) => {
       random.range(0, 7),
       random.range(0, 7),
       random.range(55, 250),
-      thisArcColors)
+      updateColors())
     return arc
   }
   runTimer()
@@ -177,24 +179,16 @@ const sketch = ({ context, width, height }) => {
       x = cx + radius * Math.sin(angle)
       y = cy + radius * Math.cos(angle)
       const arc = arcs[i];
-
-      // for (let j = i + 1; j < arcs.length; j++) {
-      // pen.lineWidth = math.mapRange(dist, 0, 200, 12, 1)
       pen.beginPath()
       pen.arc(arc.center.x, arc.center.y, arc.radius, arc.angle.start, arc.angle.end)
       let grd = pen.createLinearGradient(cx, cy, x, y)
       grd = addColorStops(pen, arc, grd, i)
-      // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 65 ~ return ~ grd`, grd)
-      // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 65 ~ return ~ cx,cy,x,y`, cx,cy,x,y)
-
       pen.strokeStyle = grd
-      // pen.lineCap = "round"
+      pen.lineCap = structureParams.lineCap
       pen.lineWidth = arc.lineWidth
       // pen.moveTo(arc.startPos.x, arc.startPos.y)
       // pen.lineTo(other.startPos.x, other.startPos.y)
       pen.stroke()
-      // }
-
     }
 
     arcs.forEach(arc => {
