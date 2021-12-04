@@ -29,6 +29,13 @@ const setColorsParams = {
   c6: "#ffab29cf",
 }
 
+const arcParams = {
+  vel: {
+    hue: 1
+  },
+  hue: 1
+}
+
 const createPane = () => {
   const pane = new Tweakpane.Pane()
   let folder = pane.addFolder({ title: 'Structure' })
@@ -122,7 +129,7 @@ const sketch = ({ context, width, height }) => {
   function runTimer() {
     generateArcs(structureParams.numberOfArcs)
     if (settings.animate) {
-      setTimeout(runTimer, 100)
+      setTimeout(runTimer, 250)
     }
   }
   function generateArcs(numberOfArcs) {
@@ -143,6 +150,8 @@ const sketch = ({ context, width, height }) => {
       const color = colors[colorIdx]
       thisArcColors.push(color)
     }
+
+    
     let arc = createArc(cx,
       cy,
       random.range(radius * .25,
@@ -239,8 +248,8 @@ const addColorStops = (pen, arc, grd, i) => {
   // grd.addColorStop(.6, `${arc.colors [wrapIndex(arc.colors, i+2)]}`)
   grd.addColorStop(.9, `${arc.colors[wrapIndex(arc.colors, i + 3)]}`)
   // lags too much with shadow blur
-  // pen.shadowBlur = random.range(50, 200)
-  // pen.shadowColor = arc.colors[0]
+  pen.shadowBlur = random.range(50, 200)
+  pen.shadowColor = arc.colors[0]
   return grd
 }
 
@@ -263,33 +272,22 @@ function updateArc(arc) {
   arc.angle.end += parseFloat(arc.vel.rotation)
   arc.radius += parseFloat(arc.vel.radius)
   arc.lineWidth += parseFloat(arc.vel.lineWidth)
-  updateColors(arc)
+  arc.colors = updateColors()
 }
-const updateColors = (arc) => {
-  // let colors = arc.colors
+const updateColors = () => {
   let keys = Object.keys(setColorsParams)
   let colors = []
   keys.forEach(key => {
     colors.push(setColorsParams[key])
   })
-  console.log(`🚀 ~ file: sketch-02-animate.js ~ line 250 ~ updateColors ~ colors`, colors)
-
   colors.forEach((color, i) => {
-    // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 152 ~ updateColors ~ color, i`, color, i)
     result = Color.parse(color)
-    // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 153 ~ colors.forEach ~ result`, result)
-    // colors[i] = result.hsl
-    // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 152 ~ updateColors ~ result`, result)
     let hsla = result.hsla
-    // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 154 ~ updateColors ~ hsla`, hsla)
-    let hue = hsla[0]
-    // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 156 ~ updateColors ~ hue`, hue)
-    hsla[0] += parseFloat(arc.vel.hue, 1)
+    hsla[0] += parseFloat(arcParams.vel.hue, 1)
     let final = `hsla(${hsla[0]}, ${hsla[1]}%, ${hsla[2]}%, ${hsla[3]})`
-    // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 162 ~ colors.forEach ~ final`, final)
     colors[i] = final
   })
-  arc.colors = colors
+  return colors
 }
 
 const wrapIndex = (arr, index) => {
