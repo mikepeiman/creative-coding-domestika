@@ -12,7 +12,7 @@ const settings = {
 let radius, slice, angle
 
 const structureParams = {
-  numberOfArcs: 3
+  numberOfArcs: 12
 }
 
 const createPane = () => {
@@ -41,7 +41,6 @@ let seconds = date.getSeconds()
 const timer = setTimeout(runTimer, 1000)
 
   function runTimer() {
-    // console.log(`runTimer timer running`)
     generateArcs(structureParams.numberOfArcs)
     if (settings.animate) {
       setTimeout(runTimer, 100)
@@ -50,12 +49,9 @@ const timer = setTimeout(runTimer, 1000)
   function generateArcs(numberOfArcs) {
     if (numberOfArcs < arcs?.length) {
       let len = arcs.length
-      console.log(`🚀 ~ file: sketch-02-animate.js ~ line 40 ~ generateArcs ~ arcs?.length`, arcs?.length)
       arcs = arcs.slice(0, len - numberOfArcs)
     }
     for (let i = arcs?.length; i < numberOfArcs; i++) {
-
-      // function createArc(xCenter, yCenter, radius, startAngle, endAngle, lineWidth, colors)
       let arc = buildArc()
       arcs.push(arc)
     }
@@ -80,9 +76,7 @@ const timer = setTimeout(runTimer, 1000)
   }
 runTimer()
   console.log(arcs)
-  // generateArcs(structureParams.numberOfArcs)
   return ({ context, width, height }) => {
-    // generateArcs(structureParams.numberOfArcs)
     runTimer()
     const pen = context
     pen.fillStyle = 'black';
@@ -96,7 +90,7 @@ runTimer()
       y = cy + radius * Math.cos(angle)
       const arc = arcs[i];
 
-      for (let j = i + 1; j < arcs.length; j++) {
+      // for (let j = i + 1; j < arcs.length; j++) {
         // pen.lineWidth = math.mapRange(dist, 0, 200, 12, 1)
         pen.beginPath()
         pen.arc(arc.center.x, arc.center.y, arc.radius, arc.angle.start, arc.angle.end)
@@ -111,7 +105,7 @@ runTimer()
         // pen.moveTo(arc.startPos.x, arc.startPos.y)
         // pen.lineTo(other.startPos.x, other.startPos.y)
         pen.stroke()
-      }
+      // }
 
     }
 
@@ -126,7 +120,7 @@ runTimer()
 createPane()
 canvasSketch(sketch, settings);
 
-function generateVariedColors(s1 = 25, s2 = 75, l1 = 25, l2 = 75, a1 = 0.1, a2 = .05) {
+function generateVariedColors(s1 = 25, s2 = 75, l1 = 25, l2 = 75, a1 = 0.1, a2 = .55) {
   let variedHues = []
   for (let i = 0; i < 12; i++) {
     let hue = (random.range(i * 30, 120 + (i * 30))).toFixed(0)
@@ -159,8 +153,8 @@ function createArc(x, y, r, s, e, lineWidth, colors) {
 }
 
 const addColorStops = (pen, arc, grd, i) => {
-  // grd.addColorStop(0, `${arc.colors[wrapIndex(arc.colors, i)]}`)
-  // grd.addColorStop(.3, `${arc.colors[wrapIndex(arc.colors, i+1)]}`)
+  grd.addColorStop(0, `${arc.colors[wrapIndex(arc.colors, i)]}`)
+  grd.addColorStop(.3, `${arc.colors[wrapIndex(arc.colors, i+1)]}`)
   // grd.addColorStop(.6, `${arc.colors [wrapIndex(arc.colors, i+2)]}`)
   grd.addColorStop(.9, `${arc.colors[wrapIndex(arc.colors, i + 3)]}`)
   // lags too much with shadow blur
@@ -212,89 +206,3 @@ const updateColors = (arc) => {
 const wrapIndex = (arr, index) => {
   return index % arr.length
 }
-
-// class Origin {
-//   constructor(x, y) {
-//     this.x = x
-//     this.y = y
-//   }
-
-//   getDistance(v) {
-//     const dx = this.x - v.x
-//     const dy = this.y - v.y
-//     return Math.sqrt(dx * dx + dy * dy)
-//   }
-
-//   addColorStop(color, stop) {
-//     this.color = color
-//     this.stop = stop
-//     this.addColorStop(stop, color)
-//   }
-// }
-
-// class Arc {
-//   constructor(x1, y1, x2, y2) {
-//     this.startPos = new Origin(x1, y1)
-//     this.endPos = new Origin(x2, y2)
-//     this.vel = new Origin(random.range(-1, 1), random.range(-1, 1))
-//     this.radius = random.range(4, 12)
-//   }
-//   update() {
-//     this.startPos.x += this.vel.x
-//     this.startPos.y += this.vel.y
-//   }
-
-//   bounce(width, height) {
-//     if (this.startPos.x <= 0 || this.startPos.x >= width) {
-//       this.vel.x *= -1
-//     }
-//     if (this.startPos.y <= 0 || this.startPos.y >= height) {
-//       this.vel.y *= -1
-//     }
-//   }
-
-//   wrap(width, height) {
-//     if (this.startPos.x > width) this.startPos.x = 0
-//     if (this.startPos.x < 0) this.startPos.x = width
-//     if (this.startPos.y > height) this.startPos.y = 0
-//     if (this.startPos.y < 0) this.startPos.y = height
-//   }
-//   setGrad(pen) {
-
-//   }
-
-//   draw(pen) {
-//     pen.save()
-//     pen.translate(this.startPos.x, this.startPos.y)
-//     pen.beginPath()
-//     pen.arc(0, 0, this.radius, 0, Math.PI * 2)
-//     pen.fill()
-//     pen.lineWidth = 4
-//     pen.stroke()
-//     pen.restore()
-//   }
-// }
-
-
-
-// function createControlButton() {
-
-//   let canvas = document.getElementsByTagName('canvas')
-//   let body = document.body
-//   let insertionPoint = body.children[2]
-//   const button = document.createElement('button')
-//   button.innerText = "Play/Pause"
-//   button.classList = "btn btn-primary btn-outline"
-//   console.log(`🚀 ~ file: sketch-02-animate.js ~ line 18 ~ createControlButton ~ button`, button)
-//   console.log(`🚀 ~ file: sketch-02-animate.js ~ line 13 ~ createControlButton ~ canvas`, canvas)
-//   console.log(`🚀 ~ file: sketch-02-animate.js ~ line 13 ~ createControlButton ~ document`, document)
-//   console.log(`🚀 ~ file: sketch-02-animate.js ~ line 14 ~ createControlButton ~ body`, body)
-//   body.insertBefore(button, insertionPoint)
-//   button.addEventListener('click', () => {
-//     settings['animate'] = true ? settings.animate = true : console.log(`false: `,settings)
-//     console.log(`🚀 ~ file: sketch-02-animate.js ~ line 26 ~ button.addEventListener ~ settings`, settings)
-//     canvasSketch(sketch, settings);
-//   })
-// }
-
-// createControlButton()
