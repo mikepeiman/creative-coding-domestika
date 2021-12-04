@@ -35,10 +35,17 @@ const setColorsParams = {
 const arcParams = {
   vel: {
     hue: 1,
-    radius: (random.range(0.0005, .025)),
-    rotation: 1,
-    lineWidth: 2
+    radius: .0001,
+    rotationMin: .001,
+    rotationMax: .025,
+    lineWidthMin: 1,
+    lineWidthMax: 25,
+    lineWidth: 1
   },
+  radiusMin: .1,
+  radiusMax: .4,
+  lineWidthMin: 1,
+  lineWidthMax: 25,
 }
 // =============================================================================
 // TWEAKPANE ===================================================================
@@ -53,6 +60,17 @@ const createPane = () => {
     max: 30,
     step: 1
   })
+  folder.addInput(arcParams, 'radiusMin', {
+    min: .1,
+    max: .4,
+    step: .025
+  })
+  folder.addInput(arcParams, 'radiusMax', {
+    min: .1,
+    max: .4,
+    step: .025
+  })
+
   folder.addInput(structureParams, 'lineCap', {
     options: {
       butt: 'butt',
@@ -72,15 +90,25 @@ const createPane = () => {
     max: .025,
     step: .0025
   })
-  folder.addInput(arcParams.vel, 'rotation', {
+  folder.addInput(arcParams.vel, 'rotationMin', {
+    min: .001,
+    max: 3,
+    step: .001
+  })
+  folder.addInput(arcParams.vel, 'rotationMax', {
+    min: .001,
+    max: 3,
+    step: .001
+  })
+  folder.addInput(arcParams.vel, 'lineWidthMin', {
     min: 1,
-    max: 30,
+    max: 25,
     step: 1
   })
-  folder.addInput(arcParams.vel, 'lineWidth', {
-    min: 10,
-    max: 250,
-    step: 10
+  folder.addInput(arcParams.vel, 'lineWidthMax', {
+    min: 1,
+    max: 25,
+    step: 1
   })
 // =============================================================================
   folder = pane.addFolder({ title: 'Color' })
@@ -127,21 +155,25 @@ const sketch = ({ context, width, height }) => {
   const cx = width * 0.5;
   const cy = height * 0.5;
   let x, y
-  // let colors = generateVariedColors()
   const numberOfArcs = structureParams.numberOfArcs
   let arcs = []
-  console.log(`🚀 ~ file: sketch-02-animate.js ~ line 36 ~ sketch ~ arcs`, arcs.length)
 
+  // ===========================================================================
+  // timer function
+  // ===========================================================================
   const date = new Date()
   let seconds = date.getSeconds()
   const timer = setTimeout(runTimer, 1000)
-
   function runTimer() {
     generateArcs(structureParams.numberOfArcs)
     if (settings.animate) {
       setTimeout(runTimer, 250)
     }
   }
+// =============================================================================
+// end timer
+// =============================================================================
+
   function generateArcs(numberOfArcs) {
     if (numberOfArcs < arcs?.length) {
       let len = arcs.length
@@ -226,10 +258,10 @@ function createArc(x, y, r, s, e, lineWidth, colors) {
     lineWidth: lineWidth,
     colors: colors,
     vel: {
-      radius: (random.range(.5, 2.5)),
-      rotation: (random.range(0.025, .001)),
+      // radius: (random.range(arcParams.radiusMin, arcParams.radiusMax)),
+      rotation: (random.range(arcParams.vel.rotationMin, arcParams.vel.rotationMax)),
       hueChange: (random.range(0.001, 5)),
-      lineWidth: (random.range(1, .25)),
+      lineWidth: (random.range(arcParams.vel.lineWidthMin, arcParams.vel.lineWidthMax)),
       hue: (random.range(1, 2.5))
     }
   }
@@ -242,7 +274,7 @@ const addColorStops = (pen, arc, grd, i) => {
   // grd.addColorStop(.6, `${arc.colors [wrapIndex(arc.colors, i+2)]}`)
   grd.addColorStop(.9, `${arc.colors[wrapIndex(arc.colors, i + 3)]}`)
   // lags too much with shadow blur
-  pen.shadowBlur = random.range(50, 200)
+  pen.shadowBlur = random.range(25, 75)
   pen.shadowColor = arc.colors[0]
   return grd
 }
@@ -253,19 +285,21 @@ function bounce(arc, width) {
   let minRadius = width * .075
   let maxRadius = width * .3
   if (r <= minRadius || r >= maxRadius) {
-    arc.vel.radius *= -1
-    arc.vel.rotation = (random.range(0.025, .001))
+    arcParams.vel.radius *= -1
+    // arc.vel.radius *= -1
+    arc.vel.rotation = (random.range(arcParams.vel.rotationMin, arcParams.vel.rotationMin))
   }
-  if (lw < 10 || lw > 250) {
-    arc.vel.lineWidth *= -1
+  if (lw < arcParams.lineWidthMin || lw > arcParams.lineWidthMax) {
+    // arc.vel.lineWidth *= -1
+    arcParams.vel.lineWidth *= -1
   }
 }
 
 function updateArc(arc) {
   arc.angle.start += parseFloat(arc.vel.rotation)
   arc.angle.end += parseFloat(arc.vel.rotation)
-  arc.radius += parseFloat(arc.vel.radius)
-  arc.lineWidth += parseFloat(arc.vel.lineWidth)
+  arc.radius += parseFloat(arcParams.vel.radius)
+  arc.lineWidth += parseFloat(arcParams.vel.lineWidth)
   arc.colors = updateColors()
 }
 const updateColors = () => {
