@@ -3,6 +3,7 @@ const math = require('canvas-sketch-util/math')
 const random = require('canvas-sketch-util/random')
 const Color = require('canvas-sketch-util/color');
 const Tweakpane = require('tweakpane');
+const colorNames = require('daisyui/colors/colorNames');
 
 const settings = {
   dimensions: [1080, 1080],
@@ -15,6 +16,19 @@ const structureParams = {
   numberOfArcs: 12
 }
 
+const colorParams = {
+  h1: 0, h2: 360, s1: 25, s2: 75, l1: 25, l2: 75, a1: 0.1, a2: .55
+}
+
+const setColorsParams = {
+  c1: "#b2186349",
+  c2: "#2d9f21b1",
+  c3: "#3533a5e5",
+  c4: "#00cce8aa",
+  c5: "#ffab29cf",
+  c6: "#ffab29cf",
+}
+
 const createPane = () => {
   const pane = new Tweakpane.Pane()
   let folder = pane.addFolder({ title: 'Structure' })
@@ -22,6 +36,71 @@ const createPane = () => {
     min: 1,
     max: 30,
     step: 1
+  })
+  folder = pane.addFolder({ title: 'Color' })
+  // folder.addInput(colorParams, 'h1', {
+  //   min: 0,
+  //   max: 360,
+  //   step: 1
+  // })
+  // folder.addInput(colorParams, 'h2', {
+  //   min: 0,
+  //   max: 360,
+  //   step: 1
+  // })
+  // folder.addInput(colorParams, 's1', {
+  //   min: 0,
+  //   max: 100,
+  //   step: 1
+  // })
+  // folder.addInput(colorParams, 's2', {
+  //   min: 0,
+  //   max: 100,
+  //   step: 1
+  // })
+  // folder.addInput(colorParams, 'l1', {
+  //   min: 0,
+  //   max: 100,
+  //   step: 1
+  // })
+  // folder.addInput(colorParams, 'l2', {
+  //   min: 0,
+  //   max: 100,
+  //   step: 1
+  // })
+  // folder.addInput(colorParams, 'a1', {
+  //   min: 0,
+  //   max: 100,
+  //   step: 1
+  // })
+  // folder.addInput(colorParams, 'a2', {
+  //   min: 0,
+  //   max: 1,
+  //   step: .01
+  // })
+  folder.addInput(setColorsParams, 'c1', {
+    picker: 'inline',
+    expanded: true
+  })
+  folder.addInput(setColorsParams, 'c2', {
+    picker: 'inline',
+    expanded: true
+  })
+  folder.addInput(setColorsParams, 'c3', {
+    picker: 'inline',
+    expanded: true
+  })
+  folder.addInput(setColorsParams, 'c4', {
+    picker: 'inline',
+    expanded: true
+  })
+  folder.addInput(setColorsParams, 'c5', {
+    picker: 'inline',
+    expanded: true
+  })
+  folder.addInput(setColorsParams, 'c6', {
+    picker: 'inline',
+    expanded: true
   })
 }
 
@@ -35,10 +114,10 @@ const sketch = ({ context, width, height }) => {
   const numberOfArcs = structureParams.numberOfArcs
   let arcs = []
   console.log(`🚀 ~ file: sketch-02-animate.js ~ line 36 ~ sketch ~ arcs`, arcs.length)
-  
-const date = new Date()
-let seconds = date.getSeconds()
-const timer = setTimeout(runTimer, 1000)
+
+  const date = new Date()
+  let seconds = date.getSeconds()
+  const timer = setTimeout(runTimer, 1000)
 
   function runTimer() {
     generateArcs(structureParams.numberOfArcs)
@@ -72,9 +151,9 @@ const timer = setTimeout(runTimer, 1000)
       random.range(0, 7),
       random.range(55, 250),
       thisArcColors)
-      return arc
+    return arc
   }
-runTimer()
+  runTimer()
   console.log(arcs)
   return ({ context, width, height }) => {
     runTimer()
@@ -91,20 +170,20 @@ runTimer()
       const arc = arcs[i];
 
       // for (let j = i + 1; j < arcs.length; j++) {
-        // pen.lineWidth = math.mapRange(dist, 0, 200, 12, 1)
-        pen.beginPath()
-        pen.arc(arc.center.x, arc.center.y, arc.radius, arc.angle.start, arc.angle.end)
-        let grd = pen.createLinearGradient(cx, cy, x, y)
-        grd = addColorStops(pen, arc, grd, i)
-        // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 65 ~ return ~ grd`, grd)
-        // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 65 ~ return ~ cx,cy,x,y`, cx,cy,x,y)
+      // pen.lineWidth = math.mapRange(dist, 0, 200, 12, 1)
+      pen.beginPath()
+      pen.arc(arc.center.x, arc.center.y, arc.radius, arc.angle.start, arc.angle.end)
+      let grd = pen.createLinearGradient(cx, cy, x, y)
+      grd = addColorStops(pen, arc, grd, i)
+      // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 65 ~ return ~ grd`, grd)
+      // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 65 ~ return ~ cx,cy,x,y`, cx,cy,x,y)
 
-        pen.strokeStyle = grd
-        // pen.lineCap = "round"
-        pen.lineWidth = arc.lineWidth
-        // pen.moveTo(arc.startPos.x, arc.startPos.y)
-        // pen.lineTo(other.startPos.x, other.startPos.y)
-        pen.stroke()
+      pen.strokeStyle = grd
+      // pen.lineCap = "round"
+      pen.lineWidth = arc.lineWidth
+      // pen.moveTo(arc.startPos.x, arc.startPos.y)
+      // pen.lineTo(other.startPos.x, other.startPos.y)
+      pen.stroke()
       // }
 
     }
@@ -120,7 +199,7 @@ runTimer()
 createPane()
 canvasSketch(sketch, settings);
 
-function generateVariedColors(s1 = 25, s2 = 75, l1 = 25, l2 = 75, a1 = 0.1, a2 = .55) {
+function generateVariedColors(h1 = colorParams.h1, h2 = colorParams.h2, s1 = colorParams.s1, s2 = colorParams.s2, l1 = colorParams.l1, l2 = colorParams.l2, a1 = colorParams.a1, a2 = colorParams.a2) {
   let variedHues = []
   for (let i = 0; i < 12; i++) {
     let hue = (random.range(i * 30, 120 + (i * 30))).toFixed(0)
@@ -133,6 +212,8 @@ function generateVariedColors(s1 = 25, s2 = 75, l1 = 25, l2 = 75, a1 = 0.1, a2 =
   })
   return variedColors
 }
+
+
 
 function createArc(x, y, r, s, e, lineWidth, colors) {
   let arc = {
@@ -154,7 +235,7 @@ function createArc(x, y, r, s, e, lineWidth, colors) {
 
 const addColorStops = (pen, arc, grd, i) => {
   grd.addColorStop(0, `${arc.colors[wrapIndex(arc.colors, i)]}`)
-  grd.addColorStop(.3, `${arc.colors[wrapIndex(arc.colors, i+1)]}`)
+  grd.addColorStop(.3, `${arc.colors[wrapIndex(arc.colors, i + 1)]}`)
   // grd.addColorStop(.6, `${arc.colors [wrapIndex(arc.colors, i+2)]}`)
   grd.addColorStop(.9, `${arc.colors[wrapIndex(arc.colors, i + 3)]}`)
   // lags too much with shadow blur
@@ -185,7 +266,14 @@ function updateArc(arc) {
   updateColors(arc)
 }
 const updateColors = (arc) => {
-  let colors = arc.colors
+  // let colors = arc.colors
+  let keys = Object.keys(setColorsParams)
+  let colors = []
+  keys.forEach(key => {
+    colors.push(setColorsParams[key])
+  })
+  console.log(`🚀 ~ file: sketch-02-animate.js ~ line 250 ~ updateColors ~ colors`, colors)
+
   colors.forEach((color, i) => {
     // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 152 ~ updateColors ~ color, i`, color, i)
     result = Color.parse(color)
@@ -201,6 +289,7 @@ const updateColors = (arc) => {
     // console.log(`🚀 ~ file: sketch-02-animate.js ~ line 162 ~ colors.forEach ~ final`, final)
     colors[i] = final
   })
+  arc.colors = colors
 }
 
 const wrapIndex = (arr, index) => {
