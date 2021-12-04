@@ -9,7 +9,7 @@ const colorNames = require('daisyui/colors/colorNames');
 
 const settings = {
   dimensions: [1080, 1080],
-  animate: true
+  // animate: true
 };
 
 let radius, slice, angle

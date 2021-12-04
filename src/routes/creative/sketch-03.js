@@ -18,44 +18,42 @@ const animate = () => {
 // ============================================================================= 
 
 let agents = []
+let hexes = []
 const sketch = ({ context, width, height }) => {
 
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 200; i++) {
     let x = random.range(0, width)
     let y = random.range(0, height)
-    let agent = new Agent(x, y)
-    agents = [...agents, agent]
+    let hex = new Hex(x, y)
+    hexes = [...hexes, hex]
   }
+  console.log(`🚀 ~ file: sketch-03.js ~ line 31 ~ sketch ~ hexes`, hexes)
 
   return ({ context, width, height }) => {
     const pen = context
     pen.fillStyle = 'white';
     pen.fillRect(0, 0, width, height);
-
-    for (let i = 0; i < agents.length; i++) {
-      const agent = agents[i];
-      for (let j = i + 1; j < agents.length; j++) {
-        const other = agents[j];
-        const dist = agent.pos.getDistance(other.pos)
+    for (let i = 0; i < hexes.length; i++) {
+      const hex = hexes[i];
+      for (let j = i + 1; j < hexes.length; j++) {
+        const other = hexes[j];
+        const dist = hex.pos.getDistance(other.pos)
         if (dist > 200) continue
-
         pen.lineWidth = math.mapRange(dist, 0, 200, 12, 1)
         pen.beginPath()
-        pen.moveTo(agent.pos.x, agent.pos.y)
+        pen.moveTo(hex.pos.x, hex.pos.y)
         pen.lineTo(other.pos.x, other.pos.y)
-        context.stroke()
-
-
-
+        pen.strokeStyle = hex.color
+        pen.stroke()
       }
 
     }
 
-    agents.forEach(agent => {
-      agent.update()
-      agent.draw(pen)
-      // agent.bounce(width, height)
-      agent.wrap(width,height)
+    hexes.forEach(hex => {
+      hex.update()
+      // hex.drawHex(pen)
+      // hex.drawCircle(pen)
+      hex.wrap(width, height)
     })
   };
 };
@@ -80,7 +78,7 @@ class Agent {
   constructor(x, y) {
     this.pos = new Vector(x, y)
     this.vel = new Vector(random.range(-1, 1), random.range(-1, 1))
-    this.radius = random.range(4, 12)
+    this.radius = random.range(10, 30)
   }
   update() {
     this.pos.x += this.vel.x
@@ -96,28 +94,63 @@ class Agent {
     }
   }
 
-  wrap(width, height){
-    if (this.pos.x > width) this.pos.x = 0 
-    if (this.pos.x < 0) this.pos.x = width
-    if (this.pos.y > height) this.pos.y = 0 
-    if (this.pos.y < 0) this.pos.y = height
-  }
+  // wrap(width, height) {
+  //   if (this.pos.x > width) this.pos.x = 0
+  //   if (this.pos.x < 0) this.pos.x = width
+  //   if (this.pos.y > height) this.pos.y = 0
+  //   if (this.pos.y < 0) this.pos.y = height
+  // }
   // more succinct example taken from student celeph @ https://www.domestika.org/en/courses/2729-creative-coding-making-visuals-with-javascript/community/forum/topics/188605-wrap#topic_188605_new_post
   // ===========================================================================
-  // wrap(width, height) {
-  //   this.pos.x = (this.pos.x + width) % width;
-  //   this.pos.y = (this.pos.y + height) % height;
-  //   }
+  wrap(width, height) {
+    this.pos.x = (this.pos.x + width) % width;
+    this.pos.y = (this.pos.y + height) % height;
+  }
   // ===========================================================================
 
-  draw(pen) {
+  drawCircle(pen) {
     pen.save()
     pen.translate(this.pos.x, this.pos.y)
     pen.beginPath()
     pen.arc(0, 0, this.radius, 0, Math.PI * 2)
     pen.fill()
     pen.lineWidth = 4
+    pen.strokeStyle = this.color
     pen.stroke()
     pen.restore()
   }
+}
+
+class Hex extends Agent {
+  constructor(x, y, numOfSides = 6, positiveVelSum = 0, color = "hsla(180,50%,50%,1)") {
+    super(x, y)
+    this.numOfSides = numOfSides
+    this.positiveVelSum = parseFloat(makePositive(this.vel.x).toFixed(3) + makePositive(this.vel.y).toFixed(3))
+    this.color = hsla(((this.positiveVelSum * 360) % 360), this.positiveVelSum * 100, this.positiveVelSum * 80, this.positiveVelSum * 1)
+  }
+
+  drawHex(pen) {
+    pen.save()
+    pen.beginPath()
+    pen.moveTo(this.pos.x + this.radius * Math.cos(0), this.pos.y + this.radius * Math.sin(0))
+
+    for (let i = 0; i < this.numOfSides; i++) {
+      let xCoord = this.pos.x + this.radius * Math.cos(i * 2 * Math.PI / this.numOfSides)
+      let yCoord = this.pos.y + this.radius * Math.sin(i * 2 * Math.PI / this.numOfSides)
+      pen.lineTo(xCoord, yCoord)
+      pen.fillStyle = this.color
+    }
+    pen.fill()
+    pen.restore()
+  }
+}
+
+const makePositive = (value) => {
+  if (value < 0) return value * -1
+  return value
+}
+
+const hsla = (h, s, l, a) => {
+  let color = `hsla(${h},${s}%,${l}%,${a})`
+  return color
 }
