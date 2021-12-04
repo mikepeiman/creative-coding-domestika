@@ -3,9 +3,6 @@ const math = require('canvas-sketch-util/math')
 const random = require('canvas-sketch-util/random')
 const Color = require('canvas-sketch-util/color');
 const Tweakpane = require('tweakpane');
-const colorNames = require('daisyui/colors/colorNames');
-
-
 
 const settings = {
   dimensions: [1080, 1080],

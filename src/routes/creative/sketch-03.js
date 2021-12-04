@@ -1,6 +1,9 @@
 const canvasSketch = require('canvas-sketch');
 const math = require('canvas-sketch-util/math')
 const random = require('canvas-sketch-util/random')
+const Color = require('canvas-sketch-util/color');
+const Tweakpane = require('tweakpane');
+const { mapRange } = require('canvas-sketch-util/math');
 
 const settings = {
   dimensions: [2048, 2048],
@@ -19,6 +22,9 @@ const animate = () => {
 
 let agents = []
 let hexes = []
+const params = {
+  range: 300
+} 
 const sketch = ({ context, width, height }) => {
 
   for (let i = 0; i < 200; i++) {
@@ -31,19 +37,25 @@ const sketch = ({ context, width, height }) => {
 
   return ({ context, width, height }) => {
     const pen = context
-    pen.fillStyle = 'white';
+    pen.fillStyle = 'black';
     pen.fillRect(0, 0, width, height);
     for (let i = 0; i < hexes.length; i++) {
       const hex = hexes[i];
       for (let j = i + 1; j < hexes.length; j++) {
         const other = hexes[j];
         const dist = hex.pos.getDistance(other.pos)
-        if (dist > 200) continue
-        pen.lineWidth = math.mapRange(dist, 0, 200, 12, 1)
+        if (dist > params.range) continue
+        pen.lineWidth = math.mapRange(dist, 0, params.range, 12, 1)
         pen.beginPath()
         pen.moveTo(hex.pos.x, hex.pos.y)
         pen.lineTo(other.pos.x, other.pos.y)
-        pen.strokeStyle = hex.color
+        let a = rangeAlpha(params.range, dist)
+        // Color.parse(hex.color).hsla[3] = c
+        let h =         Color.parse(hex.color).hsla[0]
+        let s =         Color.parse(hex.color).hsla[1]
+        let l =         Color.parse(hex.color).hsla[2]
+        // let a =         Color.parse(hex.color).hsla[3]
+        pen.strokeStyle = hsla(h, s, l, a)
         pen.stroke()
       }
 
@@ -153,4 +165,11 @@ const makePositive = (value) => {
 const hsla = (h, s, l, a) => {
   let color = `hsla(${h},${s}%,${l}%,${a})`
   return color
+}
+
+const rangeAlpha = (range, dist) => {
+  // let c = Color.parse(color).hsla[3]
+  // let r = math.mapRange(dist, 0, range, 0, 1, true)
+  return math.mapRange(dist, 0, range, 1, 0, true)
+  
 }
