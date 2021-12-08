@@ -1,29 +1,17 @@
-<script context="module">
-	export const load = async ({ fetch }) => {
-		const res = await fetch('/posts.json');
-		if (res.ok) {
-			const { posts } = await res.json();
-			return { props: { posts } };
-		}
-	};
-</script>
 
 <script>
-	import Posts from "$components/Posts.svelte";
-	export let posts
-    console.log(`🚀 ~ file: index.svelte ~ line 14 ~ posts`, posts)
 
 </script>
 
 <svelte:head>
-	<title>MetaBrain: Your Life OS</title>
+	<title>Creative Coding</title>
 </svelte:head>
 <div class="main">
-	<h1>Welcome to MetaBrain</h1>
-	<p>An operating system for your mind</p>
+	<h1>Creative Coding</h1>
+	<p>A course by Bruno Imbrizi</p>
 </div>
 <div class="posts">
-	<Posts {posts}/>
+
 </div>
 
 <style>

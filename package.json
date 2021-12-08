@@ -2,7 +2,7 @@
 	"name": "kitplate",
 	"version": "0.0.1",
 	"scripts": {
-		"dev": "env-cmd svelte-kit dev",
+		"dev": "svelte-kit dev",
 		"build": "svelte-kit build",
 		"preview": "svelte-kit preview",
 		"lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. .",
@@ -13,7 +13,6 @@
 		"@tailwindcss/typography": "^0.4.1",
 		"autoprefixer": "^10.4.0",
 		"daisyui": "^1.16.2",
-		"env-cmd": "^10.1.0",
 		"graphql": "^16.0.1",
 		"graphql-request": "^3.6.1",
 		"prettier": "^2.4.1",

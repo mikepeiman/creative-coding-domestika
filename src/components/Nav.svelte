@@ -2,11 +2,6 @@
     <nav>
         <a href="/">Home</a>
         <a href="/about">About</a>
-        <a href="/pokemon">Pokemon</a>
-        <a href="/posts.json">Posts API</a>
-        <a href="/posts">Blog</a>
-        <a href="/todos">Todos</a>
-        <a href="/quotes">Quotes</a>
         <a href="/creative">Creative</a>
     </nav>
 </div>
