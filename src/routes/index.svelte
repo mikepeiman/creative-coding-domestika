@@ -10,9 +10,6 @@
 	<h1>Creative Coding</h1>
 	<p>A course by Bruno Imbrizi</p>
 </div>
-<div class="posts">
-
-</div>
 
 <style>
 	.main {
