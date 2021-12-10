@@ -1,4 +1,6 @@
 <script>
+import SideNav from '$components/SideNav.svelte';
+
 	import '../app.scss';
 	import Nav from '../components/Nav.svelte';
 
@@ -9,6 +11,11 @@
 		<slot name="main" class="bg-coolGray-900" />
 	</div>
 </Nav>
+<SideNav>
+	<div class="main bg-coolGray-900">
+		<slot name="main" class="bg-coolGray-900" />
+	</div>
+</SideNav>
 <slot />
 
 <style lang="scss">

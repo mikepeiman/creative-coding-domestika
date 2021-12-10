@@ -2,3 +2,10 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.theme-mike {
+    --color-primary: 22 55 175;
+    --color-secondary: 75 55 145;
+    --color-accent-1: 25 155 145;
+    --color-accent-2: 125 55 145;
+}

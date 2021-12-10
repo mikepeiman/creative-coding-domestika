@@ -1,5 +1,14 @@
 const colors = require('tailwindcss/colors')
 
+function withOpacityValue(variable) {
+  return ({ opacityValue }) => {
+    if (opacityValue === undefined) {
+      return `rgb(var(${variable}))`
+    }
+    return `rgb(var(${variable}) / ${opacityValue})`
+  }
+}
+
 module.exports = {
     mode: 'jit',
     purge: ['./src/**/*.svelte'],
@@ -47,6 +56,14 @@ module.exports = {
                'success' : '#009485',           /* Success */
                'warning' : '#ff9900',           /* Warning */
                'error' : '#ff5724',             /* Error */
+            },
+          },
+          {
+            'mike': {
+              'primary': withOpacityValue('--color-primary'),
+              'secondary': withOpacityValue('--color-secondary'),
+              'accent-1': withOpacityValue('--color-accent-1'),
+              'accent-2': withOpacityValue('--color-accent-2'),
             },
           },
           'dark',
