@@ -1,6 +1,6 @@
 <div class="main" id="sideNav">
     <nav>
-        <a class="bg-cyan-500" href="/sketch01">Sketch 01</a>
+        <a class="bg-primary-500" href="/sketch01">Sketch 01</a>
     </nav>
 </div>
 
@@ -21,7 +21,7 @@
             display: flex;
             flex-direction: column;
             a {
-                background: var(--primary-color);
+                @apply bg-cyan-300;
             }
         }
     }
