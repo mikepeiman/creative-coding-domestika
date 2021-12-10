@@ -1,10 +1,24 @@
-<div class="main" id="sideNav">
+<div class="sidebar bg-amber-700" id="sideNav">
     <nav>
-        <a class="bg-primary-500" href="/sketch01">Sketch 01</a>
+        <a href="/sketch01">Sketch 01</a>
+        <a href="/sketch02">Sketch 02</a>
+        <a href="/sketch03">Sketch 03</a>
+        <a href="/sketch04">Sketch 04</a>
+        <a href="/sketch05">Sketch 05</a>
+        <a href="/sketch06">Sketch 06</a>
+        <a href="/sketch07">Sketch 07</a>
+        <a href="/sketch08">Sketch 08</a>
+        <a href="/sketch09">Sketch 09</a>
+        <a href="/sketch10">Sketch 10</a>
+
     </nav>
 </div>
 
 <style lang="scss">
+    :global(.sidebar) {
+        grid-area: sidebar;
+        width: 10rem;
+    }
     #sideNav {
         display: flex;
         flex-direction: column;
@@ -21,7 +35,7 @@
             display: flex;
             flex-direction: column;
             a {
-                @apply bg-cyan-300;
+                @apply bg-cyan-900 rounded-lg p-4;
             }
         }
     }

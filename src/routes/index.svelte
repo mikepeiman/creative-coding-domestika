@@ -12,7 +12,8 @@
 </div>
 
 <style>
-	.main {
+	:global(.main) {
+		grid-area: main;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;

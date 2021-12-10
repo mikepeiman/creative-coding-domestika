@@ -1,31 +1,53 @@
 <script>
-	import SideNav from '$components/SideNav.svelte';
+	import Footer from '$components/Footer.svelte';
+import SideNav from '$components/SideNav.svelte';
 	import '../app.scss';
 	import Nav from '../components/Nav.svelte';
 </script>
 
-<Nav>
-	<div class="main bg-coolGray-900">
-		<slot name="main" class="bg-coolGray-900" />
+<div id="layout-container" class="grid container">
+	<Nav  class="header">
+		<slot class="header" />
+	</Nav>
+	<SideNav  class="sidebar">
+		<slot class="sidebar" />
+	</SideNav>
+	<div class="main">
+		<slot  />
 	</div>
-</Nav>
-<SideNav>
-	<div class="main bg-coolGray-900">
-		<slot name="main" class="bg-coolGray-900" />
-	</div>
-</SideNav>
-<slot />
+	<Footer />
+</div>
 
 <style lang="scss">
 	@tailwind base;
 	@tailwind components;
 	@tailwind utilities;
+
+	:global(#layout-container) {
+		height: 100vh;
+		width: 100vw;
+		grid-template-rows: 100px 1fr 1fr 100px;
+		grid-template-areas:
+			'header header header'
+			'sidebar main main'
+			'sidebar main main'
+			'footer footer footer';
+	}
 	.main {
+		grid-area: main;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
 		font-family: 'Montserrat', sans-serif;
+	}
+
+	.header {
+		grid-area: header;
+	}
+
+	.sidebar {
+		grid-area: sidebar;
 	}
 
 	h1 {

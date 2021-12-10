@@ -1,4 +1,5 @@
-<div class="header">
+<div class="footer">
+    <h2>Footer</h2>
     <nav >
         <a href="/">Home</a>
         <a href="/about">About</a>
@@ -7,11 +8,11 @@
 </div>
 
 <style lang="scss">
-    :global(.header) {
-        grid-area: header;
+    :global(.footer) {
+        grid-area: footer;
     }
     nav {
-        width: 100%;
+        grid-area: header;
         display: flex;
         flex-direction: row;
         justify-content: center;
