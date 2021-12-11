@@ -5,16 +5,17 @@
 	<title>Creative Coding</title>
 </svelte:head>
 <div class="main">
-	<div class="pad bg-fuchsia-400"></div>
+	<div class="pad bg-indigo-400"></div>
 	<div class="title flex flex-col items-center py-6">
 		<h1
-			class="p-6 text-transparent font-extrabold text-8xl bg-clip-text bg-gradient-to-r from-fuchsia-400 to-sky-400"
+			class="p-6 font-extrabold text-8xl "
 		>
 			Creative Coding
 		</h1>
-		<p>A course by Bruno Imbrizi</p>
+		<p class="text-2xl text-sky-300">Inspired by Bruno Imbrizi's course</p>
+		<!--  text-transparent bg-clip-text bg-gradient-to-r from-fuchsia-400 to-sky-400 -->
 	</div>
-	<div class="body bg-sky-400"></div>
+	<div class="body bg-sky-600"></div>
 </div>
 
 <style>

@@ -1,9 +1,17 @@
-<div class="footer grid bg-gradient-to-r from-amber-700 to-indigo-500 flex align-middle items-center justify-center">
-    <h2 class="logo mx-5 p-5 rounded-lg bg-blue-700">Footer</h2>
-    <nav class="items-center justify-center">
-        <a href="/">Home</a>
+<script>
+    let icons = [
+        {name: 'Github', src: ''}
+    ]
+
+</script>
+
+<div class="footer w-screen grid bg-gradient-to-r from-gray-700 to-indigo-500 flex align-middle items-center justify-between">
+    <button class="logo btn btn-outline place-content-center mx-5 p-5 rounded-lg bg-blue-700">Footer</button>
+    <nav class="social w-full flex items-center justify-center">
+        <p>This is the footer text. Made by Mike Peiman.</p>
+        <!-- <a href="/">Home</a>
         <a href="/about">About</a>
-        <a href="/creative">Creative</a>
+        <a href="/creative">Creative</a> -->
     </nav>
 </div>
 
@@ -13,7 +21,7 @@
         display: grid;
         grid-template-areas:
         'logo social end';
-        grid-template-columns: 10rem 5fr 1fr;
+        grid-template-columns: 10rem 1fr 10rem;
     }
 
     .logo {
@@ -21,11 +29,7 @@
     }
     nav {
         grid-area: social;
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        font-family: 'Montserrat', sans-serif;
+        padding-left: 10rem;
         a {
             margin: 1em;
             text-decoration: none;

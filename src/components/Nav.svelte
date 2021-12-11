@@ -6,8 +6,9 @@
 	];
 </script>
 
-<div class="header bg-gradient-to-r from-amber-700 to-indigo-500 flex items-center">
-	<nav>
+<div class="header bg-gray-700  bg-gradient-to-r from-gray-700 to-indigo-500 flex items-center"> 
+    <!--  bg-gradient-to-r from-gray-700 to-indigo-500  -->
+	<nav class="w-screen flex justify-center items-center">
 		{#each links as link}
 			<a href={link.url} class="">{link.title}</a>
 		{/each}
@@ -19,12 +20,9 @@
 		grid-area: header;
 	}
 	nav {
-		width: 100vw;
-		display: flex;
-		flex-direction: row;
-		justify-content: center;
-		align-items: center;
-		font-family: 'Montserrat', sans-serif;
+		// width: 100vw;
+        padding-left: 10rem;
+		// font-family: 'Montserrat', sans-serif;
 		a {
 			@apply mx-6 text-xl;
 			:hover {
