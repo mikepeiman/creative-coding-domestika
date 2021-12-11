@@ -26,8 +26,8 @@ import SideNav from '$components/SideNav.svelte';
 	:global(#layout-container) {
 		height: 100vh;
 		width: 100vw;
-		grid-template-rows: 80px 1fr 80px;
-		grid-template-columns: 10rem 1fr 1fr;
+		grid-template-rows: 80px 1fr 1fr 80px;
+		grid-template-columns: 10rem calc(100vw - 10rem);
 		grid-template-areas:
 			'header header header'
 			'sidebar main main'
