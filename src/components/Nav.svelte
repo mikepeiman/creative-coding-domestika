@@ -1,6 +1,6 @@
-<div class="header bg-gradient-to-r from-amber-700 to-indigo-500">
+<div class="header bg-gradient-to-r from-amber-700 to-indigo-500 flex items-center">
     <nav >
-        <a href="/">Home</a>
+        <a href="/" class="hover:text-cyan-300 underline hover:underline decoration-pink-400">Home</a>
         <a href="/about">About</a>
         <a href="/creative">Creative</a>
     </nav>
@@ -21,6 +21,10 @@
             margin: 1em;
             text-decoration: none;
             font-weight: 500;
+            font-size: 1.25rem;
+            :hover {
+
+            }
         }
     }
 

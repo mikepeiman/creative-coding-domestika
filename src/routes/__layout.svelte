@@ -19,9 +19,9 @@ import SideNav from '$components/SideNav.svelte';
 </div>
 
 <style lang="scss">
-	@tailwind base;
-	@tailwind components;
-	@tailwind utilities;
+	// @tailwind base;
+	// @tailwind components;
+	// @tailwind utilities;
 
 	:global(#layout-container) {
 		height: 100vh;

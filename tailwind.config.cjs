@@ -1,5 +1,5 @@
 const colors = require('tailwindcss/colors')
-console.log(`🚀 ~ file: tailwind.config.cjs ~ line 2 ~ colors`, colors)
+// console.log(`🚀 ~ file: tailwind.config.cjs ~ line 2 ~ colors`, colors)
 
 function withOpacityValue(variable) {
   return ({ opacityValue }) => {
