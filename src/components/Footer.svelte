@@ -1,6 +1,6 @@
-<div class="footer">
-    <h2>Footer</h2>
-    <nav >
+<div class="footer grid bg-gradient-to-r from-amber-700 to-indigo-500 flex align-middle items-center justify-center">
+    <h2 class="logo mx-5 p-5 rounded-lg bg-blue-700">Footer</h2>
+    <nav class="items-center justify-center">
         <a href="/">Home</a>
         <a href="/about">About</a>
         <a href="/creative">Creative</a>
@@ -10,9 +10,17 @@
 <style lang="scss">
     :global(.footer) {
         grid-area: footer;
+        display: grid;
+        grid-template-areas:
+        'logo social end';
+        grid-template-columns: 10rem 5fr 1fr;
+    }
+
+    .logo {
+        grid-area: logo;
     }
     nav {
-        grid-area: header;
+        grid-area: social;
         display: flex;
         flex-direction: row;
         justify-content: center;

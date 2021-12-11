@@ -1,4 +1,4 @@
-<div class="header">
+<div class="header bg-gradient-to-r from-amber-700 to-indigo-500">
     <nav >
         <a href="/">Home</a>
         <a href="/about">About</a>
@@ -11,7 +11,7 @@
         grid-area: header;
     }
     nav {
-        width: 100%;
+        width: 100vw;
         display: flex;
         flex-direction: row;
         justify-content: center;
