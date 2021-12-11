@@ -35,7 +35,7 @@
             display: flex;
             flex-direction: column;
             a {
-                @apply bg-cyan-900 rounded-lg p-4;
+                @apply bg-cyan-500 rounded-lg p-4;
             }
         }
     }

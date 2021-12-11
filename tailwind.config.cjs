@@ -12,14 +12,14 @@ function withOpacityValue(variable) {
 
 module.exports = {
   mode: 'jit',
-  purge: ['./src/**/*.svelte'],
+  content: ['./src/**/*.svelte'],
   theme: {
     extend: {
       colors: {
         ...colors,
-        'sky': colors.sky,
-        'cyan': colors.cyan,
-        'fuchsia': colors.fuchsia,
+        // 'sky': colors.sky,
+        // 'cyan': colors.cyan,
+        // 'fuchsia': colors.fuchsia,
         primary: withOpacityValue('--color-primary'),
         secondary: withOpacityValue('--color-secondary'),
         accent: withOpacityValue('--color-accent-1'),
