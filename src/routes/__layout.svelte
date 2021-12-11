@@ -19,10 +19,6 @@ import SideNav from '$components/SideNav.svelte';
 </div>
 
 <style lang="scss">
-	// @tailwind base;
-	// @tailwind components;
-	// @tailwind utilities;
-
 	:global(#layout-container) {
 		// height: 100vh;
 		// width: 100vw;
@@ -38,9 +34,8 @@ import SideNav from '$components/SideNav.svelte';
 		grid-area: main;
 		// display: flex;
 		// flex-direction: column;
-		// justify-content: center;
-		// align-items: center;
-		// font-family: 'Montserrat', sans-serif;
+		justify-content: center;
+		align-items: center;
 	}
 
 	.header {

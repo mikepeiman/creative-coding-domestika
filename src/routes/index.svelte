@@ -19,7 +19,7 @@
 </div>
 
 <style>
-	:global(.main) {
+	.main {
 		grid-area: main;
 		display: grid;
 		height: 100%;
@@ -29,13 +29,7 @@
 			'pad'
 			'title'
 			'body';
-		/* display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		font-family: 'Montserrat', sans-serif; */
 	}
-
 	.title {
 		grid-area: title;
 	}

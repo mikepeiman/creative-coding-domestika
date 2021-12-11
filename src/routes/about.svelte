@@ -5,7 +5,8 @@
 	<title>About The Course</title>
 </svelte:head>
 <div
-	class="main p-12 inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"
+	id="about-sticker"
+	class="p-12 inset-0 bg-gradient-to-r from-cyan-400 to-purple-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"
 >
 	<h1>About The Course</h1>
 	<h2 class="bg-clip-text bg-gradient-to-r from-purple-400 to-cyan-400 text-3xl hover:cyan-300 m-4">
@@ -19,15 +20,9 @@
 
 <style>
 	@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300&display=swap');
-	.main {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		font-family: 'Montserrat', sans-serif;
-		margin-top: 5rem;
+	#about-sticker {
+        margin-top: -10%;
 	}
-
 	h1 {
 		font-size: 3rem;
 		font-weight: 900;
