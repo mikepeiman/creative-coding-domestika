@@ -1,87 +1,71 @@
+<!-- Code copied gratefully from Matt DesLaurier's excellent Svelte REPL at
+https://svelte.dev/repl/5ab538b7182941f789908a660e9bd25c?version=3.12.1
+
+Leaving his example as the first sketch here in honor of his work and amazing contributions -->
+
 <script>
-// const canvasSketch = require('canvas-sketch');
-import canvasSketch from 'canvas-sketch'
-import { drawRect, setItemColor } from '../lib/drawing'
-import { onMount } from 'svelte'
-import { style } from 'canvas-sketch-util/color';
- let canvas
- $: {
-     canvas?.length ? setCanvasAttributes() : false
- }
-onMount(() => {
-    canvas = document.getElementsByTagName('canvas')
-    // console.log(`🚀 ~ file: sketch01.svelte ~ line 10 ~ onMount ~ canvas`, canvas)
-    // canvas[0].classList = "canvas"
-    // console.log(`🚀 ~ file: sketch01.svelte ~ line 12 ~ onMount ~ canvas[0]`, canvas[0])
-});
+	import CanvasSketchEditor from '$components/CanvasSketchEditor.svelte';
+	import Slider from '$components/Slider.svelte';
+	import Color from '$components/Color.svelte';
+	import Checkbox from '$components/Checkbox.svelte';
 
-function setCanvasAttributes() {
-    // let canvas = document.getElementsByTagName('canvas')
-    console.log(`🚀 ~ file: sketch01.svelte ~ line 10 ~ onMount ~ canvas`, canvas)
-    canvas[0].classList = "canvas"
-}
-
-
-const settings = {
-  dimensions: [1080, 1080]//'A4', //[2048, 2048]
-  // pixelsPerInch: 300
-};
-let itemHeight, itemWidth, gap,
-  fill, itemsPerColumn, itemsPerLine,
-  originX, originY, totalItems, remainingWidth,
-  remainingHeight, offset, stroke;
-
-
-
-const sketch = () => {
-  return ({ context, width, height }) => {
-    // init background
-    context.fillStyle = '#333';
-    context.fillRect(0, 0, width, height);
-    // set key variables
-    itemsPerColumn = itemsPerLine = 25
-    let marginValue = 0.01
-    let marginsX = width * marginValue
-    let marginsY = height * marginValue
-    originX = marginsX
-    originY = marginsY
-    remainingWidth = width - marginsX * 2
-    remainingHeight = height - marginsY * 2
-    gap = remainingWidth * marginValue
-    itemWidth = (remainingWidth - (gap * itemsPerLine)) / (itemsPerLine) + marginValue * 50// (100 / itemsPerLine )
-    itemHeight = (remainingHeight - (gap * itemsPerLine)) / (itemsPerLine) + marginValue * 50// (100 / itemsPerLine )
-    totalItems = itemsPerLine * itemsPerColumn
-    offset = gap / 5
-    drawGrid()
-    function drawGrid() {
-      // context.clearRect(0, 0, width, remainingHeight);
-      for (let j = 0; j < itemsPerColumn; j++) {
-        for (let i = 0; i < itemsPerLine; i++) {
-          fill = `hsla(180, 50%, 50%, .4)`;
-          let x = originX + (itemWidth + gap) * i;
-          let y = originY + (itemHeight + gap) * j;
-          stroke = 'white'
-          drawRect(context, x, y, itemWidth, itemHeight, fill, stroke, 1);
-          if (Math.random() > 0.5) {
-            fill = setItemColor(i, j, totalItems);
-            drawRect(context, x + offset / 2, y + offset / 2, itemWidth - offset, itemHeight - offset, fill, stroke, 2);
-          }
-        }
-      }
-    }
-  };
-};
-
-canvasSketch(sketch, settings);
-
+	const data = {
+		outline: true,
+		arclen: 0.5,
+		angle: 0,
+		radius: 0.33,
+		background: '#527A9B',
+		foreground: '#F4B9A7',
+		lineWidth: 20
+	};
+	
+	const settings = {
+		scaleToView: true,
+		dimensions: [ 1280, 1280 ]
+	};
+	
+	const sketch = ({}) => {
+		return ({ context, width, height }) => {
+			const {
+				background,
+				foreground,
+				radius,
+				arclen,
+				angle,
+				lineWidth,
+				outline,
+				stroke
+			} = data;
+			context.clearRect(0, 0, width, height);
+			context.fillStyle = background;
+			context.fillRect(0, 0, width, height);
+			
+			const minDim = Math.min(width, height);
+			context.beginPath();
+			context.arc(
+				width / 2,
+				height / 2,
+				minDim * radius,
+				angle,
+				Math.PI * 2 * arclen + angle
+			);
+			context.fillStyle = foreground;
+			context.strokeStyle = foreground;
+			context.lineWidth = lineWidth;
+			if (outline) context.stroke();
+			else context.fill();
+		};
+	};
 </script>
 
-<!-- <svelte:head><script src="$lib/canvas-sketch.umd.js"></script></svelte:head> -->
-<!-- 
-<h1>hello</h1> -->
-
-<style>
-    .canvas {
-        grid-area: main;
-    }
-</style>
+<CanvasSketchEditor {sketch} {settings} {data}>
+	<Color label='Background' bind:value={data.background} />
+	<Color label='Foreground' bind:value={data.foreground} />
+	<Slider label='Arc Length' bind:value={data.arclen} />
+	<Slider label='Radius' bind:value={data.radius} />
+	<Slider label='Angle' bind:value={data.angle} min={-Math.PI} max={Math.PI} />
+	<Checkbox label='Outline' bind:checked={data.outline} />
+	{#if data.outline}
+		<Slider label='Line Width' bind:value={data.lineWidth} min=1 max=100 />
+	{/if}
+</CanvasSketchEditor>
