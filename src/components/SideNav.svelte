@@ -1,10 +1,13 @@
 <script>
 	let numSketches = 10;
 	let sketches = [];
-	for (let i = 0; i < numSketches; i++) {
+	for (let i = 1; i < numSketches + 1; i++) {
+        let url, name
+        i < 10 ? name = `Sketch 0${i}` : name = `Sketch ${i}`
+        i < 10 ? url = `sketch0${i}` : url = `sketch${i}`
 		let sketch = {
-			name: `Sketch 0${i}`,
-			url: `sketch0${i}`,
+			name: name,
+			url: url,
 		};
 		sketches.push(sketch);
 	}
