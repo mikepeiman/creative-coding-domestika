@@ -1,5 +1,5 @@
 const canvasSketch = require('canvas-sketch');
-import { drawRect, setItemColor } from './drawing'
+import { drawRect, setItemColor } from '../lib/drawing'
 
 const settings = {
   dimensions: [1080, 1080]//'A4', //[2048, 2048]
@@ -30,7 +30,7 @@ const sketch = () => {
     itemWidth = (remainingWidth - (gap * itemsPerLine)) / (itemsPerLine) + marginValue * 50// (100 / itemsPerLine )
     itemHeight = (remainingHeight - (gap * itemsPerLine)) / (itemsPerLine) + marginValue * 50// (100 / itemsPerLine )
     totalItems = itemsPerLine * itemsPerColumn
-    offset = gap/ 5
+    offset = gap / 5
     drawGrid()
     function drawGrid() {
       // context.clearRect(0, 0, width, remainingHeight);
