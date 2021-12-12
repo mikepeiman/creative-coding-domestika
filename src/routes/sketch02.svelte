@@ -1,20 +1,15 @@
-<!-- Code copied gratefully from Matt DesLaurier's excellent Svelte REPL at
-https://svelte.dev/repl/5ab538b7182941f789908a660e9bd25c?version=3.12.1
-
-Leaving his example as the first sketch here in honor of his work and amazing contributions -->
-
 <script>
 	import CanvasSketchEditor from '$components/CanvasSketchEditor.svelte';
 	import Slider from '$components/Slider.svelte';
 	import Color from '$components/Color.svelte';
 	import Checkbox from '$components/Checkbox.svelte';
-
+	import { drawRect, setItemColor } from '../lib/drawing'
 	const data = {
 		outline: true,
 		arclen: 0.5,
 		angle: 0,
 		radius: 0.33,
-		background: '#527A9B',
+		background: '#000000',
 		foreground: '#F4B9A7',
 		lineWidth: 20
 	};

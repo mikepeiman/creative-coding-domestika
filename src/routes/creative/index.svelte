@@ -1,7 +1,7 @@
 <!-- Canvas REPL for help: https://svelte.dev/repl/e4fd9f9f6fd24f909c073a02f1a921cc?version=3.44.2 -->
 <script>
 	import { onMount } from 'svelte';
-	import { drawRect, setItemColor } from './drawing';
+	import { drawRect, setItemColor } from '../../lib/drawing';
     
 	let canvas, context, innerWidth, innerHeight;
 	let itemsPerLine, itemsPerColumn, gap, width, height, originX, originY, totalItems;

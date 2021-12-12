@@ -25,11 +25,11 @@
 	});
 	
 	// handle sketch destroy
-	onDestroy(() => {
-		loader.then(m => m.destroy());
-		loader = null;
-		manager = null;
-	});
+	// onDestroy(() => {
+	// 	loader.then(m => m.destroy());
+	// 	loader = null;
+	// 	manager = null;
+	// });
 
 	// update settings and data
 	$: manager && manager.update(settings);
