@@ -21,8 +21,8 @@
 		totalItems: false,
 		remainingWidth: 1080,
 		remainingHeight: 1080,
-		offset: 0,
-		stroke: 20,
+		margin: 100,
+		stroke: '#ffffff',
 		outline: true,
 		fitToCanvas: true,
 		arclen: 0.5,
@@ -52,16 +52,16 @@
 		console.log(`🚀 ~ file: sketch02.svelte ~ line 52 ~ data.width`, data.width);
 		console.log(`🚀 ~ file: sketch02.svelte ~ line 49 ~ width`, width);
 		let totalGapX = data.itemsPerRow * data.gap;
-		data.remainingWidth = data.width - totalGapX;
+		data.remainingWidth = data.width - totalGapX - data.margin;
 		let totalGapY = data.itemsPerColumn * data.gap;
-		data.remainingHeight = data.height - totalGapY;
+		data.remainingHeight = data.height - totalGapY - data.margin;
 		console.log(`🚀 ~ file: sketch02.svelte ~ line 51 ~ data.remainingWidth`, data.remainingWidth);
 		data.itemWidth = data.remainingWidth / data.itemsPerRow;
 		data.itemHeight = data.remainingHeight / data.itemsPerColumn;
 		// data.itemWidth = width / data.itemsPerRow;
 		console.log(`🚀 ~ file: sketch02.svelte ~ line 53 ~ data.itemWidth`, data.itemWidth);
-		// data.offset
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 58 ~ data.offset`, data.offset);
+		// data.margin
+		console.log(`🚀 ~ file: sketch02.svelte ~ line 58 ~ data.margin`, data.margin);
 		// let occupiedWidth = data.itemsPerRow * (data.gap + data.itemWidth);
 		// console.log(`🚀 ~ file: sketch02.svelte ~ line 55 ~ occupiedWidth`, occupiedWidth)
 		// data.remainingWidth = width - occupiedWidth
@@ -98,14 +98,14 @@
 		// data.remainingWidth = width - data.itemsPerRow * (data.gap + data.itemWidth);
 		// data.remainingHeight = height - data.itemsPerColumn * (data.gap + data.itemHeight);
 
-		data.offset = data.gap / 2;
+		// data.margin = data.gap / 2;
 		console.log(
 			`🚀 ~ file: sketch02.svelte ~ line 49 ~ sketch ~ data.remainingWidth`,
 			data.remainingWidth
 		);
-		// data.originX = data.offset
+		// data.originX = data.margin
 		// data.originY = data.offse
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 46 ~ sketch ~ data.offset `, data.offset);
+		console.log(`🚀 ~ file: sketch02.svelte ~ line 46 ~ sketch ~ data.margin `, data.margin);
 		return ({ context, width, height }) => {
 			const { background, foreground, radius, arclen, angle, lineWidth, outline, stroke } = data;
 			context.clearRect(0, 0, width, height);
@@ -122,35 +122,34 @@
 			for (let i = 0; i < data.itemsPerRow; i++) {
 				fill = `hsla(180, 50%, 50%, .4)`;
 				let x = (data.itemWidth + data.gap) * i;
-				// console.log(`🚀 ~ file: sketch02.svelte ~ line 117 ~ drawGrid ~ data.originX`, data.originX)
-				// console.log(`🚀 ~ file: sketch02.svelte ~ line 117 ~ drawGrid ~ data.itemWidth`, data.itemWidth)
-				// console.log(`🚀 ~ file: sketch02.svelte ~ line 117 ~ drawGrid ~ x`, x)
 				let y = (data.itemHeight + data.gap) * j;
 				stroke = 'white';
 				drawRect(
 					context,
-					x + data.offset,
-					y + data.offset,
+					x + data.margin / 2,
+					y + data.margin / 2,
 					data.itemWidth,
 					data.itemHeight,
 					fill,
-					stroke,
+					data.stroke,
 					1
 				);
-				// console.log(`🚀 ~ file: sketch02.svelte ~ line 71 ~ drawGrid ~ context, x, y, data.itemWidth, data.itemHeight, fill, stroke, 1`, context, x, y, data.itemWidth, data.itemHeight, fill, stroke, 1)
-				// console.log(`🚀 ~ file: sketch02.svelte ~ line 70 ~ drawGrid ~ x, y,`, x, y,)
-				if (Math.random() > 0.7) {
-					fill = setItemColor(i, j, data.totalItems);
-					drawRect(
-						context,
-						x + data.gap,
-						y + data.gap,
-						data.itemWidth - data.offset * 2,
-						data.itemHeight - data.offset * 2,
-						fill,
-						stroke,
-						2
-					);
+				if (Math.random() > 0.5) {
+					// conditional if random squares are offset, so they don't get cut off by canvas edge
+					if (i < data.itemsPerRow - 2 && j < data.itemsPerColumn - 2) {
+						fill = setItemColor(i, j, data.totalItems);
+						drawRect(
+							context,
+							x + data.margin / 2,
+							y + data.margin / 2,
+							data.itemWidth,
+							data.itemHeight,
+							fill,
+							data.stroke,
+							5
+						);
+					}
+					// end offset conditional
 				}
 			}
 		}
@@ -160,9 +159,11 @@
 <CanvasSketchEditor {sketch} {settings} {data}>
 	<Color label="Background" bind:value={data.background} />
 	<Color label="Foreground" bind:value={data.foreground} />
+	<Color label="Stroke" bind:value={data.stroke} />
 	<Slider label="Items per row" bind:value={data.itemsPerRow} />
 	<Slider label="Items per column" bind:value={data.itemsPerColumn} />
 	<Slider label="Gap" bind:value={data.gap} />
+	<Slider label="Margin" bind:value={data.margin} />
 	<!-- <Slider label="Radius" bind:value={data.radius} />
 	<Slider label="Angle" bind:value={data.angle} min={-Math.PI} max={Math.PI} /> -->
 	<Checkbox label="Outline" bind:checked={data.outline} />
