@@ -3,9 +3,8 @@
 	import Slider from '$components/Slider.svelte';
 	import Color from '$components/Color.svelte';
 	import Checkbox from '$components/Checkbox.svelte';
-	import { drawRect, setItemColor } from '../lib/drawing';
 	import { onMount } from 'svelte';
-	import { browser } from '$app/env';
+	import random from 'canvas-sketch-util/random';
 
 	const data = {
 		itemHeight: 25,
@@ -23,14 +22,16 @@
 		remainingHeight: 1080,
 		margin: 100,
 		offset: 0,
-		stroke: '#ffffff',
+		randomFactor: 0.5,
+		randomStroke: true,
+		randomFill: true,
+		fill: '#003399aa',
+		stroke: '#ffffffaa',
 		outline: true,
 		fitToCanvas: true,
 		arclen: 0.5,
 		angle: 0,
 		radius: 0.33,
-		background: '#000000',
-		foreground: '#04B9ff',
 		lineWidth: 20
 	};
 
@@ -121,24 +122,29 @@
 		// console.log(data);
 		for (let j = 0; j < data.itemsPerColumn; j++) {
 			for (let i = 0; i < data.itemsPerRow; i++) {
-				fill = `hsla(180, 50%, 50%, .4)`;
 				let x = (data.itemWidth + data.gap) * i;
 				let y = (data.itemHeight + data.gap) * j;
-				stroke = 'white';
+				data.randomStroke ? stroke = `hsla(${setItemColor(i, j, data.totalItems * 0.3)}, 90%, 50%, ${random.range(
+					0,
+					1
+				)})` : stroke = data.stroke;
 				drawRect(
 					context,
 					x + data.margin / 2 + data.gap / 2,
 					y + data.margin / 2 + data.gap / 2,
 					data.itemWidth,
 					data.itemHeight,
-					fill,
-					data.stroke,
-					1
+					data.fill,
+					stroke,
+					data.lineWidth
 				);
-				if (Math.random() > 0.5) {
+				if (Math.random() < data.randomFactor) {
 					// conditional if random squares are offset, so they don't get cut off by canvas edge
 					// if (i < data.itemsPerRow - 2 && j < data.itemsPerColumn - 2) {
-					fill = setItemColor(i, j, data.totalItems);
+					data.randomFill ? fill = `hsla(${setItemColor(i, j, data.totalItems * 0.3)}, 90%, 50%, ${random.range(
+						0,
+						1
+					)})` : fill = data.fill;
 					drawRect(
 						context,
 						x + data.margin / 2 + data.gap / 2 + data.offset,
@@ -146,7 +152,7 @@
 						data.itemWidth,
 						data.itemHeight,
 						fill,
-						data.stroke,
+						stroke,
 						data.lineWidth
 					);
 				}
@@ -155,26 +161,53 @@
 			}
 		}
 	}
+	const drawRect = (context, originX, originY, width, height, fill, stroke, lineWidth) => {
+		context.strokeStyle = stroke;
+		context.beginPath();
+		context.rect(originX, originY, width, height);
+		context.lineWidth = lineWidth;
+		context.stroke();
+		context.fillStyle = fill;
+		context.fill();
+	};
+
+	const setItemColor = (i, j, totalItems) => {
+		let hueOffset = 30;
+		let hueInterval = 360 / totalItems;
+		let variance = Math.random() * 5;
+		let currentFactor = (i + variance) * (j - variance) * (variance * totalItems);
+		let hue = currentFactor + hueOffset;
+		return hue;
+		// let color = `hsla(${currentFactor + hueOffset}, 90%, 50%, 1)`;
+		// return color;
+	};
 </script>
 
 <CanvasSketchEditor {sketch} {settings} {data}>
-	<Color label="Background" bind:value={data.background} />
-	<Color label="Foreground" bind:value={data.foreground} />
-	<Color label="Stroke" bind:value={data.stroke} />
-	<Slider label="Items per row" bind:value={data.itemsPerRow} />
-	<Slider label="Items per column" bind:value={data.itemsPerColumn} />
+	<Checkbox label="Random fill" bind:checked={data.randomFill} />
+	<!-- {#if !data.randomFill} -->
+		<Color label="Fill" bind:value={data.fill} />
+	<!-- {/if} -->
+	<!-- <Color label="Foreground" bind:value={data.foreground} /> -->
+	<Checkbox label="Random stroke" bind:checked={data.randomStroke} />
+	{#if !data.randomStroke}
+		<Color label="Stroke" bind:value={data.stroke} />
+	{/if}
+	<Slider label="Items per row" bind:value={data.itemsPerRow} min="1" max="300" step="1" />
+	<Slider label="Items per column" bind:value={data.itemsPerColumn} min="1" max="300" step="1" />
 	<Slider label="Gap" bind:value={data.gap} min="0" max="100" step="5" />
 	<Slider label="Margin" bind:value={data.margin} min="0" max="500" step="10" />
-	<Slider label="Offset" bind:value={data.offset} min="0" max="500" step="10" />
+	<Slider label="Offset" bind:value={data.offset} min="0" max="100" step="1" />
+	<Slider label="Random Factor" bind:value={data.randomFactor} min="0" max="1" step=".05" />
 	<!-- <Slider label="Radius" bind:value={data.radius} />
 	<Slider label="Angle" bind:value={data.angle} min={-Math.PI} max={Math.PI} /> -->
 	<Checkbox label="Outline" bind:checked={data.outline} />
-	{#if data.outline}
-		<Slider label="Line Width" bind:value={data.lineWidth} min="1" max="100" />
-	{/if}
-	<Checkbox label="Fit To Canvas" bind:checked={data.fitToCanvas} />
+	<!-- {#if data.outline} -->
+	<Slider label="Line Width" bind:value={data.lineWidth} min="0" max="100" />
+	<!-- {/if} -->
+	<!-- <Checkbox label="Fit To Canvas" bind:checked={data.fitToCanvas} />
 	{#if !data.fitToCanvas}
 		<Slider label="Item Width" bind:value={data.itemWidth} />
 		<Slider label="Item Height" bind:value={data.itemHeight} />
-	{/if}
+	{/if} -->
 </CanvasSketchEditor>

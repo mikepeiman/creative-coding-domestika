@@ -5,11 +5,11 @@
     console.log(`🚀 ~ file: Slider.svelte ~ line 5 ~ label`, label)
 
 	export let value;
-	export let min;
+	export let min = 1;
     console.log(`🚀 ~ file: Slider.svelte ~ line 8 ~ min`, min)
-	export let max;
+	export let max = 100;
     console.log(`🚀 ~ file: Slider.svelte ~ line 10 ~ max`, max)
-	export let step;
+	export let step = 1;
     console.log(`🚀 ~ file: Slider.svelte ~ line 12 ~ step`, step)
 </script>
 

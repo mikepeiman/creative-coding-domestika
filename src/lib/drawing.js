@@ -29,7 +29,7 @@ export const setItemColor = (i, j, totalItems) => {
 	let hueOffset = 30
 	let hueInterval = 360 / (totalItems)
 	let offset = Math.random() * 5
-	let currentFactor = (i+offset)*(j+offset);
-	let color = `hsla(${(currentFactor + (i*.75)) * hueInterval + hueOffset}, 100%, 55%, .25)`;
+	let currentFactor = (i) * (j) * hueInterval;
+	let color = `hsla(${currentFactor + hueOffset}, 90%, 50%, 1)`;
 	return color
 }
