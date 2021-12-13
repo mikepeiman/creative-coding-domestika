@@ -10,6 +10,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 	import Checkbox from '$components/Checkbox.svelte';
 
 	const data = {
+		TITLE: "Sketch01",
 		outline: true,
 		arclen: 0.5,
 		angle: 0,

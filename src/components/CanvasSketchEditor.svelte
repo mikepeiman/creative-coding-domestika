@@ -19,14 +19,14 @@
 
   function saveData(settings, data) {
     if (localStorageSupported && settings.localStorage !== false) {
-      window.localStorage.setItem("data", JSON.stringify(data));
+      window.localStorage.setItem(`${data.TITLE}`, JSON.stringify(data));
     }
   }
 
   function readData(settings, data) {
     if (localStorageSupported && settings.localStorage !== false) {
       try {
-        const prev = window.localStorage.getItem("data");
+        const prev = window.localStorage.getItem(`${data.TITLE}`);
         if (!prev) return;
         const newData = JSON.parse(prev);
         Object.assign(data, newData);

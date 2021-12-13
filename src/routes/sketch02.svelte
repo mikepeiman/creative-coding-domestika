@@ -7,6 +7,7 @@
 	import random from 'canvas-sketch-util/random';
 
 	const data = {
+		TITLE: "Sketch02",
 		itemHeight: 25,
 		itemWidth: 25,
 		width: 1000,
