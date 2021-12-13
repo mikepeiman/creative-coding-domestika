@@ -22,6 +22,7 @@
 		remainingWidth: 1080,
 		remainingHeight: 1080,
 		margin: 100,
+		offset: 0,
 		stroke: '#ffffff',
 		outline: true,
 		fitToCanvas: true,
@@ -126,8 +127,8 @@
 				stroke = 'white';
 				drawRect(
 					context,
-					x + data.margin / 2,
-					y + data.margin / 2,
+					x + data.margin / 2 + data.gap / 2,
+					y + data.margin / 2 + data.gap / 2,
 					data.itemWidth,
 					data.itemHeight,
 					fill,
@@ -136,21 +137,21 @@
 				);
 				if (Math.random() > 0.5) {
 					// conditional if random squares are offset, so they don't get cut off by canvas edge
-					if (i < data.itemsPerRow - 2 && j < data.itemsPerColumn - 2) {
-						fill = setItemColor(i, j, data.totalItems);
-						drawRect(
-							context,
-							x + data.margin / 2,
-							y + data.margin / 2,
-							data.itemWidth,
-							data.itemHeight,
-							fill,
-							data.stroke,
-							5
-						);
-					}
-					// end offset conditional
+					// if (i < data.itemsPerRow - 2 && j < data.itemsPerColumn - 2) {
+					fill = setItemColor(i, j, data.totalItems);
+					drawRect(
+						context,
+						x + data.margin / 2 + data.gap / 2 + data.offset,
+						y + data.margin / 2 + data.gap / 2 + data.offset,
+						data.itemWidth,
+						data.itemHeight,
+						fill,
+						data.stroke,
+						data.lineWidth
+					);
 				}
+				// end offset conditional
+				// }
 			}
 		}
 	}
@@ -162,8 +163,9 @@
 	<Color label="Stroke" bind:value={data.stroke} />
 	<Slider label="Items per row" bind:value={data.itemsPerRow} />
 	<Slider label="Items per column" bind:value={data.itemsPerColumn} />
-	<Slider label="Gap" bind:value={data.gap} />
-	<Slider label="Margin" bind:value={data.margin} />
+	<Slider label="Gap" bind:value={data.gap} min="0" max="100" step="5" />
+	<Slider label="Margin" bind:value={data.margin} min="0" max="500" step="10" />
+	<Slider label="Offset" bind:value={data.offset} min="0" max="500" step="10" />
 	<!-- <Slider label="Radius" bind:value={data.radius} />
 	<Slider label="Angle" bind:value={data.angle} min={-Math.PI} max={Math.PI} /> -->
 	<Checkbox label="Outline" bind:checked={data.outline} />
