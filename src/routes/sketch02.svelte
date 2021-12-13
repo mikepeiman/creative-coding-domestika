@@ -10,7 +10,7 @@
 		gap: 15,
 		fill: false,
 		itemsPerColumn: 25,
-		itemsPerLine: 25,
+		itemsPerRow: 25,
 		originX: 0,
 		originY: 0,
 		totalItems: false,
@@ -30,7 +30,7 @@
 
 	let width, height, fill, stroke;
 
-	$: data.totalItems = data.itemsPerColumn * data.itemsPerLine;
+	$: data.totalItems = data.itemsPerColumn * data.itemsPerRow;
 	// $: data.marginsX = width * data.marginValue
 	// $: data.marginsY = width * data.marginValue
 
@@ -40,45 +40,64 @@
 	};
 
 	const sketch = ({ context, width, height }) => {
+		data.remainingWidth = width - data.itemsPerRow * data.gap;
+		data.remainingHeight = height - data.itemsPerColumn * data.gap;
+
+		data.itemWidth = data.remainingWidth / data.itemsPerRow;
+		data.itemHeight = data.remainingHeight / data.itemsPerColumn;
+
+		data.remainingWidth = width - data.itemsPerRow * (data.gap + data.itemWidth);
+		data.remainingHeight = height - data.itemsPerColumn * (data.gap + data.itemHeight);
+
+		data.offset = data.gap / 2;
+        console.log(`🚀 ~ file: sketch02.svelte ~ line 49 ~ sketch ~ data.remainingWidth`, data.remainingWidth)
+		// data.originX = data.offset
+		// data.originY = data.offse
+		console.log(`🚀 ~ file: sketch02.svelte ~ line 46 ~ sketch ~ data.offset `, data.offset);
 		return ({ context, width, height }) => {
 			const { background, foreground, radius, arclen, angle, lineWidth, outline, stroke } = data;
 			context.clearRect(0, 0, width, height);
 			context.fillStyle = background;
 			context.fillRect(0, 0, width, height);
 
-			// const minDim = Math.min(width, height);
-			// context.beginPath();
-			// context.arc(width / 2, height / 2, minDim * radius, angle, Math.PI * 2 * arclen + angle);
-			// context.fillStyle = foreground;
-			// context.strokeStyle = foreground;
-			// context.lineWidth = lineWidth;
-			// if (outline) context.stroke();
-			// else context.fill();
-			drawGrid(context);
+			drawGrid(context, width, height);
 		};
 	};
 
-	function drawGrid(context) {
+	function drawGrid(context, width, height) {
 		console.log(data);
 		for (let j = 0; j < data.itemsPerColumn; j++) {
-			for (let i = 0; i < data.itemsPerLine; i++) {
+			for (let i = 0; i < data.itemsPerRow; i++) {
 				fill = `hsla(180, 50%, 50%, .4)`;
 				let x = data.originX + (data.itemWidth + data.gap) * i;
 				let y = data.originY + (data.itemHeight + data.gap) * j;
 				stroke = 'white';
-				
-                console.log(`🚀 ~ file: sketch02.svelte ~ line 69 ~ drawGrid ~ data.itemWidth - data.offset`, data.itemWidth - data.offset)
-				drawRect(context, x, y, data.itemWidth, data.itemHeight, fill, stroke, 1);
-                console.log(`🚀 ~ file: sketch02.svelte ~ line 71 ~ drawGrid ~ context, x, y, data.itemWidth, data.itemHeight, fill, stroke, 1`, context, x, y, data.itemWidth, data.itemHeight, fill, stroke, 1)
-                console.log(`🚀 ~ file: sketch02.svelte ~ line 70 ~ drawGrid ~ x, y,`, x, y,)
+
+				console.log(
+					`🚀 ~ file: sketch02.svelte ~ line 69 ~ drawGrid ~ data.itemWidth - data.offset`,
+					data.itemWidth,
+					data.offset
+				);
+				drawRect(
+					context,
+					x + data.offset,
+					y + data.offset,
+					data.itemWidth,
+					data.itemHeight,
+					fill,
+					stroke,
+					1
+				);
+				// console.log(`🚀 ~ file: sketch02.svelte ~ line 71 ~ drawGrid ~ context, x, y, data.itemWidth, data.itemHeight, fill, stroke, 1`, context, x, y, data.itemWidth, data.itemHeight, fill, stroke, 1)
+				// console.log(`🚀 ~ file: sketch02.svelte ~ line 70 ~ drawGrid ~ x, y,`, x, y,)
 				if (Math.random() > 0.5) {
 					fill = setItemColor(i, j, data.totalItems);
 					drawRect(
 						context,
-						x + data.offset / 2,
-						y + data.offset / 2,
-						data.itemWidth - data.offset,
-						data.itemHeight - data.offset,
+						x + data.gap,
+						y + data.gap,
+						data.itemWidth - data.offset * 2,
+						data.itemHeight - data.offset * 2,
 						fill,
 						stroke,
 						2
@@ -92,7 +111,8 @@
 <CanvasSketchEditor {sketch} {settings} {data}>
 	<Color label="Background" bind:value={data.background} />
 	<Color label="Foreground" bind:value={data.foreground} />
-
+	<Slider label="Items per row" bind:value={data.itemsPerRow} />
+	<Slider label="Items per column" bind:value={data.itemsPerColumn} />
 	<!-- <Slider label="Radius" bind:value={data.radius} />
 	<Slider label="Angle" bind:value={data.angle} min={-Math.PI} max={Math.PI} /> -->
 	<Checkbox label="Outline" bind:checked={data.outline} />
@@ -101,7 +121,7 @@
 	{/if}
 	<Checkbox label="Fit To Canvas" bind:checked={data.fitToCanvas} />
 	{#if !data.fitToCanvas}
-	<Slider label="Item Width" bind:value={data.itemWidth} />
-	<Slider label="Item Height" bind:value={data.itemHeight} />
+		<Slider label="Item Width" bind:value={data.itemWidth} />
+		<Slider label="Item Height" bind:value={data.itemHeight} />
 	{/if}
 </CanvasSketchEditor>
