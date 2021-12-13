@@ -13,6 +13,7 @@
 	})();
 
 	// None of this will work in the sandbox REPL but it will work offline
+    // saveData(settings, data)
   readData(settings, data);
   $: saveData(settings, data);
 

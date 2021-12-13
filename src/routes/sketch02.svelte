@@ -14,11 +14,12 @@
 		originX: 0,
 		originY: 0,
 		totalItems: false,
-		remainingWidth: 5,
-		remainingHeight: 5,
-		offset: 5,
+		remainingWidth: 0,
+		remainingHeight: 0,
+		offset: 0,
 		stroke: 20,
 		outline: true,
+		fitToCanvas: true,
 		arclen: 0.5,
 		angle: 0,
 		radius: 0.33,
@@ -91,11 +92,16 @@
 <CanvasSketchEditor {sketch} {settings} {data}>
 	<Color label="Background" bind:value={data.background} />
 	<Color label="Foreground" bind:value={data.foreground} />
-	<Slider label="Arc Length" bind:value={data.arclen} />
-	<Slider label="Radius" bind:value={data.radius} />
-	<Slider label="Angle" bind:value={data.angle} min={-Math.PI} max={Math.PI} />
+
+	<!-- <Slider label="Radius" bind:value={data.radius} />
+	<Slider label="Angle" bind:value={data.angle} min={-Math.PI} max={Math.PI} /> -->
 	<Checkbox label="Outline" bind:checked={data.outline} />
 	{#if data.outline}
 		<Slider label="Line Width" bind:value={data.lineWidth} min="1" max="100" />
+	{/if}
+	<Checkbox label="Fit To Canvas" bind:checked={data.fitToCanvas} />
+	{#if !data.fitToCanvas}
+	<Slider label="Item Width" bind:value={data.itemWidth} />
+	<Slider label="Item Height" bind:value={data.itemHeight} />
 	{/if}
 </CanvasSketchEditor>

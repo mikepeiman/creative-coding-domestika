@@ -4,13 +4,16 @@
 	export let label = '';
 
 	export let value = 0;
-	export let min = 0;
-	export let max = 1;
-	export let step = 0.01;
+	export let min = 1;
+	export let max = 100;
+	export let step = 1;
 </script>
 
 <Param {label}>
-	<input type='range' bind:value={value} {min} {max} {step} />
+	<div class="flex">
+        <input type='range' bind:value={value} {min} {max} {step} />
+            <span class="input">{value}</span>
+    </div>
 </Param>
 
 <style>
