@@ -10,6 +10,8 @@
 	const data = {
 		itemHeight: 25,
 		itemWidth: 25,
+		width: 1000,
+		height: 1000,
 		gap: 15,
 		fill: false,
 		itemsPerColumn: 25,
@@ -33,25 +35,38 @@
 
 	let width = 1080;
 	let height = 1080;
-	let canvas = {}
-	canvas['width'] = width
-	canvas['height'] = height
+	let canvas = {};
+	canvas['width'] = width;
+	canvas['height'] = height;
 	let fill, stroke;
+	let mounted = false;
 
+	// $: data.width = canvas.width
 	$: data.totalItems = data.itemsPerColumn * data.itemsPerRow;
-	$: {
-		// data.remainingWidth = width - data.itemsPerRow * (data.gap + data.itemWidth);
+
+	$: if (mounted) {
+		console.log(`mounted`);
+		// canvas = document.getElementsByTagName('canvas')[0];
+		console.log(`🚀 ~ file: sketch02.svelte ~ line 44 ~ data.itemsPerRow`, data.itemsPerRow);
+		// data.width = canvas.width;
+		console.log(`🚀 ~ file: sketch02.svelte ~ line 52 ~ data.width`, data.width);
+		console.log(`🚀 ~ file: sketch02.svelte ~ line 49 ~ width`, width);
+		let totalGapX = data.itemsPerRow * data.gap;
+		data.remainingWidth = data.width - totalGapX;
+		let totalGapY = data.itemsPerColumn * data.gap;
+		data.remainingHeight = data.height - totalGapY;
+		console.log(`🚀 ~ file: sketch02.svelte ~ line 51 ~ data.remainingWidth`, data.remainingWidth);
 		data.itemWidth = data.remainingWidth / data.itemsPerRow;
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 36 ~ data.remainingWidth`, data.remainingWidth);
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 36 ~ data.itemWidth`, data.itemWidth);
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 36 ~ data.gap`, data.gap);
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 36 ~ data.itemsPerRow`, data.itemsPerRow);
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 36 ~ width`, width);
-	}
-	$: if (browser) {
-		console.log(`browser`);
-		width = canvas.width;
-		data.remainingWidth = width - data.itemsPerRow * (data.gap + data.itemWidth);
+		data.itemHeight = data.remainingHeight / data.itemsPerColumn;
+		// data.itemWidth = width / data.itemsPerRow;
+		console.log(`🚀 ~ file: sketch02.svelte ~ line 53 ~ data.itemWidth`, data.itemWidth);
+		// data.offset
+		console.log(`🚀 ~ file: sketch02.svelte ~ line 58 ~ data.offset`, data.offset);
+		// let occupiedWidth = data.itemsPerRow * (data.gap + data.itemWidth);
+		// console.log(`🚀 ~ file: sketch02.svelte ~ line 55 ~ occupiedWidth`, occupiedWidth)
+		// data.remainingWidth = width - occupiedWidth
+		// console.log(`🚀 ~ file: sketch02.svelte ~ line 57 ~ data.remainingWidth`, data.remainingWidth)
+		// console.log(`🚀 ~ file: sketch02.svelte ~ line 59 ~ data.itemWidth`, data.itemWidth)
 	}
 	// $: console.log(`🚀 ~ file: sketch02.svelte ~ line 35 ~ data.remainingWidth`, data.remainingWidth)
 	// $: data.marginsX = width * data.marginValue
@@ -63,6 +78,7 @@
 	};
 
 	onMount(() => {
+		mounted = true;
 		let canvas = document.getElementsByTagName('canvas')[0];
 		width = canvas.width;
 		height = canvas.height;
@@ -70,15 +86,17 @@
 	});
 
 	const sketch = ({ context, width, height }) => {
+		console.log(`🚀 ~ file: sketch02.svelte ~ line 84 ~ sketch ~ width`, width);
+		data.width = width;
+		data.height = height;
 		data.remainingWidth = width - data.itemsPerRow * data.gap;
 		data.remainingHeight = height - data.itemsPerColumn * data.gap;
-		width = width;
-		height = height;
+
 		data.itemWidth = data.remainingWidth / data.itemsPerRow;
 		data.itemHeight = data.remainingHeight / data.itemsPerColumn;
 
-		data.remainingWidth = width - data.itemsPerRow * (data.gap + data.itemWidth);
-		data.remainingHeight = height - data.itemsPerColumn * (data.gap + data.itemHeight);
+		// data.remainingWidth = width - data.itemsPerRow * (data.gap + data.itemWidth);
+		// data.remainingHeight = height - data.itemsPerColumn * (data.gap + data.itemHeight);
 
 		data.offset = data.gap / 2;
 		console.log(
@@ -103,8 +121,11 @@
 		for (let j = 0; j < data.itemsPerColumn; j++) {
 			for (let i = 0; i < data.itemsPerRow; i++) {
 				fill = `hsla(180, 50%, 50%, .4)`;
-				let x = data.originX + (data.itemWidth + data.gap) * i;
-				let y = data.originY + (data.itemHeight + data.gap) * j;
+				let x = (data.itemWidth + data.gap) * i;
+				// console.log(`🚀 ~ file: sketch02.svelte ~ line 117 ~ drawGrid ~ data.originX`, data.originX)
+				// console.log(`🚀 ~ file: sketch02.svelte ~ line 117 ~ drawGrid ~ data.itemWidth`, data.itemWidth)
+				// console.log(`🚀 ~ file: sketch02.svelte ~ line 117 ~ drawGrid ~ x`, x)
+				let y = (data.itemHeight + data.gap) * j;
 				stroke = 'white';
 				drawRect(
 					context,
@@ -118,7 +139,7 @@
 				);
 				// console.log(`🚀 ~ file: sketch02.svelte ~ line 71 ~ drawGrid ~ context, x, y, data.itemWidth, data.itemHeight, fill, stroke, 1`, context, x, y, data.itemWidth, data.itemHeight, fill, stroke, 1)
 				// console.log(`🚀 ~ file: sketch02.svelte ~ line 70 ~ drawGrid ~ x, y,`, x, y,)
-				if (Math.random() > 0.5) {
+				if (Math.random() > 0.7) {
 					fill = setItemColor(i, j, data.totalItems);
 					drawRect(
 						context,
@@ -141,6 +162,7 @@
 	<Color label="Foreground" bind:value={data.foreground} />
 	<Slider label="Items per row" bind:value={data.itemsPerRow} />
 	<Slider label="Items per column" bind:value={data.itemsPerColumn} />
+	<Slider label="Gap" bind:value={data.gap} />
 	<!-- <Slider label="Radius" bind:value={data.radius} />
 	<Slider label="Angle" bind:value={data.angle} min={-Math.PI} max={Math.PI} /> -->
 	<Checkbox label="Outline" bind:checked={data.outline} />

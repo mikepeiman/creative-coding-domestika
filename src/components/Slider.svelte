@@ -11,17 +11,21 @@
 
 <Param {label}>
 	<div class="flex">
-        <input type='range' bind:value={value} {min} {max} {step} />
-            <span class="input">{value}</span>
-    </div>
+		<input type="range" bind:value {min} {max} {step} />
+		<input type="number" class=" input input-primary input-bordered w-12" bind:value {min} {max} {step}  />
+	</div>
 </Param>
 
 <style>
-input {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-	width: 100%;
-	height: auto;
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
 }
 </style>
