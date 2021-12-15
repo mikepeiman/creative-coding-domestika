@@ -8,6 +8,6 @@ console.log(`🚀 ~ file: parseColor.js ~ line 5 ~ parseColor ~ `, color)
     let result = Color.parse(color).hsla
     console.log(`🚀 ~ file: parseColor.js ~ line 5 ~ parseColor ~ result`, result)
     let hsla = `hsla(${result[0]},${result[1]}%,${result[2]}%,${parseFloat(opacity, 2)})`
-    console.log(`🚀 ~ file: parseColor.js ~ line 11 ~ parseHSLA ~ hsla`, hsla)
+    console.log(`🚀 ~ file: parseColor.js ~ line 11 ~ parseHSLA RESULT: `, hsla)
     return hsla
 }

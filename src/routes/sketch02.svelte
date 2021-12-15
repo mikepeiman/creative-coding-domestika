@@ -35,8 +35,10 @@
 		fillHSLA: 'hsla(180,50%,50%,0.5)',
 		fillOpacity: '.25',
 		stroke: '#ffffffaa',
+		strokeHSLA: 'hsla(60,50%,50%,0.5)',
 		strokeOpacity: '.25',
 		strokeRandom: '#0033cff',
+		strokeRandomHSLA: 'hsla(320,50%,50%,0.5)',
 		strokeRandomOpacity: '.25',
 		background: '00000000',
 		outline: true,
@@ -109,7 +111,7 @@
 			for (let i = 0; i < data.itemsPerRow; i++) {
 				let x = (data.itemWidth + data.gap) * i;
 				let y = (data.itemHeight + data.gap) * j;
-				stroke = data.stroke;
+				stroke = data.strokeHSLA;
 				if (data.shape == 'square') {
 					drawRect(
 						context,
@@ -148,14 +150,14 @@
 								data.opacityMedian - data.opacityVariance,
 								data.opacityMedian + data.opacityVariance
 						  )})`)
-						: (stroke = data.stroke);
+						: (stroke = data.strokeRandomHSLA);
 
 					data.randomFill
 						? (fill = `hsla(${setItemColor(i, j, data.totalItems * 0.3)}, 90%, 50%, ${random.range(
 								data.opacityMedian - data.opacityVariance,
 								data.opacityMedian + data.opacityVariance
 						  )})`)
-						: (fill = data.fillHSLA);
+						: (fill = data.fillRandomHSLA);
 
 					if (data.shape == 'square') {
 						drawRect(
@@ -229,22 +231,22 @@
 		// return color;
 	};
 
-	function adjustColor() {
-		data.fillOpacity;
+	function adjustColor(color, opacity) {
 		console.log(
-			`🚀 ~ file: sketch02.svelte ~ line 164 ~ adjustColor ~ data.fillOpacity`,
-			data.fillOpacity
+			`🚀 ~ file: sketch02.svelte ~ line 235 ~ adjustColor ~ color, opacity`,
+			color,
+			opacity
 		);
-		data.fill;
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 166 ~ adjustColor ~ data.fill`, data.fill);
-		let adjusted = parseHSLA(data.fill, data.fillOpacity);
-		let adjustedColor = `hsla(${adjusted[0]},${adjusted[1]}%,${adjusted[2]}%,${adjusted[3]})`;
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 169 ~ adjustColor ~ adjusted`, adjusted);
-		console.log(
-			`🚀 ~ file: sketch02.svelte ~ line 170 ~ adjustColor ~ adjustedColor`,
-			adjustedColor
-		);
-		data.fillHSLA = adjusted;
+
+		let adjusted = parseHSLA(color, opacity);
+        console.log(`🚀 ~ file: sketch02.svelte ~ line 242 ~ adjustColor ~ adjusted`, adjusted)
+		// let adjustedColor = `hsla(${adjusted[0]},${adjusted[1]}%,${adjusted[2]}%,${adjusted[3]})`;
+		// console.log(`🚀 ~ file: sketch02.svelte ~ line 169 ~ adjustColor ~ adjusted`, adjusted);
+		// console.log(
+		// 	`🚀 ~ file: sketch02.svelte ~ line 170 ~ adjustColor ~ adjustedColor`,
+		// 	adjustedColor
+		// );
+		return adjusted;
 	}
 </script>
 
@@ -258,12 +260,12 @@
 				opacity={data.fillOpacity}
 				bind:value={data.fill}
 				bind:hsla={data.fillHSLA}
-				on:message={() => adjustColor()}
+				on:message={(c) =>data.fillHSLA = adjustColor(c.detail.value, data.fillOpacity)} 
 			/>
 			<Slider
 				label="Fill Opacity"
 				bind:value={data.fillOpacity}
-				on:message={() => adjustColor()}
+				on:message={(c) =>data.fillHSLA = adjustColor(data.fill, c.detail.value)} 
 				min="0"
 				max="1"
 				step=".05"
@@ -273,13 +275,37 @@
 	<!-- <ColorInput  label="Foreground" bind:value={data.foreground} /> -->
 	<Checkbox label="Random stroke" bind:checked={data.randomStroke} />
 	<div class="input-group-wrapper">
-		<ColorInput label="Stroke" bind:value={data.stroke} />
-		<Slider label="Stroke Opacity" bind:value={data.strokeOpacity} min="0" max="1" step=".05" />
+		<ColorInput
+			label="Stroke"
+			bind:value={data.stroke}
+			on:message={(c) =>data.strokeHSLA = adjustColor(c.detail.value, data.strokeOpacity)} 
+		/>
+		<Slider
+			label="Stroke Opacity"
+			bind:value={data.strokeOpacity}
+			on:message={(c) => data.strokeHSLA = adjustColor(data.stroke, c.detail.value)} 
+			min="0"
+			max="1"
+			step=".05"
+		/>
+		 <!-- adjustColor(data.strokeHSLA, data.strokeOpacity)} -->
 	</div>
-		<div class="input-group-wrapper">
-			<ColorInput label="Stroke Random" bind:value={data.strokeRandom} />
-			<Slider label="Stroke Random Opacity" bind:value={data.strokeRandomOpacity} min="0" max="1" step=".05" />
-		</div>
+	<div class="input-group-wrapper">
+		<ColorInput
+			label="Stroke Random"
+			bind:value={data.strokeRandom}
+			bind:hsla={data.strokeRandomHSLA}
+			on:message={(c) =>data.strokeRandomHSLA = adjustColor(c.detail.value, data.strokeRandomOpacity)} 
+		/>
+		<Slider
+			label="Stroke Random Opacity"
+			bind:value={data.strokeRandomOpacity}
+			on:message={(c) => data.strokeRandomHSLA = adjustColor(data.strokeRandom, c.detail.value)} 
+			min="0"
+			max="1"
+			step=".05"
+		/>
+	</div>
 	<Slider label="Items per row" bind:value={data.itemsPerRow} min="1" max="300" step="1" />
 	<Slider label="Items per column" bind:value={data.itemsPerColumn} min="1" max="300" step="1" />
 	<Slider label="Scale X" bind:value={data.itemScaleX} min=".25" max="10" step=".25" />

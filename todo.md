@@ -10,3 +10,4 @@
 * separate strokewidth for default and for randoms
 * separate shape for default and for randoms
 * select gradient for default
+* can allow user to define gradients: colors, starts, stops, angles - and apply them via multiselect to different strokes and fills
