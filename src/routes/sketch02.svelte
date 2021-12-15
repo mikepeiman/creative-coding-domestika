@@ -7,9 +7,11 @@
 	import random from 'canvas-sketch-util/random';
 
 	const data = {
-		TITLE: "Sketch02",
+		TITLE: 'Sketch02',
 		itemHeight: 25,
 		itemWidth: 25,
+		itemScaleX: 1,
+		itemScaleY: 1,
 		width: 1000,
 		height: 1000,
 		gap: 15,
@@ -24,10 +26,13 @@
 		margin: 100,
 		offset: 0,
 		randomFactor: 0.5,
+		opacityMedian: 0.5,
+		opacityVariance: 0.25,
 		randomStroke: true,
 		randomFill: true,
-		fill: '#003399aa',
+		fill: '#00000000',
 		stroke: '#ffffffaa',
+		background: "00000000",
 		outline: true,
 		fitToCanvas: true,
 		arclen: 0.5,
@@ -48,32 +53,13 @@
 	$: data.totalItems = data.itemsPerColumn * data.itemsPerRow;
 
 	$: if (mounted) {
-		console.log(`mounted`);
-		// canvas = document.getElementsByTagName('canvas')[0];
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 44 ~ data.itemsPerRow`, data.itemsPerRow);
-		// data.width = canvas.width;
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 52 ~ data.width`, data.width);
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 49 ~ width`, width);
 		let totalGapX = data.itemsPerRow * data.gap;
 		data.remainingWidth = data.width - totalGapX - data.margin;
 		let totalGapY = data.itemsPerColumn * data.gap;
 		data.remainingHeight = data.height - totalGapY - data.margin;
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 51 ~ data.remainingWidth`, data.remainingWidth);
 		data.itemWidth = data.remainingWidth / data.itemsPerRow;
 		data.itemHeight = data.remainingHeight / data.itemsPerColumn;
-		// data.itemWidth = width / data.itemsPerRow;
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 53 ~ data.itemWidth`, data.itemWidth);
-		// data.margin
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 58 ~ data.margin`, data.margin);
-		// let occupiedWidth = data.itemsPerRow * (data.gap + data.itemWidth);
-		// console.log(`🚀 ~ file: sketch02.svelte ~ line 55 ~ occupiedWidth`, occupiedWidth)
-		// data.remainingWidth = width - occupiedWidth
-		// console.log(`🚀 ~ file: sketch02.svelte ~ line 57 ~ data.remainingWidth`, data.remainingWidth)
-		// console.log(`🚀 ~ file: sketch02.svelte ~ line 59 ~ data.itemWidth`, data.itemWidth)
 	}
-	// $: console.log(`🚀 ~ file: sketch02.svelte ~ line 35 ~ data.remainingWidth`, data.remainingWidth)
-	// $: data.marginsX = width * data.marginValue
-	// $: data.marginsY = width * data.marginValue
 
 	const settings = {
 		scaleToView: true,
@@ -85,36 +71,20 @@
 		let canvas = document.getElementsByTagName('canvas')[0];
 		width = canvas.width;
 		height = canvas.height;
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 50 ~ canvas`, canvas);
 	});
 
 	const sketch = ({ context, width, height }) => {
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 84 ~ sketch ~ width`, width);
 		data.width = width;
 		data.height = height;
 		data.remainingWidth = width - data.itemsPerRow * data.gap;
 		data.remainingHeight = height - data.itemsPerColumn * data.gap;
-
 		data.itemWidth = data.remainingWidth / data.itemsPerRow;
 		data.itemHeight = data.remainingHeight / data.itemsPerColumn;
 
-		// data.remainingWidth = width - data.itemsPerRow * (data.gap + data.itemWidth);
-		// data.remainingHeight = height - data.itemsPerColumn * (data.gap + data.itemHeight);
-
-		// data.margin = data.gap / 2;
-		console.log(
-			`🚀 ~ file: sketch02.svelte ~ line 49 ~ sketch ~ data.remainingWidth`,
-			data.remainingWidth
-		);
-		// data.originX = data.margin
-		// data.originY = data.offse
-		console.log(`🚀 ~ file: sketch02.svelte ~ line 46 ~ sketch ~ data.margin `, data.margin);
 		return ({ context, width, height }) => {
-			const { background, foreground, radius, arclen, angle, lineWidth, outline, stroke } = data;
 			context.clearRect(0, 0, width, height);
-			context.fillStyle = background;
+			context.fillStyle = data.background;
 			context.fillRect(0, 0, width, height);
-
 			drawGrid(context, width, height);
 		};
 	};
@@ -125,10 +95,12 @@
 			for (let i = 0; i < data.itemsPerRow; i++) {
 				let x = (data.itemWidth + data.gap) * i;
 				let y = (data.itemHeight + data.gap) * j;
-				data.randomStroke ? stroke = `hsla(${setItemColor(i, j, data.totalItems * 0.3)}, 90%, 50%, ${random.range(
-					0,
-					1
-				)})` : stroke = data.stroke;
+				data.randomStroke
+					? (stroke = `hsla(${setItemColor(i, j, data.totalItems * 0.3)}, 90%, 50%, ${random.range(
+							data.opacityMedian - data.opacityVariance,
+							data.opacityMedian + data.opacityVariance
+					  )})`)
+					: (stroke = data.stroke);
 				drawRect(
 					context,
 					x + data.margin / 2 + data.gap / 2,
@@ -142,10 +114,12 @@
 				if (Math.random() < data.randomFactor) {
 					// conditional if random squares are offset, so they don't get cut off by canvas edge
 					// if (i < data.itemsPerRow - 2 && j < data.itemsPerColumn - 2) {
-					data.randomFill ? fill = `hsla(${setItemColor(i, j, data.totalItems * 0.3)}, 90%, 50%, ${random.range(
-						0,
-						1
-					)})` : fill = data.fill;
+					data.randomFill
+						? (fill = `hsla(${setItemColor(i, j, data.totalItems * 0.3)}, 90%, 50%, ${random.range(
+							data.opacityMedian - data.opacityVariance,
+							data.opacityMedian + data.opacityVariance
+						  )})`)
+						: (fill = data.fill);
 					drawRect(
 						context,
 						x + data.margin / 2 + data.gap / 2 + data.offset,
@@ -165,7 +139,7 @@
 	const drawRect = (context, originX, originY, width, height, fill, stroke, lineWidth) => {
 		context.strokeStyle = stroke;
 		context.beginPath();
-		context.rect(originX, originY, width, height);
+		context.rect(originX, originY, width * data.itemScaleX, height * data.itemScaleY);
 		context.lineWidth = lineWidth;
 		context.stroke();
 		context.fillStyle = fill;
@@ -187,7 +161,7 @@
 <CanvasSketchEditor {sketch} {settings} {data}>
 	<Checkbox label="Random fill" bind:checked={data.randomFill} />
 	<!-- {#if !data.randomFill} -->
-		<Color label="Fill" bind:value={data.fill} />
+	<Color label="Fill" bind:value={data.fill} />
 	<!-- {/if} -->
 	<!-- <Color label="Foreground" bind:value={data.foreground} /> -->
 	<Checkbox label="Random stroke" bind:checked={data.randomStroke} />
@@ -196,10 +170,14 @@
 	{/if}
 	<Slider label="Items per row" bind:value={data.itemsPerRow} min="1" max="300" step="1" />
 	<Slider label="Items per column" bind:value={data.itemsPerColumn} min="1" max="300" step="1" />
+	<Slider label="Scale X" bind:value={data.itemScaleX} min=".25" max="10" step=".25" />
+	<Slider label="Scale Y" bind:value={data.itemScaleY} min=".25" max="10" step=".25" />
 	<Slider label="Gap" bind:value={data.gap} min="0" max="100" step="5" />
 	<Slider label="Margin" bind:value={data.margin} min="0" max="500" step="10" />
 	<Slider label="Offset" bind:value={data.offset} min="0" max="100" step="1" />
 	<Slider label="Random Factor" bind:value={data.randomFactor} min="0" max="1" step=".05" />
+	<Slider label="Opacity Median" bind:value={data.opacityMedian} min="0" max="1" step=".05" />
+	<Slider label="Opacity Variance" bind:value={data.opacityVariance} min="0" max="1" step=".05" />
 	<!-- <Slider label="Radius" bind:value={data.radius} />
 	<Slider label="Angle" bind:value={data.angle} min={-Math.PI} max={Math.PI} /> -->
 	<Checkbox label="Outline" bind:checked={data.outline} />
