@@ -1,10 +1,11 @@
 <script>
 	import CanvasSketchEditor from '$components/CanvasSketchEditor.svelte';
 	import Slider from '$components/Slider.svelte';
-	import Color from '$components/Color.svelte';
+	import ColorInput from '$components/ColorInput.svelte';
 	import Checkbox from '$components/Checkbox.svelte';
 	import { onMount } from 'svelte';
 	import random from 'canvas-sketch-util/random';
+	import { parseHSLA } from '$utils/parseColor';
 
 	const data = {
 		TITLE: 'Sketch02',
@@ -15,7 +16,6 @@
 		width: 1000,
 		height: 1000,
 		gap: 15,
-		fill: false,
 		itemsPerColumn: 25,
 		itemsPerRow: 25,
 		originX: 0,
@@ -30,7 +30,8 @@
 		opacityVariance: 0.25,
 		randomStroke: true,
 		randomFill: true,
-		fill: '#00000000',
+		fill: "hsla(180,50%,50%,0.5)",
+		fillHSLA: "hsla(180,50%,50%,0.5)",
 		fillOpacity: '.25',
 		stroke: '#ffffffaa',
 		strokeOpacity: '.25',
@@ -109,7 +110,7 @@
 					y + data.margin / 2 + data.gap / 2,
 					data.itemWidth,
 					data.itemHeight,
-					data.fill,
+					data.fillHSLA,
 					stroke,
 					data.lineWidth
 				);
@@ -121,7 +122,7 @@
 								data.opacityMedian - data.opacityVariance,
 								data.opacityMedian + data.opacityVariance
 						  )})`)
-						: (fill = data.fill);
+						: (fill = data.fillHSLA);
 					drawRect(
 						context,
 						x + data.margin / 2 + data.gap / 2 + data.offset,
@@ -158,19 +159,35 @@
 		// let color = `hsla(${currentFactor + hueOffset}, 90%, 50%, 1)`;
 		// return color;
 	};
+
+	function adjustColor() {
+		data.fillOpacity
+        console.log(`🚀 ~ file: sketch02.svelte ~ line 164 ~ adjustColor ~ data.fillOpacity`, data.fillOpacity)
+		data.fill
+        console.log(`🚀 ~ file: sketch02.svelte ~ line 166 ~ adjustColor ~ data.fill`, data.fill)
+		let adjusted = parseHSLA(data.fill, data.fillOpacity)
+		let adjustedColor = `hsla(${adjusted[0]},${adjusted[1]}%,${adjusted[2]}%,${adjusted[3]})`
+        console.log(`🚀 ~ file: sketch02.svelte ~ line 169 ~ adjustColor ~ adjusted`, adjusted)
+        console.log(`🚀 ~ file: sketch02.svelte ~ line 170 ~ adjustColor ~ adjustedColor`, adjustedColor)
+		data.fillHSLA = adjusted
+	}
 </script>
 
 <CanvasSketchEditor {sketch} {settings} {data}>
 	<Checkbox label="Random fill" bind:checked={data.randomFill} />
-	<!-- {#if !data.randomFill} -->
-	<Color label="Fill" bind:value={data.fill} />
-	<Slider label="Fill Opacity" bind:value={data.opacityMedian} min="0" max="1" step=".05" />
-	<!-- {/if} -->
-	<!-- <Color label="Foreground" bind:value={data.foreground} /> -->
+	{#if !data.randomFill}
+		<div class="input-group-wrapper">
+			<ColorInput  label="Fill" opacity={data.fillOpacity} bind:value={data.fill} bind:hsla={data.fillHSLA} on:message={() => adjustColor()} />
+			<Slider label="Fill Opacity" bind:value={data.fillOpacity} on:message={() => adjustColor()} min="0" max="1" step=".05" />
+		</div>
+	{/if}
+	<!-- <ColorInput  label="Foreground" bind:value={data.foreground} /> -->
 	<Checkbox label="Random stroke" bind:checked={data.randomStroke} />
 	{#if !data.randomStroke}
-		<Color label="Stroke" bind:value={data.stroke} />
-		<Slider label="Stroke Opacity" bind:value={data.opacityMedian} min="0" max="1" step=".05" />
+		<div class="input-group-wrapper">
+			<ColorInput  label="Stroke" bind:value={data.stroke} />
+			<Slider label="Stroke Opacity" bind:value={data.strokeOpacity} min="0" max="1" step=".05" />
+		</div>
 	{/if}
 	<Slider label="Items per row" bind:value={data.itemsPerRow} min="1" max="300" step="1" />
 	<Slider label="Items per column" bind:value={data.itemsPerColumn} min="1" max="300" step="1" />
@@ -194,3 +211,10 @@
 		<Slider label="Item Height" bind:value={data.itemHeight} />
 	{/if} -->
 </CanvasSketchEditor>
+
+
+<style>
+	.input-group-wrapper {
+		@apply flex flex-col items-start justify-center m-0 bg-sky-200 p-3 my-1 rounded-lg;
+	}
+</style>

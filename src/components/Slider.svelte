@@ -1,24 +1,29 @@
 <script>
 	import Param from './Param.svelte';
+	import { createEventDispatcher } from 'svelte';
+
+	const dispatch = createEventDispatcher();
 
 	export let label = '';
-    console.log(`🚀 ~ file: Slider.svelte ~ line 5 ~ label`, label)
-
 	export let value;
 	export let min = 1;
-    console.log(`🚀 ~ file: Slider.svelte ~ line 8 ~ min`, min)
 	export let max = 100;
-    console.log(`🚀 ~ file: Slider.svelte ~ line 10 ~ max`, max)
 	export let step = 1;
-    console.log(`🚀 ~ file: Slider.svelte ~ line 12 ~ step`, step)
+
+	function dispatchMessage() {
+		dispatch('message', {
+			value: value
+		})
+            console.log(`🚀 ~ file: Slider.svelte ~ line 17 ~ dispatchMessage ~ ${label}: `, value)
+	}
 </script>
 
 <Param {label}>
 	<div class="flex">
-		<input type="range" bind:value {min} {max} {step} />
+		<input type="range" bind:value {min} {max} {step} on:change={dispatchMessage} />
 		<input
 			type="number"
-			class=" input input-primary input-bordered w-16"
+			class=" input input-primary input-bordered w-14 p-2"
 			bind:value
 			{min}
 			{max}

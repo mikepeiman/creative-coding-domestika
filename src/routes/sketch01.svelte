@@ -6,7 +6,7 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 <script>
 	import CanvasSketchEditor from '$components/CanvasSketchEditor.svelte';
 	import Slider from '$components/Slider.svelte';
-	import Color from '$components/Color.svelte';
+	import ColorInput from '$components/ColorInput.svelte';
 	import Checkbox from '$components/Checkbox.svelte';
 
 	const data = {
@@ -60,8 +60,8 @@ Leaving his example as the first sketch here in honor of his work and amazing co
 </script>
 
 <CanvasSketchEditor {sketch} {settings} {data}>
-	<Color label='Background' bind:value={data.background} />
-	<Color label='Foreground' bind:value={data.foreground} />
+	<ColorInput label='Background' bind:value={data.background} />
+	<ColorInput label='Foreground' bind:value={data.foreground} />
 	<Slider label='Arc Length' bind:value={data.arclen} />
 	<Slider label='Radius' bind:value={data.radius} />
 	<Slider label='Angle' bind:value={data.angle} min={-Math.PI} max={Math.PI} />
