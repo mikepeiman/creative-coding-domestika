@@ -29,6 +29,7 @@
 		"postcss": "^8.4.4",
 		"svelte-checkbox": "^1.0.1",
 		"svelte-color-picker": "^1.0.7",
+		"svelte-select": "^4.4.6",
 		"tweakpane": "^3.0.6"
 	}
 }

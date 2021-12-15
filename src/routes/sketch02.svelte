@@ -2,6 +2,7 @@
 	import CanvasSketchEditor from '$components/CanvasSketchEditor.svelte';
 	import Slider from '$components/Slider.svelte';
 	import ColorInput from '$components/ColorInput.svelte';
+	import OptionSelect from '$components/OptionSelect.svelte';
 	import Checkbox from '$components/Checkbox.svelte';
 	import { onMount } from 'svelte';
 	import random from 'canvas-sketch-util/random';
@@ -38,7 +39,11 @@
 		background: '00000000',
 		outline: true,
 		fitToCanvas: true,
-		shape: 'circle',
+		shapes: [
+			{value: 'square', label: 'square'},
+			{value: 'circle', label: 'circle'},
+		],
+		shape: 'square',
 		startAngle: 0,
 		endAngle: 7,
 		arclen: 0.5,
@@ -109,10 +114,6 @@
 					: (stroke = data.stroke);
 
 				if (data.shape == 'square') {
-					console.log(
-						`🚀 ~ file: sketch02.svelte ~ line 110 ~ drawGrid ~ data.shape == 'square'`,
-						'square'
-					);
 					drawRect(
 						context,
 						x + data.margin / 2 + data.gap / 2,
@@ -124,10 +125,6 @@
 						data.lineWidth
 					);
 				} else {
-					console.log(
-						`🚀 ~ file: sketch02.svelte ~ line 110 ~ drawGrid ~ data.shape == 'circle'`,
-						'circle'
-					);
 					drawArc(
 						context,
 						x + data.margin / 2 + data.gap / 2 ,
@@ -163,10 +160,6 @@
 							data.lineWidth
 						);
 					} else {
-						console.log(
-							`🚀 ~ file: sketch02.svelte ~ line 165 ~ drawGrid ~ data.shape == 'circle'`,
-							'circle'
-						);
 						drawArc(
 							context,
 							x + data.margin / 2 + data.gap / 2 + data.offset,
@@ -209,7 +202,7 @@
 		context.strokeStyle = stroke;
 		context.beginPath();
 		context.arc(originX, originY, radius, startAngle, endAngle);
-        console.log(`🚀 ~ file: sketch02.svelte ~ line 212 ~ originX, originY, radius, startAngle, endAngle`, originX, originY, radius, startAngle, endAngle)
+        // console.log(`🚀 ~ file: sketch02.svelte ~ line 212 ~ originX, originY, radius, startAngle, endAngle`, originX, originY, radius, startAngle, endAngle)
 		context.lineWidth = lineWidth;
 		context.stroke();
 		context.fillStyle = fill;
@@ -247,6 +240,7 @@
 </script>
 
 <CanvasSketchEditor {sketch} {settings} {data}>
+	<OptionSelect items={data.shapes} bind:selected={data.shape} />
 	<Checkbox label="Random fill" bind:checked={data.randomFill} />
 	{#if !data.randomFill}
 		<div class="input-group-wrapper">
