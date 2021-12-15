@@ -30,14 +30,17 @@
 		opacityVariance: 0.25,
 		randomStroke: true,
 		randomFill: true,
-		fill: "hsla(180,50%,50%,0.5)",
-		fillHSLA: "hsla(180,50%,50%,0.5)",
+		fill: 'hsla(180,50%,50%,0.5)',
+		fillHSLA: 'hsla(180,50%,50%,0.5)',
 		fillOpacity: '.25',
 		stroke: '#ffffffaa',
 		strokeOpacity: '.25',
 		background: '00000000',
 		outline: true,
 		fitToCanvas: true,
+		shape: 'circle',
+		startAngle: 0,
+		endAngle: 7,
 		arclen: 0.5,
 		angle: 0,
 		radius: 0.33,
@@ -104,16 +107,40 @@
 							data.opacityMedian + data.opacityVariance
 					  )})`)
 					: (stroke = data.stroke);
-				drawRect(
-					context,
-					x + data.margin / 2 + data.gap / 2,
-					y + data.margin / 2 + data.gap / 2,
-					data.itemWidth,
-					data.itemHeight,
-					data.fillHSLA,
-					stroke,
-					data.lineWidth
-				);
+
+				if (data.shape == 'square') {
+					console.log(
+						`🚀 ~ file: sketch02.svelte ~ line 110 ~ drawGrid ~ data.shape == 'square'`,
+						'square'
+					);
+					drawRect(
+						context,
+						x + data.margin / 2 + data.gap / 2,
+						y + data.margin / 2 + data.gap / 2,
+						data.itemWidth,
+						data.itemHeight,
+						data.fillHSLA,
+						stroke,
+						data.lineWidth
+					);
+				} else {
+					console.log(
+						`🚀 ~ file: sketch02.svelte ~ line 110 ~ drawGrid ~ data.shape == 'circle'`,
+						'circle'
+					);
+					drawArc(
+						context,
+						x + data.margin / 2 + data.gap / 2 ,
+						y + data.margin / 2 + data.gap / 2,
+						Math.abs(data.itemWidth),
+						data.startAngle,
+						data.endAngle,
+						data.fillHSLA,
+						stroke,
+						data.lineWidth
+					);
+				}
+
 				if (Math.random() < data.randomFactor) {
 					// conditional if random squares are offset, so they don't get cut off by canvas edge
 					// if (i < data.itemsPerRow - 2 && j < data.itemsPerColumn - 2) {
@@ -123,16 +150,35 @@
 								data.opacityMedian + data.opacityVariance
 						  )})`)
 						: (fill = data.fillHSLA);
-					drawRect(
-						context,
-						x + data.margin / 2 + data.gap / 2 + data.offset,
-						y + data.margin / 2 + data.gap / 2 + data.offset,
-						data.itemWidth,
-						data.itemHeight,
-						fill,
-						stroke,
-						data.lineWidth
-					);
+
+					if (data.shape == 'square') {
+						drawRect(
+							context,
+							x + data.margin / 2 + data.gap / 2 + data.offset,
+							y + data.margin / 2 + data.gap / 2 + data.offset,
+							data.itemWidth,
+							data.itemHeight,
+							fill,
+							stroke,
+							data.lineWidth
+						);
+					} else {
+						console.log(
+							`🚀 ~ file: sketch02.svelte ~ line 165 ~ drawGrid ~ data.shape == 'circle'`,
+							'circle'
+						);
+						drawArc(
+							context,
+							x + data.margin / 2 + data.gap / 2 + data.offset,
+							y + data.margin / 2 + data.gap / 2 + data.offset,
+							Math.abs(data.itemWidth),
+							data.startAngle,
+							data.endAngle,
+							data.fillHSLA,
+							stroke,
+							data.lineWidth
+						);
+					}
 				}
 				// end offset conditional
 				// }
@@ -143,6 +189,27 @@
 		context.strokeStyle = stroke;
 		context.beginPath();
 		context.rect(originX, originY, width * data.itemScaleX, height * data.itemScaleY);
+		context.lineWidth = lineWidth;
+		context.stroke();
+		context.fillStyle = fill;
+		context.fill();
+	};
+
+	const drawArc = (
+		context,
+		originX,
+		originY,
+		radius,
+		startAngle,
+		endAngle,
+		fill,
+		stroke,
+		lineWidth
+	) => {
+		context.strokeStyle = stroke;
+		context.beginPath();
+		context.arc(originX, originY, radius, startAngle, endAngle);
+        console.log(`🚀 ~ file: sketch02.svelte ~ line 212 ~ originX, originY, radius, startAngle, endAngle`, originX, originY, radius, startAngle, endAngle)
 		context.lineWidth = lineWidth;
 		context.stroke();
 		context.fillStyle = fill;
@@ -161,15 +228,21 @@
 	};
 
 	function adjustColor() {
-		data.fillOpacity
-        console.log(`🚀 ~ file: sketch02.svelte ~ line 164 ~ adjustColor ~ data.fillOpacity`, data.fillOpacity)
-		data.fill
-        console.log(`🚀 ~ file: sketch02.svelte ~ line 166 ~ adjustColor ~ data.fill`, data.fill)
-		let adjusted = parseHSLA(data.fill, data.fillOpacity)
-		let adjustedColor = `hsla(${adjusted[0]},${adjusted[1]}%,${adjusted[2]}%,${adjusted[3]})`
-        console.log(`🚀 ~ file: sketch02.svelte ~ line 169 ~ adjustColor ~ adjusted`, adjusted)
-        console.log(`🚀 ~ file: sketch02.svelte ~ line 170 ~ adjustColor ~ adjustedColor`, adjustedColor)
-		data.fillHSLA = adjusted
+		data.fillOpacity;
+		console.log(
+			`🚀 ~ file: sketch02.svelte ~ line 164 ~ adjustColor ~ data.fillOpacity`,
+			data.fillOpacity
+		);
+		data.fill;
+		console.log(`🚀 ~ file: sketch02.svelte ~ line 166 ~ adjustColor ~ data.fill`, data.fill);
+		let adjusted = parseHSLA(data.fill, data.fillOpacity);
+		let adjustedColor = `hsla(${adjusted[0]},${adjusted[1]}%,${adjusted[2]}%,${adjusted[3]})`;
+		console.log(`🚀 ~ file: sketch02.svelte ~ line 169 ~ adjustColor ~ adjusted`, adjusted);
+		console.log(
+			`🚀 ~ file: sketch02.svelte ~ line 170 ~ adjustColor ~ adjustedColor`,
+			adjustedColor
+		);
+		data.fillHSLA = adjusted;
 	}
 </script>
 
@@ -177,15 +250,28 @@
 	<Checkbox label="Random fill" bind:checked={data.randomFill} />
 	{#if !data.randomFill}
 		<div class="input-group-wrapper">
-			<ColorInput  label="Fill" opacity={data.fillOpacity} bind:value={data.fill} bind:hsla={data.fillHSLA} on:message={() => adjustColor()} />
-			<Slider label="Fill Opacity" bind:value={data.fillOpacity} on:message={() => adjustColor()} min="0" max="1" step=".05" />
+			<ColorInput
+				label="Fill"
+				opacity={data.fillOpacity}
+				bind:value={data.fill}
+				bind:hsla={data.fillHSLA}
+				on:message={() => adjustColor()}
+			/>
+			<Slider
+				label="Fill Opacity"
+				bind:value={data.fillOpacity}
+				on:message={() => adjustColor()}
+				min="0"
+				max="1"
+				step=".05"
+			/>
 		</div>
 	{/if}
 	<!-- <ColorInput  label="Foreground" bind:value={data.foreground} /> -->
 	<Checkbox label="Random stroke" bind:checked={data.randomStroke} />
 	{#if !data.randomStroke}
 		<div class="input-group-wrapper">
-			<ColorInput  label="Stroke" bind:value={data.stroke} />
+			<ColorInput label="Stroke" bind:value={data.stroke} />
 			<Slider label="Stroke Opacity" bind:value={data.strokeOpacity} min="0" max="1" step=".05" />
 		</div>
 	{/if}
@@ -211,7 +297,6 @@
 		<Slider label="Item Height" bind:value={data.itemHeight} />
 	{/if} -->
 </CanvasSketchEditor>
-
 
 <style>
 	.input-group-wrapper {
