@@ -36,12 +36,14 @@
 		fillOpacity: '.25',
 		stroke: '#ffffffaa',
 		strokeOpacity: '.25',
+		strokeRandom: '#0033cff',
+		strokeRandomOpacity: '.25',
 		background: '00000000',
 		outline: true,
 		fitToCanvas: true,
 		shapes: [
-			{value: 'square', label: 'square'},
-			{value: 'circle', label: 'circle'},
+			{ value: 'square', label: 'square' },
+			{ value: 'circle', label: 'circle' }
 		],
 		shape: 'square',
 		startAngle: 0,
@@ -49,7 +51,8 @@
 		arclen: 0.5,
 		angle: 0,
 		radius: 0.33,
-		lineWidth: 20
+		lineWidth: 2,
+		lineWidthRandom: 5
 	};
 
 	let width = 1080;
@@ -106,13 +109,7 @@
 			for (let i = 0; i < data.itemsPerRow; i++) {
 				let x = (data.itemWidth + data.gap) * i;
 				let y = (data.itemHeight + data.gap) * j;
-				data.randomStroke
-					? (stroke = `hsla(${setItemColor(i, j, data.totalItems * 0.3)}, 90%, 50%, ${random.range(
-							data.opacityMedian - data.opacityVariance,
-							data.opacityMedian + data.opacityVariance
-					  )})`)
-					: (stroke = data.stroke);
-
+				stroke = data.stroke;
 				if (data.shape == 'square') {
 					drawRect(
 						context,
@@ -127,7 +124,7 @@
 				} else {
 					drawArc(
 						context,
-						x + data.margin / 2 + data.gap / 2 ,
+						x + data.margin / 2 + data.gap / 2,
 						y + data.margin / 2 + data.gap / 2,
 						Math.abs(data.itemWidth),
 						data.startAngle,
@@ -141,6 +138,18 @@
 				if (Math.random() < data.randomFactor) {
 					// conditional if random squares are offset, so they don't get cut off by canvas edge
 					// if (i < data.itemsPerRow - 2 && j < data.itemsPerColumn - 2) {
+
+					data.randomStroke
+						? (stroke = `hsla(${setItemColor(
+								i,
+								j,
+								data.totalItems * 0.3
+						  )}, 90%, 50%, ${random.range(
+								data.opacityMedian - data.opacityVariance,
+								data.opacityMedian + data.opacityVariance
+						  )})`)
+						: (stroke = data.stroke);
+
 					data.randomFill
 						? (fill = `hsla(${setItemColor(i, j, data.totalItems * 0.3)}, 90%, 50%, ${random.range(
 								data.opacityMedian - data.opacityVariance,
@@ -157,7 +166,7 @@
 							data.itemHeight,
 							fill,
 							stroke,
-							data.lineWidth
+							data.lineWidthRandom
 						);
 					} else {
 						drawArc(
@@ -169,7 +178,7 @@
 							data.endAngle,
 							data.fillHSLA,
 							stroke,
-							data.lineWidth
+							data.lineWidthRandom
 						);
 					}
 				}
@@ -202,7 +211,7 @@
 		context.strokeStyle = stroke;
 		context.beginPath();
 		context.arc(originX, originY, radius, startAngle, endAngle);
-        // console.log(`🚀 ~ file: sketch02.svelte ~ line 212 ~ originX, originY, radius, startAngle, endAngle`, originX, originY, radius, startAngle, endAngle)
+		// console.log(`🚀 ~ file: sketch02.svelte ~ line 212 ~ originX, originY, radius, startAngle, endAngle`, originX, originY, radius, startAngle, endAngle)
 		context.lineWidth = lineWidth;
 		context.stroke();
 		context.fillStyle = fill;
@@ -263,12 +272,14 @@
 	{/if}
 	<!-- <ColorInput  label="Foreground" bind:value={data.foreground} /> -->
 	<Checkbox label="Random stroke" bind:checked={data.randomStroke} />
-	{#if !data.randomStroke}
+	<div class="input-group-wrapper">
+		<ColorInput label="Stroke" bind:value={data.stroke} />
+		<Slider label="Stroke Opacity" bind:value={data.strokeOpacity} min="0" max="1" step=".05" />
+	</div>
 		<div class="input-group-wrapper">
-			<ColorInput label="Stroke" bind:value={data.stroke} />
-			<Slider label="Stroke Opacity" bind:value={data.strokeOpacity} min="0" max="1" step=".05" />
+			<ColorInput label="Stroke Random" bind:value={data.strokeRandom} />
+			<Slider label="Stroke Random Opacity" bind:value={data.strokeRandomOpacity} min="0" max="1" step=".05" />
 		</div>
-	{/if}
 	<Slider label="Items per row" bind:value={data.itemsPerRow} min="1" max="300" step="1" />
 	<Slider label="Items per column" bind:value={data.itemsPerColumn} min="1" max="300" step="1" />
 	<Slider label="Scale X" bind:value={data.itemScaleX} min=".25" max="10" step=".25" />
@@ -284,6 +295,7 @@
 	<Checkbox label="Outline" bind:checked={data.outline} />
 	<!-- {#if data.outline} -->
 	<Slider label="Line Width" bind:value={data.lineWidth} min="0" max="100" />
+	<Slider label="Line Width Random" bind:value={data.lineWidthRandom} min="0" max="100" />
 	<!-- {/if} -->
 	<!-- <Checkbox label="Fit To Canvas" bind:checked={data.fitToCanvas} />
 	{#if !data.fitToCanvas}

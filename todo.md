@@ -7,3 +7,6 @@
 * add alpha slider with color picker as component
 * bring in nice checkbox component
 * make params item-groups
+* separate strokewidth for default and for randoms
+* separate shape for default and for randoms
+* select gradient for default

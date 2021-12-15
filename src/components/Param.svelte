@@ -16,6 +16,7 @@
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
+		width: 100%;
 	}
 	div:first-child {
 		margin-top: 0;
@@ -38,7 +39,7 @@
 		text-overflow: ellipsis;
 		color: black;
 		padding-right: 10px;
-		flex-basis: 100px;
+		flex-basis: 40%;
 		box-sizing: border-box;
 	}
 </style>
