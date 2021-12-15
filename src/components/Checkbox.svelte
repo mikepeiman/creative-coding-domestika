@@ -1,5 +1,6 @@
 <script>
 	import Param from './Param.svelte';
+	import Checkbox from 'svelte-checkbox'
 
 	export let label = '';
 
@@ -7,7 +8,10 @@
 </script>
 
 <Param {label}>
-	<input type='checkbox' bind:checked={checked} />
+	<div class="py-2">
+		<Checkbox bind:checked={checked} primaryColor="#11cc55" size="2rem"/>
+	</div>
+	<!-- <input type='checkbox' bind:checked={checked} /> -->
 </Param>
 
 <style>

@@ -31,8 +31,10 @@
 		randomStroke: true,
 		randomFill: true,
 		fill: '#00000000',
+		fillOpacity: '.25',
 		stroke: '#ffffffaa',
-		background: "00000000",
+		strokeOpacity: '.25',
+		background: '00000000',
 		outline: true,
 		fitToCanvas: true,
 		arclen: 0.5,
@@ -116,8 +118,8 @@
 					// if (i < data.itemsPerRow - 2 && j < data.itemsPerColumn - 2) {
 					data.randomFill
 						? (fill = `hsla(${setItemColor(i, j, data.totalItems * 0.3)}, 90%, 50%, ${random.range(
-							data.opacityMedian - data.opacityVariance,
-							data.opacityMedian + data.opacityVariance
+								data.opacityMedian - data.opacityVariance,
+								data.opacityMedian + data.opacityVariance
 						  )})`)
 						: (fill = data.fill);
 					drawRect(
@@ -162,11 +164,13 @@
 	<Checkbox label="Random fill" bind:checked={data.randomFill} />
 	<!-- {#if !data.randomFill} -->
 	<Color label="Fill" bind:value={data.fill} />
+	<Slider label="Fill Opacity" bind:value={data.opacityMedian} min="0" max="1" step=".05" />
 	<!-- {/if} -->
 	<!-- <Color label="Foreground" bind:value={data.foreground} /> -->
 	<Checkbox label="Random stroke" bind:checked={data.randomStroke} />
 	{#if !data.randomStroke}
 		<Color label="Stroke" bind:value={data.stroke} />
+		<Slider label="Stroke Opacity" bind:value={data.opacityMedian} min="0" max="1" step=".05" />
 	{/if}
 	<Slider label="Items per row" bind:value={data.itemsPerRow} min="1" max="300" step="1" />
 	<Slider label="Items per column" bind:value={data.itemsPerColumn} min="1" max="300" step="1" />

@@ -3,6 +3,7 @@
 
 <script>
 	import Param from './Param.svelte';
+	import Slider from './Slider.svelte';
 	import { HsvPicker } from 'svelte-color-picker';
 	import { parseRGBA } from '$utils/parseColor.js';
 
@@ -18,15 +19,18 @@
 		// console.log(`🚀 ~ file: Color.svelte ~ line 12 ~ colorCallback ~ rgba`, rgba.detail);
     // let { r, g, b, a} = rgba.detail
     // console.log(`🚀 ~ file: Color.svelte ~ line 20 ~ colorCallback ~ r`, r)
-		value = parseRGBA(rgba.detail);
+		value = parseRGBA(value);
 		// console.log(`🚀 ~ file: Color.svelte ~ line 16 ~ colorCallback ~ result`, result);
 		// value = rgba.detail
 	}
 </script>
 
 <Param {label}>
-	<HsvPicker on:colorChange={colorCallback} startColor={value} />
-	<!-- <input type='color'  on:change={colorCallback(value)} bind:value={value} /> -->
+	<!-- <HsvPicker on:colorChange={colorCallback} startColor={value} /> -->
+	<div class="flex flex-col items-start justify-center m-0 color-combo bg-slate-300 p-3 m-5 rounded-sm">
+    <input type='color'  on:change={colorCallback(value)} bind:value={value} />
+      <Slider />
+  </div>
 </Param>
 
 <style>
@@ -56,4 +60,5 @@
 		border: 2px solid white;
 		border-radius: 5px;
 	}
+
 </style>
