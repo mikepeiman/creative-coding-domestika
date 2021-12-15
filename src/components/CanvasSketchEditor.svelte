@@ -82,5 +82,6 @@
 		height: 100%;
 		background: hsl(0, 0%, 95%);
 		border-left: 1px solid hsl(0, 0%, 90%);
+		overflow-y: scroll;
 	}
 </style>

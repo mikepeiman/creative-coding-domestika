@@ -21,7 +21,7 @@ const config = {
 			resolve: {
 				alias: {
 					'$components': path.resolve('./src/components'),
-					'$utils': path.resolve('./src/lib/utils'),
+					'$utils': path.resolve('./src/utils'),
 					'$lib': path.resolve('./src/lib'),
 					'$api': path.resolve('./src/routes/api'),
 					'$static': path.resolve('./static')
