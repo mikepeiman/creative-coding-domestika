@@ -17,7 +17,7 @@
 </script>
 
 <Param {label}>
-	<div class="themed py-2">
+	<div class="themed py-2 w-48 text-cyan-600">
 		<Select {items} {value} on:select={handleSelect} />
 	</div>
 	<!-- <input type='checkbox' bind:checked={checked} /> -->
@@ -25,10 +25,21 @@
 
 <style>
 	.themed {
-		--border: 3px solid blue;
-		--inputColor: red;
+		--border: 3px solid var(--color-sky-600);
+        --border-focus-color: var(--color-sky-100);
+		--placeholderColor: red;
+		--itemHoverColor: var(--color-fuchsia-200);
+        --itemHoverBG: var(--color-slate-900);
+        --itemIsActive: var(--color-slate-900);
+        --itemActiveBackground: var(--color-slate-900);
+        --itemIsActiveBG: var(--color-slate-900);
 		--clearSelectFocusColor: green;
 		--clearSelectHoverColor: blue;
-        --itemColor:var(--fuchsia-400);
+        --inputColor: purple;
+        --itemColor:var(--color-fuchsia-400);
+        --spinnerColor: orange;
+        --indicatorColor: orange;
+        --placeholderColor: var(--color-sky-500);
+        --indicatorWidth: 12rem;
 	}
 </style>
