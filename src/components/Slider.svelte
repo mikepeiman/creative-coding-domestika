@@ -1,7 +1,6 @@
 <script>
 	import Param from './Param.svelte';
 	import { createEventDispatcher } from 'svelte';
-
 	const dispatch = createEventDispatcher();
 
 	export let label = '';
